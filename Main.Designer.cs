@@ -44,6 +44,7 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button2 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.page3Header = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -237,12 +238,24 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.page3Header);
             this.panel3.Controls.Add(this.button3);
             this.panel3.Location = new System.Drawing.Point(1303, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(640, 480);
             this.panel3.TabIndex = 3;
             this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // page3Header
+            // 
+            this.page3Header.AutoSize = true;
+            this.page3Header.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.page3Header.Location = new System.Drawing.Point(273, 111);
+            this.page3Header.Name = "page3Header";
+            this.page3Header.Size = new System.Drawing.Size(73, 25);
+            this.page3Header.TabIndex = 2;
+            this.page3Header.Text = "Page 3";
+            this.page3Header.Click += new System.EventHandler(this.label4_Click);
             // 
             // button3
             // 
@@ -273,6 +286,7 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -300,8 +314,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button button3;
-
-
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label page3Header;
     }
 }
 
