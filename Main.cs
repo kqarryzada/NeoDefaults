@@ -13,28 +13,32 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace CfgInstallerPrototype {
-    public enum panelNumber {
-        HOME_PAGE,
-        PATH_PAGE,
-    }
-
     public partial class Main : Form {
         private readonly bool DEVELOP_MODE = true;
-        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
+
+        // Defines the default size of the main screen.
+        private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
+
+        // The autoexec file to copy 
         private readonly String autoexecSourceName = "autoexec-alpha.cfg";
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
-        private readonly String myPath = @"E:\Steam\SteamApps\common\Team Fortress 2";
-        private String tfPath;
-        private String basePath;
 
+        // TF-path related parameters
+        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
+        private readonly String myPath = @"E:\Steam\SteamApps\common\Team Fortress 2";
+        private readonly String basePath;
+        private String tfPath;
+
+        // A reference to the panel object that is currently being displayed on the main screen.
         private Panel currentPanel;
 
         public Main() {
             InitializeComponent();
-            currentPanel = panel1;
 
-            // Hide other panels
-            this.Size = new System.Drawing.Size(640, 480);
+            // Set the current panel to the home panel, and restrict the window size to hide
+            // other panels
+            currentPanel = panel1;
+            this.Size = DEFAULT_WINDOW_SIZE;
 
             // Disable ability to maximize window
             this.MaximizeBox = false;
@@ -60,31 +64,35 @@ namespace CfgInstallerPrototype {
 
         }
 
+        private bool checkDefaultTF2Install() {
+            // Check to see if the "hl2.exe" binary is in the default location.
+            if (File.Exists(Path.Combine(DEFAULT_TF2_PATH, "hl2.exe"))) {
+                tfPath = DEFAULT_TF2_PATH;
+                return true;
+            }
+
+            return false;
+        }
+
         private void pathButton_Click(object sender, EventArgs e) {
-            /*
-            Form dlg1 = new Form();
-            dlg1.ShowDialog();
-            */
             String filePath = "";
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog()) {
                 openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
+                openFileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 1;
+                // openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK) {
-                    /*
-                    //Get the path of specified file
+                    // Get the path of specified file
                     filePath = openFileDialog.FileName;
 
-                    //Read the contents of the file into a stream
+                    // Read the contents of the file into a stream
                     var fileStream = openFileDialog.OpenFile();
 
-                    using (StreamReader reader = new StreamReader(fileStream)) {
-                        fileContent = reader.ReadToEnd();
-                    }
-                    */
+                    // using (StreamReader reader = new StreamReader(fileStream)) {
+                    //     // fileContent = reader.ReadToEnd();
+                    // }
 
                     filePath = openFileDialog.FileName;
                 }
@@ -124,13 +132,6 @@ namespace CfgInstallerPrototype {
         // Validates and stores the path to the "Team Fortress" folder. Returns true if the operation was successful.
         private bool setTFPath(String path) {
 
-
-            // store the provided path in a hidden file, maybe under %local%/neodefaults or something?
-            
-            folderPrompt.Text = "Team Fortress 2 install files found.";
-            folderPrompt.Visible = true;
-            pathButton.Enabled = false;
-
             return true;
         }
 
@@ -146,15 +147,6 @@ namespace CfgInstallerPrototype {
             //     setTFPath("the path from the file");
             // }
 
-            // Check for TF2 install in the most commonly installed place. If it exists in the 
-            // default path, there's no need to query the user.
-            String defaultTF2Install = Path.Combine(myPath, "hl2.exe");
-            if (File.Exists(defaultTF2Install)) {
-                setTFPath(DEFAULT_TF2_PATH);
-            }
-            else {
-
-            }
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e) {
