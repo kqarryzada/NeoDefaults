@@ -27,11 +27,11 @@ namespace CfgInstallerPrototype {
         private String tfPath;
         private String basePath;
 
-        private panelNumber currentPanel;
+        private Panel currentPanel;
 
         public Main() {
             InitializeComponent();
-            currentPanel = panelNumber.HOME_PAGE;
+            currentPanel = panel1;
 
             // Hide other panels
             this.Size = new System.Drawing.Size(640, 480);
@@ -135,6 +135,11 @@ namespace CfgInstallerPrototype {
         }
 
         private void nextButton_Click(object sender, EventArgs e) {
+            updateScreen(panel2);
+            
+            
+            
+            
             // First check that we haven't stored the filepath on a previous run
             // if (File.Exists("myfilename")) {
             //     also double-check that TF2 is still installed there
@@ -157,17 +162,25 @@ namespace CfgInstallerPrototype {
         }
 
         private void button1_Click(object sender, EventArgs e) {
+            updateScreen(panel3);
+        }
 
+        private void button3_Click(object sender, EventArgs e) {
+            // For now, go back to home
+            updateScreen(panel1);
         }
 
 
-        private void updateScreen(AsyncVoidMethodBuilder a) {
+            private void updateScreen(Panel newPanel) {
             // The current panel being viewed.
-            Panel currentPanel;
+            Panel oldPanel = currentPanel;
 
-            // The new panel to show.
-            Panel newPanel;
-            panel1.Location
+            // Swap the two panels' locations. Since the main window is the size of one panel, this
+            // will effectively make it appear that the new panel is just the next page.
+            oldPanel.Location = newPanel.Location;
+            newPanel.Location = new Point(0, 0);
+
+            currentPanel = newPanel;
         }
 
         private void Main_Load(object sender, EventArgs e) {
