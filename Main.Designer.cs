@@ -27,7 +27,7 @@
             this.basicInstall = new System.Windows.Forms.RadioButton();
             this.advancedInstall = new System.Windows.Forms.RadioButton();
             this.pathButton = new System.Windows.Forms.Button();
-            this.tf2PathButtonDescription = new System.Windows.Forms.Label();
+            this.panel2Description = new System.Windows.Forms.Label();
             this.installationPrompt = new System.Windows.Forms.Label();
             this.nextButton = new System.Windows.Forms.Button();
             this.message1 = new System.Windows.Forms.Label();
@@ -37,6 +37,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -44,11 +45,17 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button2 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.page3Header = new System.Windows.Forms.Label();
+            this.radioButton4 = new System.Windows.Forms.RadioButton();
+            this.label4 = new System.Windows.Forms.Label();
+            this.radioButton5 = new System.Windows.Forms.RadioButton();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.label7 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button4 = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
@@ -88,7 +95,7 @@
             // 
             // pathButton
             // 
-            this.pathButton.Location = new System.Drawing.Point(48, 151);
+            this.pathButton.Location = new System.Drawing.Point(48, 175);
             this.pathButton.Name = "pathButton";
             this.pathButton.Size = new System.Drawing.Size(103, 23);
             this.pathButton.TabIndex = 1;
@@ -96,15 +103,15 @@
             this.pathButton.UseVisualStyleBackColor = true;
             this.pathButton.Click += new System.EventHandler(this.pathButton_Click);
             // 
-            // tf2PathButtonDescription
+            // panel2Description
             // 
-            this.tf2PathButtonDescription.AutoSize = true;
-            this.tf2PathButtonDescription.Location = new System.Drawing.Point(48, 123);
-            this.tf2PathButtonDescription.Name = "tf2PathButtonDescription";
-            this.tf2PathButtonDescription.Size = new System.Drawing.Size(257, 15);
-            this.tf2PathButtonDescription.TabIndex = 2;
-            this.tf2PathButtonDescription.Text = "Select the path to your \"Team Fortress 2\" folder:";
-            this.tf2PathButtonDescription.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.panel2Description.AutoSize = true;
+            this.panel2Description.Location = new System.Drawing.Point(48, 123);
+            this.panel2Description.Name = "panel2Description";
+            this.panel2Description.Size = new System.Drawing.Size(257, 15);
+            this.panel2Description.TabIndex = 2;
+            this.panel2Description.Text = "Select the path to your \"Team Fortress 2\" folder:";
+            this.panel2Description.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // installationPrompt
             // 
@@ -118,7 +125,7 @@
             // 
             // nextButton
             // 
-            this.nextButton.Location = new System.Drawing.Point(530, 440);
+            this.nextButton.Location = new System.Drawing.Point(495, 390);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(87, 23);
             this.nextButton.TabIndex = 1;
@@ -156,7 +163,7 @@
             // 
             this.folderPrompt.AutoSize = true;
             this.folderPrompt.ForeColor = System.Drawing.Color.DimGray;
-            this.folderPrompt.Location = new System.Drawing.Point(157, 155);
+            this.folderPrompt.Location = new System.Drawing.Point(157, 179);
             this.folderPrompt.Name = "folderPrompt";
             this.folderPrompt.Size = new System.Drawing.Size(78, 15);
             this.folderPrompt.TabIndex = 2;
@@ -179,7 +186,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(530, 440);
+            this.button1.Location = new System.Drawing.Point(495, 390);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(87, 23);
             this.button1.TabIndex = 1;
@@ -190,7 +197,8 @@
             // panel2
             // 
             this.panel2.Controls.Add(this.button1);
-            this.panel2.Controls.Add(this.tf2PathButtonDescription);
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.panel2Description);
             this.panel2.Controls.Add(this.folderPrompt);
             this.panel2.Controls.Add(this.pathButton);
             this.panel2.Location = new System.Drawing.Point(645, 0);
@@ -198,6 +206,17 @@
             this.panel2.Size = new System.Drawing.Size(640, 480);
             this.panel2.TabIndex = 3;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label6.Location = new System.Drawing.Point(157, 71);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(361, 25);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Additional recommended customization";
+            this.label6.Click += new System.EventHandler(this.label4_Click);
             // 
             // label1
             // 
@@ -246,7 +265,11 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.page3Header);
+            this.panel3.Controls.Add(this.radioButton4);
+            this.panel3.Controls.Add(this.label4);
+            this.panel3.Controls.Add(this.radioButton5);
+            this.panel3.Controls.Add(this.radioButton3);
+            this.panel3.Controls.Add(this.label7);
             this.panel3.Controls.Add(this.button3);
             this.panel3.Location = new System.Drawing.Point(1290, 0);
             this.panel3.Name = "panel3";
@@ -254,20 +277,63 @@
             this.panel3.TabIndex = 3;
             this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // page3Header
+            // radioButton4
             // 
-            this.page3Header.AutoSize = true;
-            this.page3Header.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.page3Header.Location = new System.Drawing.Point(273, 111);
-            this.page3Header.Name = "page3Header";
-            this.page3Header.Size = new System.Drawing.Size(73, 25);
-            this.page3Header.TabIndex = 2;
-            this.page3Header.Text = "Page 3";
-            this.page3Header.Click += new System.EventHandler(this.label4_Click);
+            this.radioButton4.AutoSize = true;
+            this.radioButton4.Location = new System.Drawing.Point(49, 175);
+            this.radioButton4.Name = "radioButton4";
+            this.radioButton4.Size = new System.Drawing.Size(41, 19);
+            this.radioButton4.TabIndex = 3;
+            this.radioButton4.Text = "No";
+            this.radioButton4.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label4.Location = new System.Drawing.Point(213, 67);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(240, 25);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Additional customizations";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // radioButton5
+            // 
+            this.radioButton5.AutoSize = true;
+            this.radioButton5.Location = new System.Drawing.Point(49, 200);
+            this.radioButton5.Name = "radioButton5";
+            this.radioButton5.Size = new System.Drawing.Size(201, 19);
+            this.radioButton5.TabIndex = 3;
+            this.radioButton5.Text = "I don\'t really know/care, just do it";
+            this.radioButton5.UseVisualStyleBackColor = true;
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Checked = true;
+            this.radioButton3.Location = new System.Drawing.Point(49, 150);
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size(134, 19);
+            this.radioButton3.TabIndex = 3;
+            this.radioButton3.TabStop = true;
+            this.radioButton3.Text = "Yes (Recommended)";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(49, 123);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(125, 15);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Install Quake hitsound";
+            this.label7.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(530, 440);
+            this.button3.Location = new System.Drawing.Point(495, 390);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(87, 23);
             this.button3.TabIndex = 1;
@@ -277,34 +343,55 @@
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.label4);
+            this.panel4.Controls.Add(this.progressBar1);
             this.panel4.Controls.Add(this.button4);
+            this.panel4.Controls.Add(this.label9);
+            this.panel4.Controls.Add(this.label8);
             this.panel4.Location = new System.Drawing.Point(0, 486);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(640, 480);
             this.panel4.TabIndex = 3;
             this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // label4
+            // progressBar1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(273, 111);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 25);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Page 3";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
+            this.progressBar1.Location = new System.Drawing.Point(44, 126);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(538, 23);
+            this.progressBar1.TabIndex = 3;
+            this.progressBar1.Visible = false;
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(530, 440);
+            this.button4.Enabled = false;
+            this.button4.Location = new System.Drawing.Point(495, 390);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(87, 23);
             this.button4.TabIndex = 1;
             this.button4.Text = "Next";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button3_Click);
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(44, 275);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(121, 15);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Installation complete.";
+            this.label9.Visible = false;
+            this.label9.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(44, 98);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(131, 15);
+            this.label8.TabIndex = 2;
+            this.label8.Text = "Beginning installation...";
+            this.label8.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // panel5
             // 
@@ -324,18 +411,18 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(73, 25);
             this.label5.TabIndex = 2;
-            this.label5.Text = "Page 3";
+            this.label5.Text = "Page 5";
             this.label5.Click += new System.EventHandler(this.label4_Click);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(530, 440);
+            this.button5.Location = new System.Drawing.Point(495, 390);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(87, 23);
             this.button5.TabIndex = 1;
             this.button5.Text = "Next";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button3_Click);
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Main
             // 
@@ -372,7 +459,7 @@
         private System.Windows.Forms.RadioButton basicInstall;
         private System.Windows.Forms.RadioButton advancedInstall;
         private System.Windows.Forms.Button pathButton;
-        private System.Windows.Forms.Label tf2PathButtonDescription;
+        private System.Windows.Forms.Label panel2Description;
         private System.Windows.Forms.Label installationPrompt;
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Label message1;
@@ -391,12 +478,22 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label page3Header;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.RadioButton radioButton4;
+        private System.Windows.Forms.RadioButton radioButton3;
+        private System.Windows.Forms.RadioButton radioButton5;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label6;
+
+
+
     }
 }
 
