@@ -26,8 +26,8 @@ namespace CfgInstallerPrototype {
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
         // TF-path related parameters
-        //private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
-        private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
+        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
+        //private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
         private readonly String basePath;
         private String tfPath;
 
@@ -113,8 +113,8 @@ namespace CfgInstallerPrototype {
                     filePath = Path.Combine(filePath, "..");
                 }
             }
-            folderPrompt.Text = basePath;
-            folderPrompt.Visible = true;
+            buttonPathMessage.Text = basePath;
+            buttonPathMessage.Visible = true;
             tfPath = filePath;
         }
 
@@ -201,14 +201,14 @@ namespace CfgInstallerPrototype {
 
             // Unzip HUD, unless user opted out
             if (installHUD) {
-                label8.Text = "Installing the Improved Default HUD...";
+                promptInstall.Text = "Installing the Improved Default HUD...";
                 await Task.Run(() => {
                     String HUD_Zip = Path.Combine(basePath, @"custom-files\idhud-master.zip");
                     extractZip(HUD_Zip, customPath, "Improved Default HUD");
                 });
                 progressBar.PerformStep();
 
-                label8.Text = "Installing required fonts for the Improved Default HUD...";
+                promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
                 await Task.Run(() => {
                     // In order for idhud to work properly, some fonts need to be installed. These are
                     // provided in idhud's zip file.
@@ -225,7 +225,7 @@ namespace CfgInstallerPrototype {
 
             // Unzip hitsound, unless user opted out
             if (installHitsound) {
-                label8.Text = "Installing hitsound files...";
+                promptInstall.Text = "Installing hitsound files...";
                 await Task.Run(() => {
                     String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
                     extractZip(hitsoundZip, customPath, "Custom Quake hitsound");
@@ -234,7 +234,7 @@ namespace CfgInstallerPrototype {
             }
 
             // Copy new autoexec file
-            label8.Text = "Installing config files...";
+            promptInstall.Text = "Installing config files...";
             await Task.Run(() => {
                 String sourceAutoexec = Path.Combine(basePath, autoexecSourceName);
                 String destAutoexec = Path.Combine(cfgPath, autoexecDestName);
@@ -244,20 +244,20 @@ namespace CfgInstallerPrototype {
 
             // Progress complete. Allow user to continue to next page
             Thread.Sleep(100);
-            label8.Text = "Installation complete.";
-            button4.Enabled = true;
+            promptInstall.Text = "Installation complete.";
+            nextInstall.Enabled = true;
         }
 
         private void nextButton_Click(object sender, EventArgs e) {
             // If the path to the TF2 install was found during startup, disable the ability for
             // the user to reset it.
             if (tfPath != null) {
-                panel2Description.Text = "Found the path to the default TF2 install file.";
+                promptPath.Text = "Found the path to the default TF2 install file.";
 
-                pathButton.Enabled = false;
+                buttonPath.Enabled = false;
             }
             else {
-                panel2Description.Text = "Select the location where you installed your game, and"
+                promptPath.Text = "Select the location where you installed your game, and"
                 + " find the \"hl2.exe\" file. \n\r"
                 + "This is usually in a location that looks like:\n\r"
                 + DEFAULT_TF2_PATH;
