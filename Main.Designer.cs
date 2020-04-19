@@ -52,10 +52,10 @@
             this.label7 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.button4 = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
@@ -343,9 +343,8 @@
             // 
             // panel4
             // 
-            this.panel4.Controls.Add(this.progressBar1);
+            this.panel4.Controls.Add(this.progressBar);
             this.panel4.Controls.Add(this.button4);
-            this.panel4.Controls.Add(this.label9);
             this.panel4.Controls.Add(this.label8);
             this.panel4.Location = new System.Drawing.Point(0, 486);
             this.panel4.Name = "panel4";
@@ -353,13 +352,14 @@
             this.panel4.TabIndex = 3;
             this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
-            // progressBar1
+            // progressBar
             // 
-            this.progressBar1.Location = new System.Drawing.Point(44, 126);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(538, 23);
-            this.progressBar1.TabIndex = 3;
-            this.progressBar1.Visible = false;
+            this.progressBar.Location = new System.Drawing.Point(44, 126);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(538, 23);
+            this.progressBar.TabIndex = 3;
+            this.progressBar.Visible = false;
+            this.progressBar.Click += new System.EventHandler(this.progressBar1_Click);
             // 
             // button4
             // 
@@ -372,17 +372,6 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(44, 275);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(121, 15);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "Installation complete.";
-            this.label9.Visible = false;
-            this.label9.Click += new System.EventHandler(this.tf2_path_button_description_Click);
-            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -391,12 +380,25 @@
             this.label8.Size = new System.Drawing.Size(131, 15);
             this.label8.TabIndex = 2;
             this.label8.Text = "Beginning installation...";
+            this.label8.Visible = false;
             this.label8.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(48, 157);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(121, 15);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Installation complete!";
+            this.label9.Visible = false;
+            this.label9.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // panel5
             // 
             this.panel5.Controls.Add(this.label5);
             this.panel5.Controls.Add(this.button5);
+            this.panel5.Controls.Add(this.label9);
             this.panel5.Location = new System.Drawing.Point(645, 486);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(640, 480);
@@ -491,8 +493,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label6;
-
-
+        private System.Windows.Forms.ProgressBar progressBar;
 
     }
 }

@@ -31,6 +31,10 @@ namespace CfgInstallerPrototype {
         private readonly String basePath;
         private String tfPath;
 
+        // The approximate number of components expected to be installed. This includes elements
+        // like the autoexec file, the HUD, etc.
+        private readonly int NUM_COMPONENTS = 6;
+
         // A reference to the panel object that is currently being displayed on the main screen.
         private Panel currentPanel;
 
@@ -184,20 +188,36 @@ namespace CfgInstallerPrototype {
             String cfgPath = Path.Combine(tfPath, @"tf\cfg\");
             String customPath = Path.Combine(tfPath, @"tf\custom");
             String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
+                       
+            // Initialize progress bar before beginning install
+            progressBar.Minimum = 0;
+            progressBar.Value = 0;
+            progressBar.Step = 1;
+
+            // Adjust number of components to be moved based on user choice. If they have opted out
+            // of a component, that's one less component that will be installed.
+            progressBar.Maximum = NUM_COMPONENTS;
+            progressBar.Maximum -= (installHUD) ? 0 : 1;
+            progressBar.Maximum -= (installHitsound) ? 0 : 1;
+            
+            progressBar.Visible = true;
 
             // Copy new autoexec file
             String sourceAutoexec = Path.Combine(basePath, autoexecSourceName);
             String destAutoexec = Path.Combine(cfgPath, autoexecDestName);
             copyFile(sourceAutoexec, destAutoexec);
+            progressBar.PerformStep();
 
             // Unzip HUD and hitsound, unless user opted out
             String HUD_Zip = Path.Combine(basePath, @"custom-files\idhud-master.zip");
             String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
             if (installHUD) {
                 extractZip(HUD_Zip, customPath, "Improved Default HUD");
+                progressBar.PerformStep();
             }
             if (installHitsound) {
                 extractZip(hitsoundZip, customPath, "Custom Quake hitsound");
+                progressBar.PerformStep();
             }
 
             // In order for idhud to work properly, some fonts need to be installed. These are
@@ -208,9 +228,12 @@ namespace CfgInstallerPrototype {
             foreach (string font in Directory.GetFiles(fontsPath)) {
                 String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
                 copyFile(font, destFile);
+                progressBar.PerformStep();
             }
 
             label9.Visible = true;
+            button4.Enabled = true;
+
         }
 
         private void nextButton_Click(object sender, EventArgs e) {
@@ -246,8 +269,7 @@ namespace CfgInstallerPrototype {
 
 
         private void button4_Click(object sender, EventArgs e) {
-            // For now, go to home screen
-            updateScreen(panel1);
+            updateScreen(panel5);
         }
 
 
@@ -279,6 +301,10 @@ namespace CfgInstallerPrototype {
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e) {
+
+        }
+
+        private void progressBar1_Click(object sender, EventArgs e) {
 
         }
     }
