@@ -42,6 +42,9 @@ namespace CfgInstallerPrototype {
         private bool installHUD = true;
         private bool installHitsound = true;
 
+        // Specifies install type
+        private bool isBasicInstallEnabled = true;
+
         public Main() {
             InitializeComponent();
 
@@ -65,12 +68,18 @@ namespace CfgInstallerPrototype {
             checkDefaultTF2Install();
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e) {
-
+        private void advanced_install_CheckedChanged(object sender, EventArgs e) {
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                isBasicInstallEnabled = false;
+            }
         }
 
         private void basic_install_CheckedChanged(object sender, EventArgs e) {
-
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                isBasicInstallEnabled = true;
+            }
         }
 
         private void tf2_path_button_description_Click(object sender, EventArgs e) {
@@ -100,15 +109,6 @@ namespace CfgInstallerPrototype {
                     // Get the path of specified file
                     filePath = openFileDialog.FileName;
 
-                    // Read the contents of the file into a stream
-                    var fileStream = openFileDialog.OpenFile();
-
-                    // using (StreamReader reader = new StreamReader(fileStream)) {
-                    //     // fileContent = reader.ReadToEnd();
-                    // }
-
-                    filePath = openFileDialog.FileName;
-
                     // Since hl2.exe is selected, point 'filePath' at the parent directory
                     filePath = Path.Combine(filePath, "..");
                 }
@@ -116,9 +116,6 @@ namespace CfgInstallerPrototype {
             folderPrompt.Text = basePath;
             folderPrompt.Visible = true;
             tfPath = filePath;
-
-            
-
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e) {
@@ -189,7 +186,7 @@ namespace CfgInstallerPrototype {
             String customPath = Path.Combine(tfPath, @"tf\custom");
             String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
                        
-            // Initialize progress bar before beginning install
+            // Initialize the progress bar before starting the installation
             progressBar.Minimum = 0;
             progressBar.Value = 0;
             progressBar.Step = 1;
@@ -197,20 +194,21 @@ namespace CfgInstallerPrototype {
             // Adjust number of components to be moved based on user choice. If they have opted out
             // of a component, that's one less component that will be installed.
             progressBar.Maximum = NUM_COMPONENTS;
-            progressBar.Maximum -= (installHUD) ? 0 : 1;
+            progressBar.Maximum -= (installHUD) ? 0 : 2;
             progressBar.Maximum -= (installHitsound) ? 0 : 1;
             
             progressBar.Visible = true;
 
-
             // Unzip HUD, unless user opted out
             if (installHUD) {
+                label8.Text = "Installing the Improved Default HUD...";
                 await Task.Run(() => {
                     String HUD_Zip = Path.Combine(basePath, @"custom-files\idhud-master.zip");
                     extractZip(HUD_Zip, customPath, "Improved Default HUD");
                 });
                 progressBar.PerformStep();
 
+                label8.Text = "Installing required fonts for the Improved Default HUD...";
                 await Task.Run(() => {
                     // In order for idhud to work properly, some fonts need to be installed. These are
                     // provided in idhud's zip file.
@@ -227,6 +225,7 @@ namespace CfgInstallerPrototype {
 
             // Unzip hitsound, unless user opted out
             if (installHitsound) {
+                label8.Text = "Installing hitsound files...";
                 await Task.Run(() => {
                     String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
                     extractZip(hitsoundZip, customPath, "Custom Quake hitsound");
@@ -235,6 +234,7 @@ namespace CfgInstallerPrototype {
             }
 
             // Copy new autoexec file
+            label8.Text = "Installing config files...";
             await Task.Run(() => {
                 String sourceAutoexec = Path.Combine(basePath, autoexecSourceName);
                 String destAutoexec = Path.Combine(cfgPath, autoexecDestName);
@@ -243,6 +243,8 @@ namespace CfgInstallerPrototype {
             progressBar.PerformStep();
 
             // Progress complete. Allow user to continue to next page
+            Thread.Sleep(100);
+            label8.Text = "Installation complete.";
             button4.Enabled = true;
         }
 
@@ -268,24 +270,34 @@ namespace CfgInstallerPrototype {
 
         }
 
-        private void button1_Click(object sender, EventArgs e) {
-            updateScreen(panel3);
+        private async void button1_Click(object sender, EventArgs e) {
+            if (!isBasicInstallEnabled) {
+                updateScreen(panel3);
+            }
+            else {
+                updateScreen(panel5);
+                await installFiles();
+            }
         }
 
-        private async void button3_Click(object sender, EventArgs e) {
+        private void button3_Click(object sender, EventArgs e) {
             updateScreen(panel4);
+        }
+
+        private async void button4_Click(object sender, EventArgs e) {
+            updateScreen(panel5);
             await installFiles();
         }
 
 
-        private void button4_Click(object sender, EventArgs e) {
-            updateScreen(panel5);
+        private void button5_Click(object sender, EventArgs e) {
+            updateScreen(panel6);
         }
 
 
-        private void button5_Click(object sender, EventArgs e) {
-            // For now, go to home screen
-            updateScreen(panel1);
+        private void button6_Click(object sender, EventArgs e) {
+            // The exit button on the last screen does just that.
+            Application.Exit();
         }
 
 
@@ -311,11 +323,35 @@ namespace CfgInstallerPrototype {
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e) {
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                installHitsound = true;
+            }
+        }
 
+        private void radioButton8_CheckedChanged(object sender, EventArgs e) {
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                installHUD = true;
+            }
         }
 
         private void progressBar1_Click(object sender, EventArgs e) {
 
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e) {
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                installHitsound = false;
+            }
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e) {
+            RadioButton element = (RadioButton) sender;
+            if (element.Checked) {
+                installHUD = false;
+            }
         }
     }
 }

@@ -30,7 +30,6 @@
             this.panel2Description = new System.Windows.Forms.Label();
             this.installationPrompt = new System.Windows.Forms.Label();
             this.nextButton = new System.Windows.Forms.Button();
-            this.message1 = new System.Windows.Forms.Label();
             this.title = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderPrompt = new System.Windows.Forms.Label();
@@ -47,23 +46,28 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.radioButton4 = new System.Windows.Forms.RadioButton();
             this.label4 = new System.Windows.Forms.Label();
-            this.radioButton5 = new System.Windows.Forms.RadioButton();
             this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.button4 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
             this.button5 = new System.Windows.Forms.Button();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.radioButton6 = new System.Windows.Forms.RadioButton();
+            this.label10 = new System.Windows.Forms.Label();
+            this.radioButton8 = new System.Windows.Forms.RadioButton();
+            this.label11 = new System.Windows.Forms.Label();
+            this.button6 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // basicInstall
@@ -74,24 +78,23 @@
             this.basicInstall.Checked = true;
             this.basicInstall.Location = new System.Drawing.Point(44, 191);
             this.basicInstall.Name = "basicInstall";
-            this.basicInstall.Size = new System.Drawing.Size(86, 19);
+            this.basicInstall.Size = new System.Drawing.Size(274, 19);
             this.basicInstall.TabIndex = 0;
             this.basicInstall.TabStop = true;
-            this.basicInstall.Text = "Basic Install";
+            this.basicInstall.Text = "Basic install— Install all recommended options.";
             this.basicInstall.UseVisualStyleBackColor = true;
             this.basicInstall.CheckedChanged += new System.EventHandler(this.basic_install_CheckedChanged);
             // 
             // advancedInstall
             // 
             this.advancedInstall.AutoSize = true;
-            this.advancedInstall.Enabled = false;
             this.advancedInstall.Location = new System.Drawing.Point(44, 216);
             this.advancedInstall.Name = "advancedInstall";
-            this.advancedInstall.Size = new System.Drawing.Size(112, 19);
+            this.advancedInstall.Size = new System.Drawing.Size(339, 19);
             this.advancedInstall.TabIndex = 0;
-            this.advancedInstall.Text = "Advanced Install";
+            this.advancedInstall.Text = "Advanced install— Customize which components to install.";
             this.advancedInstall.UseVisualStyleBackColor = true;
-            this.advancedInstall.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.advancedInstall.CheckedChanged += new System.EventHandler(this.advanced_install_CheckedChanged);
             // 
             // pathButton
             // 
@@ -133,16 +136,6 @@
             this.nextButton.UseVisualStyleBackColor = true;
             this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
-            // message1
-            // 
-            this.message1.AutoSize = true;
-            this.message1.Location = new System.Drawing.Point(176, 218);
-            this.message1.Name = "message1";
-            this.message1.Size = new System.Drawing.Size(225, 15);
-            this.message1.TabIndex = 2;
-            this.message1.Text = "Will be made available in a future update.";
-            this.message1.Click += new System.EventHandler(this.tf2_path_button_description_Click);
-            // 
             // title
             // 
             this.title.AutoSize = true;
@@ -176,7 +169,6 @@
             this.panel1.Controls.Add(this.installationPrompt);
             this.panel1.Controls.Add(this.title);
             this.panel1.Controls.Add(this.basicInstall);
-            this.panel1.Controls.Add(this.message1);
             this.panel1.Controls.Add(this.advancedInstall);
             this.panel1.Controls.Add(this.nextButton);
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -267,7 +259,6 @@
             // 
             this.panel3.Controls.Add(this.radioButton4);
             this.panel3.Controls.Add(this.label4);
-            this.panel3.Controls.Add(this.radioButton5);
             this.panel3.Controls.Add(this.radioButton3);
             this.panel3.Controls.Add(this.label7);
             this.panel3.Controls.Add(this.button3);
@@ -286,6 +277,7 @@
             this.radioButton4.TabIndex = 3;
             this.radioButton4.Text = "No";
             this.radioButton4.UseVisualStyleBackColor = true;
+            this.radioButton4.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
             // 
             // label4
             // 
@@ -297,16 +289,6 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Additional customizations";
             this.label4.Click += new System.EventHandler(this.label4_Click);
-            // 
-            // radioButton5
-            // 
-            this.radioButton5.AutoSize = true;
-            this.radioButton5.Location = new System.Drawing.Point(49, 200);
-            this.radioButton5.Name = "radioButton5";
-            this.radioButton5.Size = new System.Drawing.Size(201, 19);
-            this.radioButton5.TabIndex = 3;
-            this.radioButton5.Text = "I don\'t really know/care, just do it";
-            this.radioButton5.UseVisualStyleBackColor = true;
             // 
             // radioButton3
             // 
@@ -326,9 +308,9 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(49, 123);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(125, 15);
+            this.label7.Size = new System.Drawing.Size(130, 15);
             this.label7.TabIndex = 2;
-            this.label7.Text = "Install Quake hitsound";
+            this.label7.Text = "Install Quake hitsound?";
             this.label7.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // button3
@@ -341,16 +323,16 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // panel4
+            // panel5
             // 
-            this.panel4.Controls.Add(this.progressBar);
-            this.panel4.Controls.Add(this.button4);
-            this.panel4.Controls.Add(this.label8);
-            this.panel4.Location = new System.Drawing.Point(0, 486);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(640, 480);
-            this.panel4.TabIndex = 3;
-            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            this.panel5.Controls.Add(this.progressBar);
+            this.panel5.Controls.Add(this.button4);
+            this.panel5.Controls.Add(this.label8);
+            this.panel5.Location = new System.Drawing.Point(645, 485);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(640, 480);
+            this.panel5.TabIndex = 3;
+            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // progressBar
             // 
@@ -370,7 +352,7 @@
             this.button4.TabIndex = 1;
             this.button4.Text = "Next";
             this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.button4.Click += new System.EventHandler(this.button5_Click);
             // 
             // label8
             // 
@@ -385,35 +367,22 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(48, 157);
+            this.label9.Location = new System.Drawing.Point(49, 98);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(121, 15);
+            this.label9.Size = new System.Drawing.Size(298, 15);
             this.label9.TabIndex = 2;
-            this.label9.Text = "Installation complete!";
-            this.label9.Visible = false;
+            this.label9.Text = "Congrations! You done it. All files successfully installed.";
             this.label9.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
-            // panel5
+            // panel6
             // 
-            this.panel5.Controls.Add(this.label5);
-            this.panel5.Controls.Add(this.button5);
-            this.panel5.Controls.Add(this.label9);
-            this.panel5.Location = new System.Drawing.Point(645, 486);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(640, 480);
-            this.panel5.TabIndex = 3;
-            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label5.Location = new System.Drawing.Point(273, 111);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(73, 25);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Page 5";
-            this.label5.Click += new System.EventHandler(this.label4_Click);
+            this.panel6.Controls.Add(this.button5);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Location = new System.Drawing.Point(1290, 485);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(640, 480);
+            this.panel6.TabIndex = 3;
+            this.panel6.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // button5
             // 
@@ -421,9 +390,77 @@
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(87, 23);
             this.button5.TabIndex = 1;
-            this.button5.Text = "Next";
+            this.button5.Text = "Exit";
             this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.button5.Click += new System.EventHandler(this.button6_Click);
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.radioButton6);
+            this.panel4.Controls.Add(this.label10);
+            this.panel4.Controls.Add(this.radioButton8);
+            this.panel4.Controls.Add(this.label11);
+            this.panel4.Controls.Add(this.button6);
+            this.panel4.Location = new System.Drawing.Point(0, 485);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(640, 480);
+            this.panel4.TabIndex = 3;
+            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // radioButton6
+            // 
+            this.radioButton6.AutoSize = true;
+            this.radioButton6.Location = new System.Drawing.Point(49, 175);
+            this.radioButton6.Name = "radioButton6";
+            this.radioButton6.Size = new System.Drawing.Size(41, 19);
+            this.radioButton6.TabIndex = 3;
+            this.radioButton6.Text = "No";
+            this.radioButton6.UseVisualStyleBackColor = true;
+            this.radioButton6.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Yu Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label10.Location = new System.Drawing.Point(213, 67);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(240, 25);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "Additional customizations";
+            this.label10.Click += new System.EventHandler(this.label4_Click);
+            // 
+            // radioButton8
+            // 
+            this.radioButton8.AutoSize = true;
+            this.radioButton8.Checked = true;
+            this.radioButton8.Location = new System.Drawing.Point(49, 150);
+            this.radioButton8.Name = "radioButton8";
+            this.radioButton8.Size = new System.Drawing.Size(134, 19);
+            this.radioButton8.TabIndex = 3;
+            this.radioButton8.TabStop = true;
+            this.radioButton8.Text = "Yes (Recommended)";
+            this.radioButton8.UseVisualStyleBackColor = true;
+            this.radioButton8.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(49, 123);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(81, 15);
+            this.label11.TabIndex = 2;
+            this.label11.Text = "Install idHUD?";
+            this.label11.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            // 
+            // button6
+            // 
+            this.button6.Location = new System.Drawing.Point(495, 390);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(87, 23);
+            this.button6.TabIndex = 1;
+            this.button6.Text = "Next";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button4_Click);
             // 
             // Main
             // 
@@ -432,8 +469,9 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Menu;
             this.ClientSize = new System.Drawing.Size(1955, 1046);
-            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel5);
+            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -447,10 +485,12 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -463,7 +503,6 @@
         private System.Windows.Forms.Label panel2Description;
         private System.Windows.Forms.Label installationPrompt;
         private System.Windows.Forms.Button nextButton;
-        private System.Windows.Forms.Label message1;
         private System.Windows.Forms.Label title;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label folderPrompt;
@@ -479,21 +518,23 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.RadioButton radioButton4;
         private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton5;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ProgressBar progressBar;
-
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.RadioButton radioButton8;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Button button6;
     }
 }
 
