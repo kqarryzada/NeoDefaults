@@ -104,7 +104,7 @@
             this.buttonPath.TabIndex = 1;
             this.buttonPath.Text = "Select Folder...";
             this.buttonPath.UseVisualStyleBackColor = true;
-            this.buttonPath.Click += new System.EventHandler(this.pathButton_Click);
+            this.buttonPath.Click += new System.EventHandler(this.buttonPath_Click);
             // 
             // promptPath
             // 
@@ -114,7 +114,7 @@
             this.promptPath.Size = new System.Drawing.Size(257, 15);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
-            this.promptPath.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptPath.Click += new System.EventHandler(this.prompt_Click);
             // 
             // promptHome
             // 
@@ -124,7 +124,7 @@
             this.promptHome.Size = new System.Drawing.Size(148, 15);
             this.promptHome.TabIndex = 2;
             this.promptHome.Text = "Select the installation type.";
-            this.promptHome.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptHome.Click += new System.EventHandler(this.prompt_Click);
             // 
             // nextHome
             // 
@@ -134,7 +134,7 @@
             this.nextHome.TabIndex = 1;
             this.nextHome.Text = "Next";
             this.nextHome.UseVisualStyleBackColor = true;
-            this.nextHome.Click += new System.EventHandler(this.nextHome_Click);
+            this.nextHome.Click += new System.EventHandler(this.next_Click);
             // 
             // title
             // 
@@ -145,7 +145,7 @@
             this.title.Size = new System.Drawing.Size(567, 39);
             this.title.TabIndex = 2;
             this.title.Text = "TF2 NeoDefaults Installer";
-            this.title.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.title.Click += new System.EventHandler(this.prompt_Click);
             // 
             // openFileDialog1
             // 
@@ -162,7 +162,7 @@
             this.buttonPathMessage.TabIndex = 2;
             this.buttonPathMessage.Text = "%MESSAGE%";
             this.buttonPathMessage.Visible = false;
-            this.buttonPathMessage.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.buttonPathMessage.Click += new System.EventHandler(this.prompt_Click);
             // 
             // panel1
             // 
@@ -178,6 +178,7 @@
             // 
             // nextPath
             // 
+            this.nextPath.Enabled = false;
             this.nextPath.Location = new System.Drawing.Point(495, 390);
             this.nextPath.Name = "nextPath";
             this.nextPath.Size = new System.Drawing.Size(87, 23);
@@ -246,13 +247,10 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(509, 384);
+            this.button2.Location = new System.Drawing.Point(0, 0);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(87, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Next";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.nextHome_Click);
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 0;
             // 
             // panel3
             // 
@@ -276,7 +274,7 @@
             this.menu2Hitsound.TabIndex = 3;
             this.menu2Hitsound.Text = "No";
             this.menu2Hitsound.UseVisualStyleBackColor = true;
-            this.menu2Hitsound.CheckedChanged += new System.EventHandler(this.radioButton4_CheckedChanged);
+            this.menu2Hitsound.CheckedChanged += new System.EventHandler(this.menu2Hitsound_CheckedChanged);
             // 
             // menu1Hitsound
             // 
@@ -289,7 +287,7 @@
             this.menu1Hitsound.TabStop = true;
             this.menu1Hitsound.Text = "Yes (Recommended)";
             this.menu1Hitsound.UseVisualStyleBackColor = true;
-            this.menu1Hitsound.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.menu1Hitsound.CheckedChanged += new System.EventHandler(this.menu1Hitsound_CheckedChanged);
             // 
             // promptHitsound
             // 
@@ -299,7 +297,7 @@
             this.promptHitsound.Size = new System.Drawing.Size(130, 15);
             this.promptHitsound.TabIndex = 2;
             this.promptHitsound.Text = "Install Quake hitsound?";
-            this.promptHitsound.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptHitsound.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHitsound
             // 
@@ -339,7 +337,7 @@
             this.progressBar.Size = new System.Drawing.Size(538, 23);
             this.progressBar.TabIndex = 3;
             this.progressBar.Visible = false;
-            this.progressBar.Click += new System.EventHandler(this.progressBar1_Click);
+            this.progressBar.Click += new System.EventHandler(this.progressBar_Click);
             // 
             // nextInstall
             // 
@@ -360,7 +358,7 @@
             this.promptInstall.Size = new System.Drawing.Size(131, 15);
             this.promptInstall.TabIndex = 2;
             this.promptInstall.Text = "Beginning installation...";
-            this.promptInstall.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptInstall.Click += new System.EventHandler(this.prompt_Click);
             // 
             // promptLast
             // 
@@ -370,7 +368,7 @@
             this.promptLast.Size = new System.Drawing.Size(298, 15);
             this.promptLast.TabIndex = 2;
             this.promptLast.Text = "Congrations! You done it. All files successfully installed.";
-            this.promptLast.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptLast.Click += new System.EventHandler(this.prompt_Click);
             // 
             // panel6
             // 
@@ -414,7 +412,7 @@
             this.menu2HUD.TabIndex = 3;
             this.menu2HUD.Text = "No";
             this.menu2HUD.UseVisualStyleBackColor = true;
-            this.menu2HUD.CheckedChanged += new System.EventHandler(this.radioButton6_CheckedChanged);
+            this.menu2HUD.CheckedChanged += new System.EventHandler(this.menu2HUD_CheckedChanged);
             // 
             // menu1HUD
             // 
@@ -427,7 +425,7 @@
             this.menu1HUD.TabStop = true;
             this.menu1HUD.Text = "Yes (Recommended)";
             this.menu1HUD.UseVisualStyleBackColor = true;
-            this.menu1HUD.CheckedChanged += new System.EventHandler(this.radioButton3_CheckedChanged);
+            this.menu1HUD.CheckedChanged += new System.EventHandler(this.menu1HUD_CheckedChanged);
             // 
             // promptHUD
             // 
@@ -437,7 +435,7 @@
             this.promptHUD.Size = new System.Drawing.Size(81, 15);
             this.promptHUD.TabIndex = 2;
             this.promptHUD.Text = "Install idHUD?";
-            this.promptHUD.Click += new System.EventHandler(this.tf2_path_button_description_Click);
+            this.promptHUD.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHUD
             // 

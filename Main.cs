@@ -26,8 +26,8 @@ namespace CfgInstallerPrototype {
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
         // TF-path related parameters
-        //private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
-        private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
+        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
+        //private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
         private readonly String basePath;
         private String tfPath;
 
@@ -68,10 +68,13 @@ namespace CfgInstallerPrototype {
             relativeBasePath = Path.Combine(relativeBasePath, parentPath);
             basePath = new FileInfo(relativeBasePath).FullName;
 
-            // On startup, check for a TF2 installation at 'DEFAULT_TF2_PATH'.
+            // On startup, try to determine the path to the TF2 installation.
             checkDefaultTF2Install();
         }
 
+        /**
+         * When "Advanced install" is selected, clear the appropriate flag.
+         */
         private void advanced_install_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
@@ -79,6 +82,9 @@ namespace CfgInstallerPrototype {
             }
         }
 
+        /**
+         * When "Basic install" is selected, set the appropriate flag.
+         */
         private void basic_install_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
@@ -86,40 +92,76 @@ namespace CfgInstallerPrototype {
             }
         }
 
-        private void tf2_path_button_description_Click(object sender, EventArgs e) {
+        private void prompt_Click(object sender, EventArgs e) {
 
         }
 
+        /**
+         * Tries to find a TF2 installation in most common location. 
+         * 
+         * Returns true if the install files were found.
+         */
         private bool checkDefaultTF2Install() {
             // Check to see if the "hl2.exe" binary is in the default location.
             if (File.Exists(Path.Combine(DEFAULT_TF2_PATH, "hl2.exe"))) {
                 tfPath = DEFAULT_TF2_PATH;
+
+                // Before leaving, enable the button on the "path" page to let the user proceed
+                nextPath.Enabled = true;
                 return true;
             }
 
             return false;
         }
 
-        private void pathButton_Click(object sender, EventArgs e) {
+        /**
+         * When the "Select Folder" button is clicked, launch a menu to allow the user to specify
+         * the location of their install. Currently, this makes use of a file-based search and asks
+         * the user to provide the 'hl2.exe' file, despite needing a folder.
+         * 
+         * This was done since the typical tree-based folder navigation menu is not very good, and
+         * it's apparently difficult to successfully use the more modern menu (which is used here)
+         * but return a folder instead (at least, it seemed that way to me). Hence, the program asks
+         * for the 'hl2.exe' file in the nicer mavigation menu, and strips off the filename to
+         * record the "Team Fortress 2" folder.
+         */
+        private void buttonPath_Click(object sender, EventArgs e) {
             String filePath = "";
+            bool valid = true;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog()) {
                 openFileDialog.InitialDirectory = "c:\\";
                 openFileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 1;
-                // openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK) {
                     // Get the path of specified file
                     filePath = openFileDialog.FileName;
 
-                    // Since hl2.exe is selected, point 'filePath' at the parent directory
-                    filePath = Path.Combine(filePath, "..");
+                    // Validate the filepath
+                    String fpCheck = filePath.ToLower();
+                    if (!fpCheck.Contains("hl2.exe") || !fpCheck.Contains("team fortress 2")) {
+                        // Refuse
+                        return;
+                    }
+                    if (!fpCheck.Contains("steamapps")) {
+                        // Display warning
+                        valid = false;
+                    }
                 }
             }
-            buttonPathMessage.Text = basePath;
-            buttonPathMessage.Visible = true;
-            tfPath = filePath;
+
+            if (valid) {
+                // Since hl2.exe is selected, point 'filePath' at the parent directory
+                filePath = Path.Combine(filePath, "..");
+                tfPath = new FileInfo(filePath).FullName;
+                nextPath.Enabled = true;
+                buttonPathMessage.Text = tfPath;
+                buttonPathMessage.Visible = true;
+            }
+            else {
+                nextPath.Enabled = false;
+            }
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e) {
@@ -132,6 +174,13 @@ namespace CfgInstallerPrototype {
         }
 
         private readonly String backupFolder = @"";
+
+        /**
+         * Copies a 'sourceFile' to a destination. The filepath of the destination is given by 
+         * 'destFile', which includes the filename of the file (allowing for a move-and-rename
+         * operation to be executed at once). This method will give a few attempts at copying the file
+         * over before reporting an issue.
+         */
         private void copyFile(String sourceFile, String destFile, bool overwrite) {
             int NUM_RETRIES = 3;
 
@@ -174,6 +223,12 @@ namespace CfgInstallerPrototype {
             }
         }
 
+        /**
+         * Extracts a zip file to a folder.
+         * 
+         * 'fileName' is a given nickname for the resulting zip file, and is only used iin the
+         * error message if an issue occurs.
+         */
         private void extractZip(String zipFilepath, String destinationFolder, String fileName) {
             try {
                 ZipFile.ExtractToDirectory(zipFilepath, destinationFolder);
@@ -184,6 +239,12 @@ namespace CfgInstallerPrototype {
             }
 
         }
+
+        /**
+         * Installs the requested files to the appropriate locations. These operations are done on
+         * their own threads to allow the UI to be responsive while the user waits for the
+         * installation to complete.
+         */
         private async Task installFiles() {
             // Main destination directories for our installs
             String cfgPath = Path.Combine(tfPath, @"tf\cfg\");
@@ -246,33 +307,39 @@ namespace CfgInstallerPrototype {
             });
             progressBar.PerformStep();
 
-            // Progress complete. Allow user to continue to next page
             Thread.Sleep(100);
             promptInstall.Text = "Installation complete.";
+            // Progress complete. Allow user to continue to next page
             nextInstall.Enabled = true;
         }
 
-        private bool first = false;
-        private void nextHome_Click(object sender, EventArgs e) {
+        /**
+         * When navigating to the path page, the program needs to load elements based on whether or
+         * not a TF2 install has been found. This will only be executed once.
+         */
+        private bool first = true;
+        private void preparePathPanel() {
             // If the path to the TF2 install was found during startup, disable the ability for
             // the user to reset it. This is done only once to prevent strange issues when switching
             // between panels.
-            if (!first) {
-                if (tfPath != null) {
-                    promptPath.Text = "Found the path to the default TF2 install file.";
+            if (!first)
+                return;
 
-                    buttonPath.Enabled = false;
-                }
-                else {
-                    promptPath.Text = "Select the location where you installed your game, and"
-                    + " find the \"hl2.exe\" file. \n\r"
-                    + "This is usually in a location that looks like:\n\r"
-                    + DEFAULT_TF2_PATH;
-                }
-
-                first = true;
+            if (tfPath != null) {
+                // Once the TF2 installation has been found, disallow it from being reset to prevent
+                // potential issues.
+                buttonPath.Enabled = false;
+                promptPath.Text = "Found the path to the default TF2 install file. Proceed to the" 
+                                  + " next page.";
             }
-            nextPanel();
+            else {
+                promptPath.Text = "Select the location where you installed your game, and"
+                + " find the \"hl2.exe\" file. \n\r"
+                + "This is usually in a location that looks like:\n\r"
+                + DEFAULT_TF2_PATH + "\\hl2.exe";
+            }
+
+            first = false;
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e) {
@@ -294,17 +361,26 @@ namespace CfgInstallerPrototype {
         }
 
 
+        /**
+         * Navigates to the previous page in the setup menu.
+         */
         private void previousPanel() {
             updateScreen(stack.Pop());
         }
 
+        /**
+         * Navigates to the next page in the setup menu.
+         */
         private async void nextPanel() {
             // Save current panel in case the user later wishes to go back.
             stack.Push(currentPanel);
 
             Panel nextPanel;
-            if (currentPanel == panel1)
+            if (currentPanel == panel1) {
+                // Prepare elements on the next page before displaying anything.
+                preparePathPanel();
                 nextPanel = panel2;
+            }
             else if (currentPanel == panel2) {
                 if (!isBasicInstallEnabled)
                     nextPanel = panel3;
@@ -318,17 +394,17 @@ namespace CfgInstallerPrototype {
             else if (currentPanel == panel5)
                 nextPanel = panel6;
             else if (currentPanel == panel6) {
-                // The exit button on the last screen does just that.
+                // The button on the last screen exits.
                 Application.Exit();
                 return;
             }
             else {
                 // It should not be possible to get an unknown panel onto the stack.
-                // REPORT ERROR
+                Debug.Print("SEVERE ERROR: The current panel is currently set to '" 
+                            + currentPanel.Name + "', which is not defined. This is not expected"
+                            + " behavior.");
                 return;
             }
-
-            // Update the screen
             updateScreen(nextPanel);
             
             // Certain panels need to execute tasks immediately upon switching to the next page.
@@ -337,7 +413,9 @@ namespace CfgInstallerPrototype {
             }
         }
 
-
+        /**
+         * Moves the provided panel to be displayed in the UI.
+         */
         private void updateScreen(Panel newPanel) {
             // The current panel being viewed.
             Panel oldPanel = currentPanel;
@@ -358,32 +436,32 @@ namespace CfgInstallerPrototype {
 
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e) {
+        private void menu1Hitsound_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
                 installHitsound = true;
             }
         }
 
-        private void radioButton8_CheckedChanged(object sender, EventArgs e) {
+        private void menu1HUD_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
                 installHUD = true;
             }
         }
 
-        private void progressBar1_Click(object sender, EventArgs e) {
+        private void progressBar_Click(object sender, EventArgs e) {
 
         }
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e) {
+        private void menu2Hitsound_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
                 installHitsound = false;
             }
         }
 
-        private void radioButton6_CheckedChanged(object sender, EventArgs e) {
+        private void menu2HUD_CheckedChanged(object sender, EventArgs e) {
             RadioButton element = (RadioButton) sender;
             if (element.Checked) {
                 installHUD = false;
