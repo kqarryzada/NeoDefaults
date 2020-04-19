@@ -380,7 +380,6 @@
             this.label8.Size = new System.Drawing.Size(131, 15);
             this.label8.TabIndex = 2;
             this.label8.Text = "Beginning installation...";
-            this.label8.Visible = false;
             this.label8.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
             // label9

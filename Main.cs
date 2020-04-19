@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace CfgInstallerPrototype {
     public partial class Main : Form {
@@ -181,8 +182,8 @@ namespace CfgInstallerPrototype {
                 Debug.Print("An error occurred when trying to install '" + fileName +"' to '"
                             + destinationFolder + "'. Do you already have this installed?");
             }
-
         }
+
         private void installFiles() {
             // Main destination directories for our installs
             String cfgPath = Path.Combine(tfPath, @"tf\cfg\");
@@ -205,18 +206,30 @@ namespace CfgInstallerPrototype {
             // Copy new autoexec file
             String sourceAutoexec = Path.Combine(basePath, autoexecSourceName);
             String destAutoexec = Path.Combine(cfgPath, autoexecDestName);
-            copyFile(sourceAutoexec, destAutoexec);
+            Task t1 = Task.Run(() => {
+                copyFile(sourceAutoexec, destAutoexec);
+            });
             progressBar.PerformStep();
 
             // Unzip HUD and hitsound, unless user opted out
             String HUD_Zip = Path.Combine(basePath, @"custom-files\idhud-master.zip");
             String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
-            if (installHUD) {
+
+            Action action2 = () => {
                 extractZip(HUD_Zip, customPath, "Improved Default HUD");
+            };
+            Task t2 = new Task(action2);
+            if (installHUD) {
+                t2.Start();
                 progressBar.PerformStep();
             }
-            if (installHitsound) {
+
+            Action action3 = () => {
                 extractZip(hitsoundZip, customPath, "Custom Quake hitsound");
+            };
+            Task t3 = new Task(action2);
+            if (installHitsound) {
+                t3.Start();
                 progressBar.PerformStep();
             }
 
@@ -224,6 +237,9 @@ namespace CfgInstallerPrototype {
             // provided in idhud's zip file.
             String fontsPath = Path.Combine(customPath, @"idhud-master\resource\fonts");
 
+            if (installHUD) {
+                t2.Wait(Timeout.Infinite);
+            }
             // Copy each file over to the windows fonts directory to install them.
             foreach (string font in Directory.GetFiles(fontsPath)) {
                 String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
@@ -231,6 +247,10 @@ namespace CfgInstallerPrototype {
                 progressBar.PerformStep();
             }
 
+            t1.Wait();
+            if (installHitsound) {
+                t3.Wait();
+            }
             label9.Visible = true;
             button4.Enabled = true;
 
