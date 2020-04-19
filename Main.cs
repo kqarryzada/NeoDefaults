@@ -26,8 +26,8 @@ namespace CfgInstallerPrototype {
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
         // TF-path related parameters
-        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
-        //private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
+        //private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
+        private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
         private readonly String basePath;
         private String tfPath;
 
@@ -44,6 +44,10 @@ namespace CfgInstallerPrototype {
 
         // Specifies install type
         private bool isBasicInstallEnabled = true;
+
+        // Keeps track of which previous menus were accessed, so that they can be made available if
+        // someone clicks "Back".
+        private Stack<Panel> stack = new Stack<Panel>();
 
         public Main() {
             InitializeComponent();
@@ -248,58 +252,90 @@ namespace CfgInstallerPrototype {
             nextInstall.Enabled = true;
         }
 
-        private void nextButton_Click(object sender, EventArgs e) {
+        private bool first = false;
+        private void nextHome_Click(object sender, EventArgs e) {
             // If the path to the TF2 install was found during startup, disable the ability for
-            // the user to reset it.
-            if (tfPath != null) {
-                promptPath.Text = "Found the path to the default TF2 install file.";
+            // the user to reset it. This is done only once to prevent strange issues when switching
+            // between panels.
+            if (!first) {
+                if (tfPath != null) {
+                    promptPath.Text = "Found the path to the default TF2 install file.";
 
-                buttonPath.Enabled = false;
-            }
-            else {
-                promptPath.Text = "Select the location where you installed your game, and"
-                + " find the \"hl2.exe\" file. \n\r"
-                + "This is usually in a location that looks like:\n\r"
-                + DEFAULT_TF2_PATH;
-            }
+                    buttonPath.Enabled = false;
+                }
+                else {
+                    promptPath.Text = "Select the location where you installed your game, and"
+                    + " find the \"hl2.exe\" file. \n\r"
+                    + "This is usually in a location that looks like:\n\r"
+                    + DEFAULT_TF2_PATH;
+                }
 
-            updateScreen(panel2);
+                first = true;
+            }
+            nextPanel();
         }
 
         private void panel2_Paint(object sender, PaintEventArgs e) {
 
         }
 
-        private async void button1_Click(object sender, EventArgs e) {
-            if (!isBasicInstallEnabled) {
-                updateScreen(panel3);
+        /** 
+         * General method for navigating to the next page in the setup menu.
+         */
+        private void next_Click(object sender, EventArgs e) {
+            nextPanel();
+        }
+
+        /**
+         * General method for navigating to the previous page in the setup menu.
+         */
+        private void prev_Click(object sender, EventArgs e) {
+            previousPanel();
+        }
+
+
+        private void previousPanel() {
+            updateScreen(stack.Pop());
+        }
+
+        private async void nextPanel() {
+            // Save current panel in case the user later wishes to go back.
+            stack.Push(currentPanel);
+
+            Panel nextPanel;
+            if (currentPanel == panel1)
+                nextPanel = panel2;
+            else if (currentPanel == panel2) {
+                if (!isBasicInstallEnabled)
+                    nextPanel = panel3;
+                else
+                    nextPanel = panel5;
+            }
+            else if (currentPanel == panel3)
+                nextPanel = panel4;
+            else if (currentPanel == panel4)
+                nextPanel = panel5;
+            else if (currentPanel == panel5)
+                nextPanel = panel6;
+            else if (currentPanel == panel6) {
+                // The exit button on the last screen does just that.
+                Application.Exit();
+                return;
             }
             else {
-                updateScreen(panel5);
+                // It should not be possible to get an unknown panel onto the stack.
+                // REPORT ERROR
+                return;
+            }
+
+            // Update the screen
+            updateScreen(nextPanel);
+            
+            // Certain panels need to execute tasks immediately upon switching to the next page.
+            if (currentPanel == panel5) {
                 await installFiles();
             }
         }
-
-        private void button3_Click(object sender, EventArgs e) {
-            updateScreen(panel4);
-        }
-
-        private async void button4_Click(object sender, EventArgs e) {
-            updateScreen(panel5);
-            await installFiles();
-        }
-
-
-        private void button5_Click(object sender, EventArgs e) {
-            updateScreen(panel6);
-        }
-
-
-        private void button6_Click(object sender, EventArgs e) {
-            // The exit button on the last screen does just that.
-            Application.Exit();
-        }
-
 
 
         private void updateScreen(Panel newPanel) {

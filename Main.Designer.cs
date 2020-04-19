@@ -36,6 +36,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.nextPath = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.backPath = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
@@ -46,6 +47,7 @@
             this.menu2Hitsound = new System.Windows.Forms.RadioButton();
             this.menu1Hitsound = new System.Windows.Forms.RadioButton();
             this.promptHitsound = new System.Windows.Forms.Label();
+            this.backHitsound = new System.Windows.Forms.Button();
             this.nextHitsound = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -58,6 +60,7 @@
             this.menu2HUD = new System.Windows.Forms.RadioButton();
             this.menu1HUD = new System.Windows.Forms.RadioButton();
             this.promptHUD = new System.Windows.Forms.Label();
+            this.backHUD = new System.Windows.Forms.Button();
             this.nextHUD = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -131,7 +134,7 @@
             this.nextHome.TabIndex = 1;
             this.nextHome.Text = "Next";
             this.nextHome.UseVisualStyleBackColor = true;
-            this.nextHome.Click += new System.EventHandler(this.nextButton_Click);
+            this.nextHome.Click += new System.EventHandler(this.nextHome_Click);
             // 
             // title
             // 
@@ -181,10 +184,11 @@
             this.nextPath.TabIndex = 1;
             this.nextPath.Text = "Next";
             this.nextPath.UseVisualStyleBackColor = true;
-            this.nextPath.Click += new System.EventHandler(this.button1_Click);
+            this.nextPath.Click += new System.EventHandler(this.next_Click);
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.backPath);
             this.panel2.Controls.Add(this.nextPath);
             this.panel2.Controls.Add(this.promptPath);
             this.panel2.Controls.Add(this.buttonPathMessage);
@@ -194,6 +198,16 @@
             this.panel2.Size = new System.Drawing.Size(640, 480);
             this.panel2.TabIndex = 3;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // backPath
+            // 
+            this.backPath.Location = new System.Drawing.Point(402, 390);
+            this.backPath.Name = "backPath";
+            this.backPath.Size = new System.Drawing.Size(87, 23);
+            this.backPath.TabIndex = 1;
+            this.backPath.Text = "Back";
+            this.backPath.UseVisualStyleBackColor = true;
+            this.backPath.Click += new System.EventHandler(this.prev_Click);
             // 
             // label1
             // 
@@ -238,13 +252,14 @@
             this.button2.TabIndex = 1;
             this.button2.Text = "Next";
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.nextButton_Click);
+            this.button2.Click += new System.EventHandler(this.nextHome_Click);
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.menu2Hitsound);
             this.panel3.Controls.Add(this.menu1Hitsound);
             this.panel3.Controls.Add(this.promptHitsound);
+            this.panel3.Controls.Add(this.backHitsound);
             this.panel3.Controls.Add(this.nextHitsound);
             this.panel3.Location = new System.Drawing.Point(1290, 0);
             this.panel3.Name = "panel3";
@@ -286,6 +301,16 @@
             this.promptHitsound.Text = "Install Quake hitsound?";
             this.promptHitsound.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
+            // backHitsound
+            // 
+            this.backHitsound.Location = new System.Drawing.Point(402, 390);
+            this.backHitsound.Name = "backHitsound";
+            this.backHitsound.Size = new System.Drawing.Size(87, 23);
+            this.backHitsound.TabIndex = 1;
+            this.backHitsound.Text = "Back";
+            this.backHitsound.UseVisualStyleBackColor = true;
+            this.backHitsound.Click += new System.EventHandler(this.prev_Click);
+            // 
             // nextHitsound
             // 
             this.nextHitsound.Location = new System.Drawing.Point(495, 390);
@@ -294,7 +319,7 @@
             this.nextHitsound.TabIndex = 1;
             this.nextHitsound.Text = "Next";
             this.nextHitsound.UseVisualStyleBackColor = true;
-            this.nextHitsound.Click += new System.EventHandler(this.button3_Click);
+            this.nextHitsound.Click += new System.EventHandler(this.next_Click);
             // 
             // panel5
             // 
@@ -325,7 +350,7 @@
             this.nextInstall.TabIndex = 1;
             this.nextInstall.Text = "Next";
             this.nextInstall.UseVisualStyleBackColor = true;
-            this.nextInstall.Click += new System.EventHandler(this.button5_Click);
+            this.nextInstall.Click += new System.EventHandler(this.next_Click);
             // 
             // promptInstall
             // 
@@ -365,13 +390,14 @@
             this.exitLast.TabIndex = 1;
             this.exitLast.Text = "Exit";
             this.exitLast.UseVisualStyleBackColor = true;
-            this.exitLast.Click += new System.EventHandler(this.button6_Click);
+            this.exitLast.Click += new System.EventHandler(this.next_Click);
             // 
             // panel4
             // 
             this.panel4.Controls.Add(this.menu2HUD);
             this.panel4.Controls.Add(this.menu1HUD);
             this.panel4.Controls.Add(this.promptHUD);
+            this.panel4.Controls.Add(this.backHUD);
             this.panel4.Controls.Add(this.nextHUD);
             this.panel4.Location = new System.Drawing.Point(0, 485);
             this.panel4.Name = "panel4";
@@ -413,6 +439,16 @@
             this.promptHUD.Text = "Install idHUD?";
             this.promptHUD.Click += new System.EventHandler(this.tf2_path_button_description_Click);
             // 
+            // backHUD
+            // 
+            this.backHUD.Location = new System.Drawing.Point(402, 390);
+            this.backHUD.Name = "backHUD";
+            this.backHUD.Size = new System.Drawing.Size(87, 23);
+            this.backHUD.TabIndex = 1;
+            this.backHUD.Text = "Back";
+            this.backHUD.UseVisualStyleBackColor = true;
+            this.backHUD.Click += new System.EventHandler(this.prev_Click);
+            // 
             // nextHUD
             // 
             this.nextHUD.Location = new System.Drawing.Point(495, 390);
@@ -421,7 +457,7 @@
             this.nextHUD.TabIndex = 1;
             this.nextHUD.Text = "Next";
             this.nextHUD.UseVisualStyleBackColor = true;
-            this.nextHUD.Click += new System.EventHandler(this.button4_Click);
+            this.nextHUD.Click += new System.EventHandler(this.next_Click);
             // 
             // Main
             // 
@@ -493,6 +529,9 @@
         private System.Windows.Forms.RadioButton menu1HUD;
         private System.Windows.Forms.Label promptHUD;
         private System.Windows.Forms.Button nextHUD;
+        private System.Windows.Forms.Button backPath;
+        private System.Windows.Forms.Button backHitsound;
+        private System.Windows.Forms.Button backHUD;
     }
 }
 
