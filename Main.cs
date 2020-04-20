@@ -13,6 +13,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.IO.Compression;
 using System.Threading;
+using System.Reflection.Metadata.Ecma335;
+using System.Security;
 
 namespace CfgInstallerPrototype {
     public partial class Main : Form {
@@ -25,9 +27,10 @@ namespace CfgInstallerPrototype {
         private readonly String autoexecSourceName = "custom-files/autoexec-alpha.cfg";
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
-        // TF-path related parameters
-        private readonly String DEFAULT_TF2_PATH = @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2";
-        //private readonly String DEFAULT_TF2_PATH = @"E:\Steam\SteamApps\common\Team Fortress 2";
+        // TF-path related parameters. You must use String.Format and specify a drive name to use these.
+        private readonly String alternateTF2Install = @"{0}Steam\SteamApps\common\Team Fortress 2\hl2.exe";
+        private readonly String defaultTF2Install =
+                                @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
         private readonly String basePath;
         private String tfPath;
 
@@ -69,7 +72,7 @@ namespace CfgInstallerPrototype {
             basePath = new FileInfo(relativeBasePath).FullName;
 
             // On startup, try to determine the path to the TF2 installation.
-            checkDefaultTF2Install();
+            searchForTF2Install();
         }
 
         /**
@@ -97,21 +100,63 @@ namespace CfgInstallerPrototype {
         }
 
         /**
-         * Tries to find a TF2 installation in most common location. 
+         * Tries to find a TF2 installation in the most common locations.
          * 
          * Returns true if the install files were found.
          */
-        private bool checkDefaultTF2Install() {
-            // Check to see if the "hl2.exe" binary is in the default location.
-            if (File.Exists(Path.Combine(DEFAULT_TF2_PATH, "hl2.exe"))) {
-                tfPath = DEFAULT_TF2_PATH;
+        private void searchForTF2Install() {
+            String hl2Path = null;
 
-                // Before leaving, enable the button on the "path" page to let the user proceed
-                nextPath.Enabled = true;
-                return true;
+            // Obtain the list of drive names on the system.
+            DriveInfo[] systemDrives;
+            try {
+                systemDrives = DriveInfo.GetDrives();
+            }
+            catch (Exception e) {
+                Debug.WriteLine("An issue occurred in trying to obtain the list of drives on the machine.");
+                Debug.Write(e.ToString());
+
+                // It should be safe to at least check the C: drive before completely bailing
+                DriveInfo[] c = new DriveInfo[1];
+                c[0] = new DriveInfo("C");
+                systemDrives = c;
             }
 
-            return false;
+            // Search each drive for common installation paths.
+            try {
+                foreach (DriveInfo drive in systemDrives) {
+                    String path1 = String.Format(defaultTF2Install, drive.Name);
+                    String path2 = String.Format(alternateTF2Install, drive.Name);
+                    Debug.WriteLine("\n\rLooking for install in: " + path1);
+                    Debug.WriteLine("Looking for install in: " + path2);
+
+                    if (File.Exists(path1)) {
+                        hl2Path = path1;
+                    }
+                    // Also try checking the alternate path. This would be used if the user chose a
+                    // separate drive from their OS to hold their TF2 install. If Steam's files were
+                    // added directly under the drive (i.e., has a path like 'E:\Steam\...'), it
+                    // will be found here.
+                    else if (File.Exists(path2)) {
+                        hl2Path = path2;
+                    }
+                }
+            }
+            catch (FormatException f) {
+                Debug.WriteLine("\n\rAn issue occurred when trying to format the name of a drive into '"
+                                + defaultTF2Install + "' or '" + alternateTF2Install + "'.");
+                Debug.WriteLine(f.ToString());
+            }
+            catch (ArgumentNullException a) {
+                Debug.WriteLine("\n\rA null pointer was found when trying to format the name of a " 
+                                + "drive. The provided drive was likely null.");
+                Debug.WriteLine(a.ToString());
+            }
+
+            if (hl2Path != null) {
+                // Strip "hl2.exe" from the path to obtain the folder path
+                setTFPath(Path.Combine(hl2Path, ".."));
+            }
         }
 
         /**
@@ -142,10 +187,8 @@ namespace CfgInstallerPrototype {
                     String fpCheck = filePath.ToLower();
                     if (!fpCheck.Contains("hl2.exe") || !fpCheck.Contains("team fortress 2")) {
                         // Refuse
-                        return;
-                    }
-                    if (!fpCheck.Contains("steamapps")) {
-                        // Display warning
+                        buttonPathMessage.ForeColor = Color.Red;
+                        buttonPathMessage.Text = "Invalid file provided.";
                         valid = false;
                     }
                 }
@@ -153,15 +196,52 @@ namespace CfgInstallerPrototype {
 
             if (valid) {
                 // Since hl2.exe is selected, point 'filePath' at the parent directory
-                filePath = Path.Combine(filePath, "..");
-                tfPath = new FileInfo(filePath).FullName;
-                nextPath.Enabled = true;
-                buttonPathMessage.Text = tfPath;
-                buttonPathMessage.Visible = true;
+                setTFPath(Path.Combine(filePath, ".."));
             }
             else {
                 nextPath.Enabled = false;
             }
+        }
+
+        /**
+         * Saves the location of the user's TF2 install. The full canonical path of 'path' is
+         * computed by this method.
+         */
+        private void setTFPath(String path) {
+            // Set tfPath to full canonical path
+            bool fail = false;
+            try {
+                tfPath = new FileInfo(path).FullName;
+            }
+            catch (PathTooLongException p) {
+                Debug.WriteLine("Tried to set the path of the TF2 install, but it was too long. The provided path was:\n\r");
+                Debug.WriteLine(path);
+                Debug.WriteLine(p.ToString());
+                fail = true;
+            }
+            catch (SecurityException s) {
+                Debug.WriteLine("Did not have permission to obtain the canonical path of '" + path + "'. Aborting.");
+                Debug.WriteLine(s.ToString());
+                fail = true;
+            }
+            catch (Exception e) {
+                if (path == null) {
+                    path = "<null>";
+                }
+                Debug.WriteLine("\n\rCould not obtain the canonical path of '" + path + "'. Aborting.");
+                Debug.WriteLine(e.ToString());
+                fail = true;
+            }
+            if (fail)
+                Environment.Exit(1);
+
+
+            // Update button info to indicate where the install files were found
+            buttonPathMessage.Text = tfPath;
+            buttonPathMessage.Visible = true;
+
+            // Allow user to proceed to next page
+            nextPath.Enabled = true;
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e) {
@@ -336,7 +416,7 @@ namespace CfgInstallerPrototype {
                 promptPath.Text = "Select the location where you installed your game, and"
                 + " find the \"hl2.exe\" file. \n\r"
                 + "This is usually in a location that looks like:\n\r"
-                + DEFAULT_TF2_PATH + "\\hl2.exe";
+                + String.Format(defaultTF2Install, "C:\\");
             }
 
             first = false;
@@ -365,7 +445,14 @@ namespace CfgInstallerPrototype {
          * Navigates to the previous page in the setup menu.
          */
         private void previousPanel() {
-            updateScreen(stack.Pop());
+            try {
+                updateScreen(stack.Pop());
+            }
+            catch (InvalidOperationException) {
+                Debug.WriteLine("Tried to move to previous screen, but an unexpected error"
+                                + " occurred. The most likely cause is that the stack was popped"
+                                + " when it was empty, but this is not expected behavior.");
+            }
         }
 
         /**
@@ -395,7 +482,7 @@ namespace CfgInstallerPrototype {
                 nextPanel = panel6;
             else if (currentPanel == panel6) {
                 // The button on the last screen exits.
-                Application.Exit();
+                Environment.Exit(1);
                 return;
             }
             else {
@@ -403,6 +490,7 @@ namespace CfgInstallerPrototype {
                 Debug.Print("SEVERE ERROR: The current panel is currently set to '" 
                             + currentPanel.Name + "', which is not defined. This is not expected"
                             + " behavior.");
+                Environment.Exit(1);
                 return;
             }
             updateScreen(nextPanel);
