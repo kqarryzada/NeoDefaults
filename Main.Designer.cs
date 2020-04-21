@@ -109,7 +109,7 @@
             // promptPath
             // 
             this.promptPath.AutoSize = true;
-            this.promptPath.Location = new System.Drawing.Point(48, 123);
+            this.promptPath.Location = new System.Drawing.Point(45, 100);
             this.promptPath.Name = "promptPath";
             this.promptPath.Size = new System.Drawing.Size(257, 15);
             this.promptPath.TabIndex = 2;
@@ -268,7 +268,7 @@
             // menu2Hitsound
             // 
             this.menu2Hitsound.AutoSize = true;
-            this.menu2Hitsound.Location = new System.Drawing.Point(49, 175);
+            this.menu2Hitsound.Location = new System.Drawing.Point(45, 151);
             this.menu2Hitsound.Name = "menu2Hitsound";
             this.menu2Hitsound.Size = new System.Drawing.Size(41, 19);
             this.menu2Hitsound.TabIndex = 3;
@@ -280,7 +280,7 @@
             // 
             this.menu1Hitsound.AutoSize = true;
             this.menu1Hitsound.Checked = true;
-            this.menu1Hitsound.Location = new System.Drawing.Point(49, 150);
+            this.menu1Hitsound.Location = new System.Drawing.Point(45, 126);
             this.menu1Hitsound.Name = "menu1Hitsound";
             this.menu1Hitsound.Size = new System.Drawing.Size(134, 19);
             this.menu1Hitsound.TabIndex = 3;
@@ -292,7 +292,7 @@
             // promptHitsound
             // 
             this.promptHitsound.AutoSize = true;
-            this.promptHitsound.Location = new System.Drawing.Point(49, 123);
+            this.promptHitsound.Location = new System.Drawing.Point(45, 100);
             this.promptHitsound.Name = "promptHitsound";
             this.promptHitsound.Size = new System.Drawing.Size(130, 15);
             this.promptHitsound.TabIndex = 2;
@@ -353,7 +353,7 @@
             // promptInstall
             // 
             this.promptInstall.AutoSize = true;
-            this.promptInstall.Location = new System.Drawing.Point(44, 98);
+            this.promptInstall.Location = new System.Drawing.Point(45, 100);
             this.promptInstall.Name = "promptInstall";
             this.promptInstall.Size = new System.Drawing.Size(131, 15);
             this.promptInstall.TabIndex = 2;
@@ -363,7 +363,7 @@
             // promptLast
             // 
             this.promptLast.AutoSize = true;
-            this.promptLast.Location = new System.Drawing.Point(49, 98);
+            this.promptLast.Location = new System.Drawing.Point(45, 100);
             this.promptLast.Name = "promptLast";
             this.promptLast.Size = new System.Drawing.Size(298, 15);
             this.promptLast.TabIndex = 2;
@@ -406,7 +406,7 @@
             // menu2HUD
             // 
             this.menu2HUD.AutoSize = true;
-            this.menu2HUD.Location = new System.Drawing.Point(49, 175);
+            this.menu2HUD.Location = new System.Drawing.Point(45, 151);
             this.menu2HUD.Name = "menu2HUD";
             this.menu2HUD.Size = new System.Drawing.Size(41, 19);
             this.menu2HUD.TabIndex = 3;
@@ -418,7 +418,7 @@
             // 
             this.menu1HUD.AutoSize = true;
             this.menu1HUD.Checked = true;
-            this.menu1HUD.Location = new System.Drawing.Point(49, 150);
+            this.menu1HUD.Location = new System.Drawing.Point(45, 126);
             this.menu1HUD.Name = "menu1HUD";
             this.menu1HUD.Size = new System.Drawing.Size(134, 19);
             this.menu1HUD.TabIndex = 3;
@@ -430,7 +430,7 @@
             // promptHUD
             // 
             this.promptHUD.AutoSize = true;
-            this.promptHUD.Location = new System.Drawing.Point(49, 123);
+            this.promptHUD.Location = new System.Drawing.Point(45, 100);
             this.promptHUD.Name = "promptHUD";
             this.promptHUD.Size = new System.Drawing.Size(81, 15);
             this.promptHUD.TabIndex = 2;
@@ -472,7 +472,7 @@
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
-            this.Text = "Project-name";
+            this.Text = "TF2 NeoDefaults Installer v1.0.0";
             this.Load += new System.EventHandler(this.Main_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

@@ -24,7 +24,7 @@ namespace CfgInstallerPrototype {
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
 
         // The autoexec file to copy 
-        private readonly String autoexecSourceName = "custom-files/autoexec-alpha.cfg";
+        private readonly String autoexecSourceName = "custom-files\autoexec-alpha.cfg";
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
         // TF-path related parameters. You must use String.Format and specify a drive name to use these.
