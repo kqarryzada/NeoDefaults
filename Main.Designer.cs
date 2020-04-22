@@ -76,9 +76,9 @@
             this.menu1Home.AccessibleName = "";
             this.menu1Home.AutoSize = true;
             this.menu1Home.Checked = true;
-            this.menu1Home.Location = new System.Drawing.Point(44, 191);
+            this.menu1Home.Location = new System.Drawing.Point(38, 166);
             this.menu1Home.Name = "menu1Home";
-            this.menu1Home.Size = new System.Drawing.Size(274, 19);
+            this.menu1Home.Size = new System.Drawing.Size(239, 17);
             this.menu1Home.TabIndex = 0;
             this.menu1Home.TabStop = true;
             this.menu1Home.Text = "Basic install— Install all recommended options.";
@@ -88,9 +88,9 @@
             // menu2Home
             // 
             this.menu2Home.AutoSize = true;
-            this.menu2Home.Location = new System.Drawing.Point(44, 216);
+            this.menu2Home.Location = new System.Drawing.Point(38, 187);
             this.menu2Home.Name = "menu2Home";
-            this.menu2Home.Size = new System.Drawing.Size(339, 19);
+            this.menu2Home.Size = new System.Drawing.Size(296, 17);
             this.menu2Home.TabIndex = 0;
             this.menu2Home.Text = "Advanced install— Customize which components to install.";
             this.menu2Home.UseVisualStyleBackColor = true;
@@ -98,9 +98,9 @@
             // 
             // buttonPath
             // 
-            this.buttonPath.Location = new System.Drawing.Point(48, 175);
+            this.buttonPath.Location = new System.Drawing.Point(41, 152);
             this.buttonPath.Name = "buttonPath";
-            this.buttonPath.Size = new System.Drawing.Size(103, 23);
+            this.buttonPath.Size = new System.Drawing.Size(88, 20);
             this.buttonPath.TabIndex = 1;
             this.buttonPath.Text = "Select Folder...";
             this.buttonPath.UseVisualStyleBackColor = true;
@@ -109,9 +109,9 @@
             // promptPath
             // 
             this.promptPath.AutoSize = true;
-            this.promptPath.Location = new System.Drawing.Point(45, 100);
+            this.promptPath.Location = new System.Drawing.Point(39, 87);
             this.promptPath.Name = "promptPath";
-            this.promptPath.Size = new System.Drawing.Size(257, 15);
+            this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
             this.promptPath.Click += new System.EventHandler(this.prompt_Click);
@@ -119,18 +119,18 @@
             // promptHome
             // 
             this.promptHome.AutoSize = true;
-            this.promptHome.Location = new System.Drawing.Point(29, 164);
+            this.promptHome.Location = new System.Drawing.Point(25, 142);
             this.promptHome.Name = "promptHome";
-            this.promptHome.Size = new System.Drawing.Size(148, 15);
+            this.promptHome.Size = new System.Drawing.Size(133, 13);
             this.promptHome.TabIndex = 2;
             this.promptHome.Text = "Select the installation type.";
             this.promptHome.Click += new System.EventHandler(this.prompt_Click);
             // 
             // nextHome
             // 
-            this.nextHome.Location = new System.Drawing.Point(495, 390);
+            this.nextHome.Location = new System.Drawing.Point(424, 338);
             this.nextHome.Name = "nextHome";
-            this.nextHome.Size = new System.Drawing.Size(87, 23);
+            this.nextHome.Size = new System.Drawing.Size(75, 20);
             this.nextHome.TabIndex = 1;
             this.nextHome.Text = "Next";
             this.nextHome.UseVisualStyleBackColor = true;
@@ -139,8 +139,8 @@
             // title
             // 
             this.title.AutoSize = true;
-            this.title.Font = new System.Drawing.Font("Courier New", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.title.Location = new System.Drawing.Point(29, 67);
+            this.title.Font = new System.Drawing.Font("Courier New", 27.75F);
+            this.title.Location = new System.Drawing.Point(25, 58);
             this.title.Name = "title";
             this.title.Size = new System.Drawing.Size(567, 39);
             this.title.TabIndex = 2;
@@ -156,9 +156,9 @@
             // 
             this.buttonPathMessage.AutoSize = true;
             this.buttonPathMessage.ForeColor = System.Drawing.Color.DimGray;
-            this.buttonPathMessage.Location = new System.Drawing.Point(157, 179);
+            this.buttonPathMessage.Location = new System.Drawing.Point(135, 155);
             this.buttonPathMessage.Name = "buttonPathMessage";
-            this.buttonPathMessage.Size = new System.Drawing.Size(78, 15);
+            this.buttonPathMessage.Size = new System.Drawing.Size(75, 13);
             this.buttonPathMessage.TabIndex = 2;
             this.buttonPathMessage.Text = "%MESSAGE%";
             this.buttonPathMessage.Visible = false;
@@ -173,15 +173,15 @@
             this.panel1.Controls.Add(this.nextHome);
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(640, 480);
+            this.panel1.Size = new System.Drawing.Size(549, 416);
             this.panel1.TabIndex = 3;
             // 
             // nextPath
             // 
             this.nextPath.Enabled = false;
-            this.nextPath.Location = new System.Drawing.Point(495, 390);
+            this.nextPath.Location = new System.Drawing.Point(424, 338);
             this.nextPath.Name = "nextPath";
-            this.nextPath.Size = new System.Drawing.Size(87, 23);
+            this.nextPath.Size = new System.Drawing.Size(75, 20);
             this.nextPath.TabIndex = 1;
             this.nextPath.Text = "Next";
             this.nextPath.UseVisualStyleBackColor = true;
@@ -194,17 +194,17 @@
             this.panel2.Controls.Add(this.promptPath);
             this.panel2.Controls.Add(this.buttonPathMessage);
             this.panel2.Controls.Add(this.buttonPath);
-            this.panel2.Location = new System.Drawing.Point(645, 0);
+            this.panel2.Location = new System.Drawing.Point(553, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(640, 480);
+            this.panel2.Size = new System.Drawing.Size(549, 416);
             this.panel2.TabIndex = 3;
             this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // backPath
             // 
-            this.backPath.Location = new System.Drawing.Point(402, 390);
+            this.backPath.Location = new System.Drawing.Point(345, 338);
             this.backPath.Name = "backPath";
-            this.backPath.Size = new System.Drawing.Size(87, 23);
+            this.backPath.Size = new System.Drawing.Size(75, 20);
             this.backPath.TabIndex = 1;
             this.backPath.Text = "Back";
             this.backPath.UseVisualStyleBackColor = true;
@@ -259,18 +259,18 @@
             this.panel3.Controls.Add(this.promptHitsound);
             this.panel3.Controls.Add(this.backHitsound);
             this.panel3.Controls.Add(this.nextHitsound);
-            this.panel3.Location = new System.Drawing.Point(1290, 0);
+            this.panel3.Location = new System.Drawing.Point(1106, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(640, 480);
+            this.panel3.Size = new System.Drawing.Size(549, 416);
             this.panel3.TabIndex = 3;
             this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // menu2Hitsound
             // 
             this.menu2Hitsound.AutoSize = true;
-            this.menu2Hitsound.Location = new System.Drawing.Point(45, 151);
+            this.menu2Hitsound.Location = new System.Drawing.Point(39, 131);
             this.menu2Hitsound.Name = "menu2Hitsound";
-            this.menu2Hitsound.Size = new System.Drawing.Size(41, 19);
+            this.menu2Hitsound.Size = new System.Drawing.Size(39, 17);
             this.menu2Hitsound.TabIndex = 3;
             this.menu2Hitsound.Text = "No";
             this.menu2Hitsound.UseVisualStyleBackColor = true;
@@ -280,9 +280,9 @@
             // 
             this.menu1Hitsound.AutoSize = true;
             this.menu1Hitsound.Checked = true;
-            this.menu1Hitsound.Location = new System.Drawing.Point(45, 126);
+            this.menu1Hitsound.Location = new System.Drawing.Point(39, 109);
             this.menu1Hitsound.Name = "menu1Hitsound";
-            this.menu1Hitsound.Size = new System.Drawing.Size(134, 19);
+            this.menu1Hitsound.Size = new System.Drawing.Size(124, 17);
             this.menu1Hitsound.TabIndex = 3;
             this.menu1Hitsound.TabStop = true;
             this.menu1Hitsound.Text = "Yes (Recommended)";
@@ -292,18 +292,18 @@
             // promptHitsound
             // 
             this.promptHitsound.AutoSize = true;
-            this.promptHitsound.Location = new System.Drawing.Point(45, 100);
+            this.promptHitsound.Location = new System.Drawing.Point(39, 87);
             this.promptHitsound.Name = "promptHitsound";
-            this.promptHitsound.Size = new System.Drawing.Size(130, 15);
+            this.promptHitsound.Size = new System.Drawing.Size(118, 13);
             this.promptHitsound.TabIndex = 2;
             this.promptHitsound.Text = "Install Quake hitsound?";
             this.promptHitsound.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHitsound
             // 
-            this.backHitsound.Location = new System.Drawing.Point(402, 390);
+            this.backHitsound.Location = new System.Drawing.Point(345, 338);
             this.backHitsound.Name = "backHitsound";
-            this.backHitsound.Size = new System.Drawing.Size(87, 23);
+            this.backHitsound.Size = new System.Drawing.Size(75, 20);
             this.backHitsound.TabIndex = 1;
             this.backHitsound.Text = "Back";
             this.backHitsound.UseVisualStyleBackColor = true;
@@ -311,9 +311,9 @@
             // 
             // nextHitsound
             // 
-            this.nextHitsound.Location = new System.Drawing.Point(495, 390);
+            this.nextHitsound.Location = new System.Drawing.Point(424, 338);
             this.nextHitsound.Name = "nextHitsound";
-            this.nextHitsound.Size = new System.Drawing.Size(87, 23);
+            this.nextHitsound.Size = new System.Drawing.Size(75, 20);
             this.nextHitsound.TabIndex = 1;
             this.nextHitsound.Text = "Next";
             this.nextHitsound.UseVisualStyleBackColor = true;
@@ -324,17 +324,17 @@
             this.panel5.Controls.Add(this.progressBar);
             this.panel5.Controls.Add(this.nextInstall);
             this.panel5.Controls.Add(this.promptInstall);
-            this.panel5.Location = new System.Drawing.Point(645, 485);
+            this.panel5.Location = new System.Drawing.Point(553, 420);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(640, 480);
+            this.panel5.Size = new System.Drawing.Size(549, 416);
             this.panel5.TabIndex = 3;
             this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(44, 126);
+            this.progressBar.Location = new System.Drawing.Point(38, 109);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(538, 23);
+            this.progressBar.Size = new System.Drawing.Size(461, 20);
             this.progressBar.TabIndex = 3;
             this.progressBar.Visible = false;
             this.progressBar.Click += new System.EventHandler(this.progressBar_Click);
@@ -342,9 +342,9 @@
             // nextInstall
             // 
             this.nextInstall.Enabled = false;
-            this.nextInstall.Location = new System.Drawing.Point(495, 390);
+            this.nextInstall.Location = new System.Drawing.Point(424, 338);
             this.nextInstall.Name = "nextInstall";
-            this.nextInstall.Size = new System.Drawing.Size(87, 23);
+            this.nextInstall.Size = new System.Drawing.Size(75, 20);
             this.nextInstall.TabIndex = 1;
             this.nextInstall.Text = "Next";
             this.nextInstall.UseVisualStyleBackColor = true;
@@ -353,9 +353,9 @@
             // promptInstall
             // 
             this.promptInstall.AutoSize = true;
-            this.promptInstall.Location = new System.Drawing.Point(45, 100);
+            this.promptInstall.Location = new System.Drawing.Point(39, 87);
             this.promptInstall.Name = "promptInstall";
-            this.promptInstall.Size = new System.Drawing.Size(131, 15);
+            this.promptInstall.Size = new System.Drawing.Size(115, 13);
             this.promptInstall.TabIndex = 2;
             this.promptInstall.Text = "Beginning installation...";
             this.promptInstall.Click += new System.EventHandler(this.prompt_Click);
@@ -363,9 +363,9 @@
             // promptLast
             // 
             this.promptLast.AutoSize = true;
-            this.promptLast.Location = new System.Drawing.Point(45, 100);
+            this.promptLast.Location = new System.Drawing.Point(39, 87);
             this.promptLast.Name = "promptLast";
-            this.promptLast.Size = new System.Drawing.Size(298, 15);
+            this.promptLast.Size = new System.Drawing.Size(265, 13);
             this.promptLast.TabIndex = 2;
             this.promptLast.Text = "Congrations! You done it. All files successfully installed.";
             this.promptLast.Click += new System.EventHandler(this.prompt_Click);
@@ -374,17 +374,17 @@
             // 
             this.panel6.Controls.Add(this.exitLast);
             this.panel6.Controls.Add(this.promptLast);
-            this.panel6.Location = new System.Drawing.Point(1290, 485);
+            this.panel6.Location = new System.Drawing.Point(1106, 420);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(640, 480);
+            this.panel6.Size = new System.Drawing.Size(549, 416);
             this.panel6.TabIndex = 3;
             this.panel6.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // exitLast
             // 
-            this.exitLast.Location = new System.Drawing.Point(495, 390);
+            this.exitLast.Location = new System.Drawing.Point(424, 338);
             this.exitLast.Name = "exitLast";
-            this.exitLast.Size = new System.Drawing.Size(87, 23);
+            this.exitLast.Size = new System.Drawing.Size(75, 20);
             this.exitLast.TabIndex = 1;
             this.exitLast.Text = "Exit";
             this.exitLast.UseVisualStyleBackColor = true;
@@ -397,18 +397,18 @@
             this.panel4.Controls.Add(this.promptHUD);
             this.panel4.Controls.Add(this.backHUD);
             this.panel4.Controls.Add(this.nextHUD);
-            this.panel4.Location = new System.Drawing.Point(0, 485);
+            this.panel4.Location = new System.Drawing.Point(0, 420);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(640, 480);
+            this.panel4.Size = new System.Drawing.Size(549, 416);
             this.panel4.TabIndex = 3;
             this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // menu2HUD
             // 
             this.menu2HUD.AutoSize = true;
-            this.menu2HUD.Location = new System.Drawing.Point(45, 151);
+            this.menu2HUD.Location = new System.Drawing.Point(39, 131);
             this.menu2HUD.Name = "menu2HUD";
-            this.menu2HUD.Size = new System.Drawing.Size(41, 19);
+            this.menu2HUD.Size = new System.Drawing.Size(39, 17);
             this.menu2HUD.TabIndex = 3;
             this.menu2HUD.Text = "No";
             this.menu2HUD.UseVisualStyleBackColor = true;
@@ -418,9 +418,9 @@
             // 
             this.menu1HUD.AutoSize = true;
             this.menu1HUD.Checked = true;
-            this.menu1HUD.Location = new System.Drawing.Point(45, 126);
+            this.menu1HUD.Location = new System.Drawing.Point(39, 109);
             this.menu1HUD.Name = "menu1HUD";
-            this.menu1HUD.Size = new System.Drawing.Size(134, 19);
+            this.menu1HUD.Size = new System.Drawing.Size(124, 17);
             this.menu1HUD.TabIndex = 3;
             this.menu1HUD.TabStop = true;
             this.menu1HUD.Text = "Yes (Recommended)";
@@ -430,18 +430,18 @@
             // promptHUD
             // 
             this.promptHUD.AutoSize = true;
-            this.promptHUD.Location = new System.Drawing.Point(45, 100);
+            this.promptHUD.Location = new System.Drawing.Point(39, 87);
             this.promptHUD.Name = "promptHUD";
-            this.promptHUD.Size = new System.Drawing.Size(81, 15);
+            this.promptHUD.Size = new System.Drawing.Size(75, 13);
             this.promptHUD.TabIndex = 2;
             this.promptHUD.Text = "Install idHUD?";
             this.promptHUD.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHUD
             // 
-            this.backHUD.Location = new System.Drawing.Point(402, 390);
+            this.backHUD.Location = new System.Drawing.Point(345, 338);
             this.backHUD.Name = "backHUD";
-            this.backHUD.Size = new System.Drawing.Size(87, 23);
+            this.backHUD.Size = new System.Drawing.Size(75, 20);
             this.backHUD.TabIndex = 1;
             this.backHUD.Text = "Back";
             this.backHUD.UseVisualStyleBackColor = true;
@@ -449,9 +449,9 @@
             // 
             // nextHUD
             // 
-            this.nextHUD.Location = new System.Drawing.Point(495, 390);
+            this.nextHUD.Location = new System.Drawing.Point(424, 338);
             this.nextHUD.Name = "nextHUD";
-            this.nextHUD.Size = new System.Drawing.Size(87, 23);
+            this.nextHUD.Size = new System.Drawing.Size(75, 20);
             this.nextHUD.TabIndex = 1;
             this.nextHUD.Text = "Next";
             this.nextHUD.UseVisualStyleBackColor = true;
@@ -459,11 +459,11 @@
             // 
             // Main
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Menu;
-            this.ClientSize = new System.Drawing.Size(1955, 1046);
+            this.ClientSize = new System.Drawing.Size(1676, 907);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel4);

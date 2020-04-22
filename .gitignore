@@ -2,3 +2,8 @@
 [Oo]bj/
 
 Properties/
+.vs/
+*.user
+
+# For now, don't include plugins in repo
+custom-files/
