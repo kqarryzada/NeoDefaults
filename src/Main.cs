@@ -63,7 +63,7 @@ namespace CfgInstallerPrototype {
 
             // When developing, the base filepath is four parent directories above the
             // executable. When the .exe is packaged, it's just the current parent directory.
-            String parentPath = (DEVELOP_MODE) ? @"..\.." : @"..";
+            String parentPath = (DEVELOP_MODE) ? @"..\.." : @".";
             
             String relativeBasePath = AppDomain.CurrentDomain.BaseDirectory;
             relativeBasePath = Path.Combine(relativeBasePath, parentPath);
@@ -157,7 +157,7 @@ namespace CfgInstallerPrototype {
 
             if (hl2Path != null) {
                 // Strip "hl2.exe" from the path to obtain the folder path
-                setTFPath(Path.Combine(hl2Path, ".."));
+                setTFPath(Path.GetDirectoryName(hl2Path));
             }
         }
 
@@ -198,7 +198,7 @@ namespace CfgInstallerPrototype {
 
             if (valid) {
                 // Since hl2.exe is selected, point 'filePath' at the parent directory
-                setTFPath(Path.Combine(filePath, ".."));
+                setTFPath(Path.GetDirectoryName(filePath));
             }
             else {
                 nextPath.Enabled = false; 
@@ -213,7 +213,7 @@ namespace CfgInstallerPrototype {
             // Set tfPath to full canonical path
             bool fail = false;
             try {
-                tfPath = new FileInfo(path).FullName;
+                tfPath = Path.GetFullPath(path);
             }
             catch (PathTooLongException p) {
                 Debug.WriteLine("Tried to set the path of the TF2 install, but it was too long. The provided path was:\n\r");
