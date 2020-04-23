@@ -63,7 +63,7 @@ namespace CfgInstallerPrototype {
 
             // When developing, the base filepath is four parent directories above the
             // executable. When the .exe is packaged, it's just the current parent directory.
-            String parentPath = (DEVELOP_MODE) ? @"..\..\..\.." : @"..";
+            String parentPath = (DEVELOP_MODE) ? @"..\.." : @"..";
             
             String relativeBasePath = AppDomain.CurrentDomain.BaseDirectory;
             relativeBasePath = Path.Combine(relativeBasePath, parentPath);
@@ -106,7 +106,7 @@ namespace CfgInstallerPrototype {
 
             // Obtain the list of drive names on the system.
             DriveInfo[] systemDrives = null;
-            //await Task.Run(() => {
+            await Task.Run(() => {
                 try {
                     systemDrives = DriveInfo.GetDrives();
                 }
@@ -119,7 +119,7 @@ namespace CfgInstallerPrototype {
                     c[0] = new DriveInfo("C");
                     systemDrives = c;
                 }
-            //});
+            });
             // Will hold the location to a TF2 install, if not null.
             String hl2Path = null;
 
@@ -127,7 +127,7 @@ namespace CfgInstallerPrototype {
             String path = null;
 
             // Search each common installation path for files under all drives on the system.
-            //await Task.Run(() => {
+            await Task.Run(() => {
                 try {
                     foreach (DriveInfo drive in systemDrives) {
                         Debug.WriteLine("");
@@ -153,7 +153,7 @@ namespace CfgInstallerPrototype {
                                     + "drive. The provided drive was likely null.");
                     Debug.WriteLine(a.ToString());
                 }
-            //});
+            });
 
             if (hl2Path != null) {
                 // Strip "hl2.exe" from the path to obtain the folder path
@@ -299,6 +299,7 @@ namespace CfgInstallerPrototype {
                 catch (IOException ioe) {
                     Debug.Print("A problem occurred when trying to create '" + destFile +"' from '" + sourceFile + "'.");
                     Debug.Print(ioe.ToString());
+                    Environment.Exit(1);
                 }
             }
         }
@@ -482,7 +483,7 @@ namespace CfgInstallerPrototype {
                 nextPanel = panel6;
             else if (currentPanel == panel6) {
                 // The button on the last screen exits.
-                Environment.Exit(1);
+                Environment.Exit(0);
                 return;
             }
             else {
