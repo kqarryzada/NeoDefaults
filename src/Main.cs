@@ -19,13 +19,16 @@ namespace CfgInstallerPrototype {
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
 
         // The autoexec file to copy 
-        private readonly String autoexecSourceName = "custom-files\autoexec-alpha.cfg";
+        private readonly String autoexecSourceName = @"custom-files\autoexec-alpha.cfg";
         private readonly String autoexecDestName = "autoexec-TEST.cfg";
 
         // TF-path related parameters. You must use String.Format and specify a drive name to use these.
-        private readonly String alternateTF2Install = @"{0}Steam\SteamApps\common\Team Fortress 2\hl2.exe";
-        private readonly String defaultTF2Install =
-                                @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
+        private readonly String[] defaultInstallLocations = {
+            @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe",
+            @"{0}Steam\SteamApps\common\Team Fortress 2\hl2.exe",
+            @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\hl2.exe",
+        };
+
         private readonly String basePath;
         private String tfPath;
 
@@ -99,54 +102,58 @@ namespace CfgInstallerPrototype {
          * 
          * Returns true if the install files were found.
          */
-        private void searchForTF2Install() {
-            String hl2Path = null;
+        private async void searchForTF2Install() {
 
             // Obtain the list of drive names on the system.
-            DriveInfo[] systemDrives;
-            try {
-                systemDrives = DriveInfo.GetDrives();
-            }
-            catch (Exception e) {
-                Debug.WriteLine("An issue occurred in trying to obtain the list of drives on the machine.");
-                Debug.Write(e.ToString());
+            DriveInfo[] systemDrives = null;
+            //await Task.Run(() => {
+                try {
+                    systemDrives = DriveInfo.GetDrives();
+                }
+                catch (Exception e) {
+                    Debug.WriteLine("An issue occurred in trying to obtain the list of drives on the machine.");
+                    Debug.Write(e.ToString());
 
-                // It should be safe to at least check the C: drive before completely bailing
-                DriveInfo[] c = new DriveInfo[1];
-                c[0] = new DriveInfo("C");
-                systemDrives = c;
-            }
+                    // It should be safe to at least check the C: drive before completely bailing
+                    DriveInfo[] c = new DriveInfo[1];
+                    c[0] = new DriveInfo("C");
+                    systemDrives = c;
+                }
+            //});
+            // Will hold the location to a TF2 install, if not null.
+            String hl2Path = null;
 
-            // Search each drive for common installation paths.
-            try {
-                foreach (DriveInfo drive in systemDrives) {
-                    String path1 = String.Format(defaultTF2Install, drive.Name);
-                    String path2 = String.Format(alternateTF2Install, drive.Name);
-                    Debug.WriteLine("\n\rLooking for install in: " + path1);
-                    Debug.WriteLine("Looking for install in: " + path2);
+            // Placeholder for paths being checked. Allocated here for use by debug messages.
+            String path = null;
 
-                    if (File.Exists(path1)) {
-                        hl2Path = path1;
-                    }
-                    // Also try checking the alternate path. This would be used if the user chose a
-                    // separate drive from their OS to hold their TF2 install. If Steam's files were
-                    // added directly under the drive (i.e., has a path like 'E:\Steam\...'), it
-                    // will be found here.
-                    else if (File.Exists(path2)) {
-                        hl2Path = path2;
+            // Search each common installation path for files under all drives on the system.
+            //await Task.Run(() => {
+                try {
+                    foreach (DriveInfo drive in systemDrives) {
+                        Debug.WriteLine("");
+                        foreach (String _path in defaultInstallLocations) {
+                            path = String.Format(_path, drive.Name);
+
+                            Debug.Print("Looking for install in: " + path);
+                            if (File.Exists(path)) {
+                                hl2Path = path;
+                                Debug.Print("\n\rFound install at: " + path);
+                            }
+                        }
                     }
                 }
-            }
-            catch (FormatException f) {
-                Debug.WriteLine("\n\rAn issue occurred when trying to format the name of a drive into '"
-                                + defaultTF2Install + "' or '" + alternateTF2Install + "'.");
-                Debug.WriteLine(f.ToString());
-            }
-            catch (ArgumentNullException a) {
-                Debug.WriteLine("\n\rA null pointer was found when trying to format the name of a " 
-                                + "drive. The provided drive was likely null.");
-                Debug.WriteLine(a.ToString());
-            }
+                catch (FormatException f) {
+                    path = (path == null) ? "<null>" : path;
+                    Debug.WriteLine("\n\rAn issue occurred when trying to format the name of a drive"
+                                    + "into '" + path + "'.");
+                    Debug.WriteLine(f.ToString());
+                }
+                catch (ArgumentNullException a) {
+                    Debug.WriteLine("\n\rA null pointer was found when trying to format the name of a "
+                                    + "drive. The provided drive was likely null.");
+                    Debug.WriteLine(a.ToString());
+                }
+            //});
 
             if (hl2Path != null) {
                 // Strip "hl2.exe" from the path to obtain the folder path
@@ -170,7 +177,7 @@ namespace CfgInstallerPrototype {
             bool valid = true;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog()) {
-                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.InitialDirectory = @"C:\";
                 openFileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 1;
 
@@ -194,7 +201,7 @@ namespace CfgInstallerPrototype {
                 setTFPath(Path.Combine(filePath, ".."));
             }
             else {
-                nextPath.Enabled = false;
+                nextPath.Enabled = false; 
             }
         }
 
@@ -220,9 +227,7 @@ namespace CfgInstallerPrototype {
                 fail = true;
             }
             catch (Exception e) {
-                if (path == null) {
-                    path = "<null>";
-                }
+                path = (path == null) ? "<null>" : path;
                 Debug.WriteLine("\n\rCould not obtain the canonical path of '" + path + "'. Aborting.");
                 Debug.WriteLine(e.ToString());
                 fail = true;
@@ -248,7 +253,7 @@ namespace CfgInstallerPrototype {
             copyFile(sourceFile, destFile, false);
         }
 
-        private readonly String backupFolder = @"";
+        // private readonly String backupFolder = @"";
 
         /**
          * Copies a 'sourceFile' to a destination. The filepath of the destination is given by 
@@ -411,7 +416,7 @@ namespace CfgInstallerPrototype {
                 promptPath.Text = "Select the location where you installed your game, and"
                 + " find the \"hl2.exe\" file. \n\r"
                 + "This is usually in a location that looks like:\n\r"
-                + String.Format(defaultTF2Install, "C:\\");
+                + String.Format(defaultInstallLocations[0], "C:\\");
             }
 
             first = false;
