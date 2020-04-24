@@ -1,4 +1,4 @@
-﻿namespace CfgInstallerPrototype {
+﻿namespace NeoDefaults_Installer{
     partial class Main {
         /// <summary>
         ///  Required designer variable.

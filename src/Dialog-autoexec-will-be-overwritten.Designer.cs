@@ -1,4 +1,4 @@
-﻿namespace CfgInstallerPrototype {
+﻿namespace NeoDefaults_Installer { 
     partial class Dialog_autoexec_will_be_overwritten {
         /// <summary>
         /// Required designer variable.
