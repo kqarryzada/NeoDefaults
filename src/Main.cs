@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -95,6 +93,23 @@ namespace NeoDefaults_Installer {
         }
 
         /**
+         * Writes information about the program state to the log file.
+         */
+        private void LogStatus() {
+            List<String> msg = new List<String>();
+            msg.Add("");
+            msg.Add("Status of the program:");
+            msg.Add("Develop mode is: " + DEVELOP_MODE);
+            msg.Add("Basic install flag is: " + isBasicInstallEnabled);
+            msg.Add("HUD install is: " + installHUD);
+            msg.Add("Hitsound install is: " + installHitsound);
+            msg.Add("The TF Path is: " + utilities.tfPath);
+            msg.Add("");
+
+            log.Write(msg.ToArray());
+        }
+
+        /**
          * Sets all the necessary parameters to initialize the progress bar on the UI.
          */
         private void InitializeProgressbar() {
@@ -117,6 +132,9 @@ namespace NeoDefaults_Installer {
          * installation to complete.
          */
         private async void InstallFiles() {
+            // Report the state of program to the log file before the install begins.
+            LogStatus();
+
             // Initialize before starting the installation
             InitializeProgressbar();
 
@@ -185,7 +203,7 @@ namespace NeoDefaults_Installer {
                 UpdateScreen(stack.Pop());
             }
             catch (InvalidOperationException) {
-                Debug.WriteLine("Tried to move to previous screen, but an unexpected error"
+                log.Write("Tried to move to previous screen, but an unexpected error"
                                 + " occurred. The most likely cause is that the stack was popped"
                                 + " when it was empty, but this is not expected behavior.");
             }
@@ -224,9 +242,9 @@ namespace NeoDefaults_Installer {
             else {
                 String panelName = (currentPanel == null) ? "<null>" : currentPanel.Name;
                 // It should not be possible to get an unknown panel onto the stack.
-                Debug.Print("SEVERE ERROR: The current panel is currently set to '" 
-                            + panelName + "', which is not defined. This is not expected"
-                            + " behavior.");
+                log.Write("SEVERE ERROR: The current panel is currently set to '" 
+                          + panelName + "', which is not defined.", 
+                          "This is not expected behavior.");
                 Environment.Exit(1);
                 return;
             }

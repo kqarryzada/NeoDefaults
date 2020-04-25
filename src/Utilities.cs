@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Security;
@@ -34,6 +33,8 @@ namespace NeoDefaults_Installer {
         private readonly String autoexecDestName;
 
         private static readonly Utilities singleton = new Utilities();
+
+        private Logger log = Logger.GetInstance();
 
         private Utilities() {
             // When developing, the base filepath is two parent directories above the
@@ -71,8 +72,8 @@ namespace NeoDefaults_Installer {
                     systemDrives = DriveInfo.GetDrives();
                 }
                 catch (Exception e) {
-                    Debug.WriteLine("An issue occurred in trying to obtain the list of drives on the machine.");
-                    Debug.Write(e.ToString());
+                    log.WriteErr("An issue occurred in trying to obtain the list of drives on the machine.", 
+                                    e.ToString());
 
                     // It should be safe to at least check the C: drive before completely bailing
                     DriveInfo[] c = new DriveInfo[1];
@@ -90,29 +91,35 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 try {
                     foreach (DriveInfo drive in systemDrives) {
-                        Debug.WriteLine("");
+                        log.Write();
                         foreach (String _path in defaultInstallLocations) {
                             path = String.Format(_path, drive.Name);
 
-                            Debug.Print("Looking for install in: " + path);
+                            log.Write("Checking if the path exists: " + path);
                             if (File.Exists(path)) {
                                 hl2Path = path;
-                                Debug.Print("\n\rFound install at: " + path);
+                                log.Write();
+                                log.Write("Found install at: " + path);
+
+                                // It's a nested loop. Stop being judgemental.
+                                goto EndOfLoop;
                             }
                         }
                     }
                 }
                 catch (FormatException f) {
                     path = (path == null) ? "<null>" : path;
-                    Debug.WriteLine("\n\rAn issue occurred when trying to format the name of a drive"
-                                    + "into '" + path + "'.");
-                    Debug.WriteLine(f.ToString());
+                    log.WriteErr("An issue occurred when trying to format the name of a drive"
+                                 + " into '" + path + "'.",
+                                 f.ToString());
                 }
                 catch (ArgumentNullException a) {
-                    Debug.WriteLine("\n\rA null pointer was found when trying to format the name of a "
-                                    + "drive. The provided drive was likely null.");
-                    Debug.WriteLine(a.ToString());
+                    log.WriteErr("A null pointer was found when trying to format the name of a"
+                                 + " drive. The provided drive was likely null.",
+                                 a.ToString());
                 }
+
+            EndOfLoop:;
             });
 
             if (hl2Path != null) {
@@ -125,26 +132,33 @@ namespace NeoDefaults_Installer {
          * Returns the canonicalized filepath for 'path'.
          */
         public String CanonicalizePath(String path) {
+            log.Write("Attempting to canonicalize the path of: " + path);
             String testPath = null;
 
             try {
                 testPath = Path.GetFullPath(path);
             }
             catch (PathTooLongException p) {
-                Debug.WriteLine("Tried to set the path of the TF2 install, but it was too long. The provided path was:\n\r");
-                Debug.WriteLine(path);
-                Debug.WriteLine(p.ToString());
+                log.WriteErr("Tried to set the path of the TF2 install, but it was too long."
+                             + " The provided path was:\n\r",
+                             path,
+                             p.ToString());
             }
             catch (SecurityException s) {
-                Debug.WriteLine("Did not have permission to obtain the canonical path of '" + path + "'. Aborting.");
-                Debug.WriteLine(s.ToString());
+                log.WriteErr("Did not have permission to obtain the canonical path of '" + path
+                             + "'. Aborting.",
+                             s.ToString());
             }
             catch (Exception e) {
                 path = (path == null) ? "<null>" : path;
-                Debug.WriteLine("\n\rCould not obtain the canonical path of '" + path + "'. Aborting.");
-                Debug.WriteLine(e.ToString());
+                log.WriteErr("Could not obtain the canonical path of '" + path + "'. Aborting.",
+                            e.ToString());
             }
 
+            if (testPath != null) {
+                log.Write("Path was found to be: " + testPath);
+                log.Write();
+            }
             return testPath;
         }
 
@@ -166,7 +180,7 @@ namespace NeoDefaults_Installer {
             if (!overwrite && File.Exists(destFile)) {
                 // Form dlg1 = new Form();
                 // dlg1.ShowDialog();
-                Debug.Print("The destination file '" + destFile + "' already exists.");
+                log.Write("The destination file '" + destFile + "' already exists.");
 
                 // pseudo-code:
                 // switch (response) {
@@ -194,8 +208,9 @@ namespace NeoDefaults_Installer {
                     Thread.Sleep(1000);
                 }
                 catch (IOException ioe) {
-                    Debug.Print("A problem occurred when trying to create '" + destFile + "' from '" + sourceFile + "'.");
-                    Debug.Print(ioe.ToString());
+                    String msg = String.Format("A problem occurred when trying to create '{0}' from '{1}'.",
+                                                    destFile, sourceFile);
+                    log.WriteErr(msg, ioe.ToString());
                     // Environment.Exit(1);
                 }
             }
@@ -212,8 +227,10 @@ namespace NeoDefaults_Installer {
                 ZipFile.ExtractToDirectory(zipFilepath, destinationFolder);
             }
             catch (IOException) {
-                Debug.Print("An error occurred when trying to install '" + fileName + "' to '"
-                            + destinationFolder + "'. Do you already have this installed?");
+                String msg = String.Format("An error occurred when trying to install '{0}' to '{1}'"
+                                           + ". Do you already have this installed?", fileName, destinationFolder);
+                // TODO: Display this message to the user
+                log.Write(msg);
             }
         }
 
@@ -221,10 +238,14 @@ namespace NeoDefaults_Installer {
          * Installs idHUD in the custom/ directory.
          */
         public async Task InstallHUD() {
-            String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
-            String destination = Path.Combine(tfPath, @"tf\custom");
             await Task.Run(() => {
+                String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
+                String destination = Path.Combine(tfPath, @"tf\custom");
+                var logMsg = String.Format("Installing HUD from '{0}' to '{1}'.", zipFilepath, destination);
+                log.Write(logMsg);
+
                 ExtractZip(zipFilepath, destination, "Improved Default HUD");
+                log.Write("HUD installation complete.");
             });
         }
 
@@ -240,8 +261,13 @@ namespace NeoDefaults_Installer {
                 // Copy each file over to the windows fonts directory to install them.
                 foreach (string font in Directory.GetFiles(fontsPath)) {
                     String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
+                    var logMsg = String.Format("Installing '{0}' font to '{1}'.", fontsPath, destFile);
+                    log.Write(logMsg);
+
                     CopyFile(font, destFile);
                 }
+
+                log.Write("Font installation complete.");
             });
         }
 
@@ -252,7 +278,11 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
                 String destination = Path.Combine(tfPath, @"tf\custom");
+                var logMsg = String.Format("Installing hitsound from '{0}' to '{1}'.", hitsoundZip, destination);
+                log.Write(logMsg);
+
                 ExtractZip(hitsoundZip, destination, "Custom Quake hitsound");
+                log.Write("Hitsound installation complete.");
             });
         }
 
@@ -263,7 +293,11 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 String sourceAutoexec = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
                 String destAutoexec = Path.Combine(tfPath, @"tf\cfg\", autoexecDestName);
+                var logMsg = String.Format("Installing autoexec from '{0}' to '{1}'.", sourceAutoexec, destAutoexec);
+                log.Write(logMsg);
+
                 CopyFile(sourceAutoexec, destAutoexec);
+                log.Write("autoexec installation complete.");
             });
         }
     }
