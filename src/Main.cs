@@ -37,20 +37,20 @@ namespace NeoDefaults_Installer {
         // Stores useful utility methods
         Utilities utilities;
 
+        // Logfile containing useful information on what the program has been doing
+        Logger log;
+
 
         public Main() {
             InitializeComponent();
             utilities = Utilities.GetInstance();
+            log = Logger.GetInstance();
 
             // Set the current panel to the home panel, and restrict the window size to hide
             // other panels
             currentPanel = panel1;
             this.Size = DEFAULT_WINDOW_SIZE;
             this.MaximizeBox = false;
-
-            // When developing, the base filepath is two parent directories above the
-            // executable.
-            String parentPath = (DEVELOP_MODE) ? @"..\.." : @".";
         }
 
         /**
