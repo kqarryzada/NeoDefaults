@@ -53,17 +53,17 @@ namespace NeoDefaults_Installer {
             basePath = new FileInfo(relativeBasePath).FullName;
 
             // On startup, try to determine the path to the TF2 installation.
-            searchForTF2Install();
+            SearchForTF2Install();
         }
 
-        public static Utilities getInstance() {
+        public static Utilities GetInstance() {
             return singleton;
         }
 
         /**
          * Tries to find a TF2 installation in the most common locations.
          */
-        private async void searchForTF2Install() {
+        private async void SearchForTF2Install() {
             // Obtain the list of drive names on the system.
             DriveInfo[] systemDrives = null;
             await Task.Run(() => {
@@ -117,14 +117,14 @@ namespace NeoDefaults_Installer {
 
             if (hl2Path != null) {
                 // Strip "hl2.exe" from the path to obtain the folder path
-                tfPath = canonicalizePath(Path.GetDirectoryName(hl2Path));
+                tfPath = CanonicalizePath(Path.GetDirectoryName(hl2Path));
             }
         }
 
         /**
          * Returns the canonicalized filepath for 'path'.
          */
-        public String canonicalizePath(String path) {
+        public String CanonicalizePath(String path) {
             String testPath = null;
 
             try {
@@ -148,8 +148,8 @@ namespace NeoDefaults_Installer {
             return testPath;
         }
 
-        private void copyFile(String sourceFile, String destFile) {
-            copyFile(sourceFile, destFile, false);
+        private void CopyFile(String sourceFile, String destFile) {
+            CopyFile(sourceFile, destFile, false);
         }
 
         /**
@@ -158,7 +158,7 @@ namespace NeoDefaults_Installer {
          * operation to be executed at once). This method will give a few attempts at copying the file
          * over before reporting an issue.
          */
-        private void copyFile(String sourceFile, String destFile, bool overwrite) {
+        private void CopyFile(String sourceFile, String destFile, bool overwrite) {
             int NUM_RETRIES = 3;
 
             // If 'destFile' already exists before the copy process, notify the user and ask if they
@@ -207,7 +207,7 @@ namespace NeoDefaults_Installer {
          * 'fileName' is a given nickname for the resulting zip file, and is only used iin the
          * error message if an issue occurs.
          */
-        private void extractZip(String zipFilepath, String destinationFolder, String fileName) {
+        private void ExtractZip(String zipFilepath, String destinationFolder, String fileName) {
             try {
                 ZipFile.ExtractToDirectory(zipFilepath, destinationFolder);
             }
@@ -220,11 +220,11 @@ namespace NeoDefaults_Installer {
         /**
          * Installs idHUD in the custom/ directory.
          */
-        public async Task installHUD() {
+        public async Task InstallHUD() {
             String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
             String destination = Path.Combine(tfPath, @"tf\custom");
             await Task.Run(() => {
-                extractZip(zipFilepath, destination, "Improved Default HUD");
+                ExtractZip(zipFilepath, destination, "Improved Default HUD");
             });
         }
 
@@ -232,7 +232,7 @@ namespace NeoDefaults_Installer {
          * In order for idhud to work properly, some fonts need to be installed, which are provided
          * in idhud's zip file. This method installs the fonts on the user's machine.
          */
-        public async Task installHUDFonts() {
+        public async Task InstallHUDFonts() {
             await Task.Run(() => {
                 String fontsPath = Path.Combine(tfPath, @"tf\custom\idhud-master\resource\fonts");
                 String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
@@ -240,7 +240,7 @@ namespace NeoDefaults_Installer {
                 // Copy each file over to the windows fonts directory to install them.
                 foreach (string font in Directory.GetFiles(fontsPath)) {
                     String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
-                    copyFile(font, destFile);
+                    CopyFile(font, destFile);
                 }
             });
         }
@@ -248,22 +248,22 @@ namespace NeoDefaults_Installer {
         /**
          * Installs the custom hitsound.
          */
-        public async Task installHitsound() {
+        public async Task InstallHitsound() {
             await Task.Run(() => {
                 String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
                 String destination = Path.Combine(tfPath, @"tf\custom");
-                extractZip(hitsoundZip, destination, "Custom Quake hitsound");
+                ExtractZip(hitsoundZip, destination, "Custom Quake hitsound");
             });
         }
 
         /**
          * Installs autoexec.cfg.
          */
-        public async Task installConfig() {
+        public async Task InstallConfig() {
             await Task.Run(() => {
                 String sourceAutoexec = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
                 String destAutoexec = Path.Combine(tfPath, @"tf\cfg\", autoexecDestName);
-                copyFile(sourceAutoexec, destAutoexec);
+                CopyFile(sourceAutoexec, destAutoexec);
             });
         }
     }

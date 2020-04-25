@@ -134,7 +134,7 @@
             this.nextHome.TabIndex = 1;
             this.nextHome.Text = "Next";
             this.nextHome.UseVisualStyleBackColor = true;
-            this.nextHome.Click += new System.EventHandler(this.next_Click);
+            this.nextHome.Click += new System.EventHandler(this.Next_Click);
             // 
             // title
             // 
@@ -185,7 +185,7 @@
             this.nextPath.TabIndex = 1;
             this.nextPath.Text = "Next";
             this.nextPath.UseVisualStyleBackColor = true;
-            this.nextPath.Click += new System.EventHandler(this.next_Click);
+            this.nextPath.Click += new System.EventHandler(this.Next_Click);
             // 
             // panel2
             // 
@@ -208,7 +208,7 @@
             this.backPath.TabIndex = 1;
             this.backPath.Text = "Back";
             this.backPath.UseVisualStyleBackColor = true;
-            this.backPath.Click += new System.EventHandler(this.prev_Click);
+            this.backPath.Click += new System.EventHandler(this.Prev_Click);
             // 
             // label1
             // 
@@ -307,7 +307,7 @@
             this.backHitsound.TabIndex = 1;
             this.backHitsound.Text = "Back";
             this.backHitsound.UseVisualStyleBackColor = true;
-            this.backHitsound.Click += new System.EventHandler(this.prev_Click);
+            this.backHitsound.Click += new System.EventHandler(this.Prev_Click);
             // 
             // nextHitsound
             // 
@@ -317,7 +317,7 @@
             this.nextHitsound.TabIndex = 1;
             this.nextHitsound.Text = "Next";
             this.nextHitsound.UseVisualStyleBackColor = true;
-            this.nextHitsound.Click += new System.EventHandler(this.next_Click);
+            this.nextHitsound.Click += new System.EventHandler(this.Next_Click);
             // 
             // panel5
             // 
@@ -348,7 +348,7 @@
             this.nextInstall.TabIndex = 1;
             this.nextInstall.Text = "Next";
             this.nextInstall.UseVisualStyleBackColor = true;
-            this.nextInstall.Click += new System.EventHandler(this.next_Click);
+            this.nextInstall.Click += new System.EventHandler(this.Next_Click);
             // 
             // promptInstall
             // 
@@ -388,7 +388,7 @@
             this.exitLast.TabIndex = 1;
             this.exitLast.Text = "Exit";
             this.exitLast.UseVisualStyleBackColor = true;
-            this.exitLast.Click += new System.EventHandler(this.next_Click);
+            this.exitLast.Click += new System.EventHandler(this.Next_Click);
             // 
             // panel4
             // 
@@ -445,7 +445,7 @@
             this.backHUD.TabIndex = 1;
             this.backHUD.Text = "Back";
             this.backHUD.UseVisualStyleBackColor = true;
-            this.backHUD.Click += new System.EventHandler(this.prev_Click);
+            this.backHUD.Click += new System.EventHandler(this.Prev_Click);
             // 
             // nextHUD
             // 
@@ -455,7 +455,7 @@
             this.nextHUD.TabIndex = 1;
             this.nextHUD.Text = "Next";
             this.nextHUD.UseVisualStyleBackColor = true;
-            this.nextHUD.Click += new System.EventHandler(this.next_Click);
+            this.nextHUD.Click += new System.EventHandler(this.Next_Click);
             // 
             // Main
             // 

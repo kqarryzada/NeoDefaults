@@ -40,7 +40,7 @@ namespace NeoDefaults_Installer {
 
         public Main() {
             InitializeComponent();
-            utilities = Utilities.getInstance();
+            utilities = Utilities.GetInstance();
 
             // Set the current panel to the home panel, and restrict the window size to hide
             // other panels
@@ -66,7 +66,7 @@ namespace NeoDefaults_Installer {
          *
          * Returns a String representing the filepath the user selected.
          */
-        private String requestFilepath() {
+        private String RequestFilepath() {
             String filepath = "";
             bool valid = true;
 
@@ -97,7 +97,7 @@ namespace NeoDefaults_Installer {
         /**
          * Sets all the necessary parameters to initialize the progress bar on the UI.
          */
-        private void initializeProgressbar() {
+        private void InitializeProgressbar() {
             progressBar.Minimum = 0;
             progressBar.Value = 0;
             progressBar.Step = 1;
@@ -116,29 +116,29 @@ namespace NeoDefaults_Installer {
          * their own threads to allow the UI to be responsive while the user waits for the
          * installation to complete.
          */
-        private async void installFiles() {
+        private async void InstallFiles() {
             // Initialize before starting the installation
-            initializeProgressbar();
+            InitializeProgressbar();
 
             if (installHUD) {
                 promptInstall.Text = "Installing the Improved Default HUD...";
-                await utilities.installHUD();
+                await utilities.InstallHUD();
                 progressBar.PerformStep();
 
                 promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
-                await utilities.installHUDFonts();
+                await utilities.InstallHUDFonts();
                 progressBar.PerformStep();
             }
 
             if (installHitsound) {
                 promptInstall.Text = "Installing hitsound files...";
-                await utilities.installHitsound();
+                await utilities.InstallHitsound();
                 progressBar.PerformStep();
             }
 
             // Install autoexec.cfg file
             promptInstall.Text = "Installing config files...";
-            await utilities.installConfig();
+            await utilities.InstallConfig();
             progressBar.PerformStep();
 
             Thread.Sleep(100);
@@ -153,8 +153,8 @@ namespace NeoDefaults_Installer {
          *
          * Returns a boolean indicating whether or not the attempt was successful.
          */
-        public bool setTFPath(String path) {
-            path = utilities.canonicalizePath(path);
+        public bool SetTFPath(String path) {
+            path = utilities.CanonicalizePath(path);
             if (path == null) {
                 return false;
             }
@@ -180,9 +180,9 @@ namespace NeoDefaults_Installer {
         /**
          * Navigates to the previous page in the setup menu.
          */
-        private void previousPanel() {
+        private void PreviousPanel() {
             try {
-                updateScreen(stack.Pop());
+                UpdateScreen(stack.Pop());
             }
             catch (InvalidOperationException) {
                 Debug.WriteLine("Tried to move to previous screen, but an unexpected error"
@@ -194,14 +194,14 @@ namespace NeoDefaults_Installer {
         /**
          * Navigates to the next page in the setup menu.
          */
-        private void nextPanel() {
+        private void NextPanel() {
             // Save current panel in case the user later wishes to go back.
             stack.Push(currentPanel);
 
             Panel nextPanel;
             if (currentPanel == panel1) {
                 // Prepare elements on the next page before displaying anything.
-                preparePathPanel();
+                PreparePathPanel();
                 nextPanel = panel2;
             }
             else if (currentPanel == panel2) {
@@ -230,18 +230,18 @@ namespace NeoDefaults_Installer {
                 Environment.Exit(1);
                 return;
             }
-            updateScreen(nextPanel);
+            UpdateScreen(nextPanel);
             
             // Certain panels need to execute tasks immediately upon switching to the next page.
             if (currentPanel == panel5) {
-                installFiles();
+                InstallFiles();
             }
         }
 
         /**
          * Updates the UI to show the new panel.
          */
-        private void updateScreen(Panel newPanel) {
+        private void UpdateScreen(Panel newPanel) {
             Panel oldPanel = currentPanel;
 
             // Swap the two panels' locations. Since the main window is (almost) the size of one
@@ -258,7 +258,7 @@ namespace NeoDefaults_Installer {
          * This method will only make changes to the UI once.
          */
         private bool first = true;
-        private void preparePathPanel() {
+        private void PreparePathPanel() {
             // If the path to the TF2 install was found during startup, disable the ability for
             // the user to reset it. This is done only once to prevent strange issues when switching
             // between panels.
@@ -269,7 +269,7 @@ namespace NeoDefaults_Installer {
             if (currSavedPath != null) {
                 // Once the TF2 installation has been found, disallow it from being reset to prevent
                 // potential issues.
-                setTFPath(currSavedPath);
+                SetTFPath(currSavedPath);
                 buttonPath.Enabled = false;
                 promptPath.Text = "Found the path to the default TF2 install file. Proceed to the" 
                                   + " next page.";
@@ -293,15 +293,15 @@ namespace NeoDefaults_Installer {
         /**
          * General method for navigating to the previous page in the setup menu.
          */
-        private void prev_Click(object sender, EventArgs e) {
-            previousPanel();
+        private void Prev_Click(object sender, EventArgs e) {
+            PreviousPanel();
         }
 
         /**
          * General method for navigating to the next page in the setup menu.
          */
-        private void next_Click(object sender, EventArgs e) {
-            nextPanel();
+        private void Next_Click(object sender, EventArgs e) {
+            NextPanel();
         }
 
         /**
@@ -329,12 +329,12 @@ namespace NeoDefaults_Installer {
          * TF2 installation.
          */
         private void buttonPath_Click(object sender, EventArgs e) {
-            String filepath = requestFilepath();
+            String filepath = RequestFilepath();
             if (filepath != null) {
-                filepath = utilities.canonicalizePath(filepath);
+                filepath = utilities.CanonicalizePath(filepath);
 
                 // Attempt setting the filepath
-                if (setTFPath(filepath))
+                if (SetTFPath(filepath))
                     return;
             }
 
