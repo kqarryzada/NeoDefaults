@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     /**
@@ -28,9 +29,8 @@ namespace NeoDefaults_Installer {
         // The filename for the source autoexec file that came with the installer.
         private readonly String autoexecSourceName = "autoexec-alpha.cfg";
 
-        // The filename of the destination autoexec file. When officially released, this is set to
-        // "autoexec.cfg".
-        private readonly String autoexecDestName;
+        // The filename of the destination config file.
+        private readonly String autoexecDestName = "neodefaults.cfg";
 
         private static readonly Utilities singleton = new Utilities();
 
@@ -39,15 +39,7 @@ namespace NeoDefaults_Installer {
         private Utilities() {
             // When developing, the base filepath is two parent directories above the
             // executable.
-            String parentPath;
-            if (Main.DEVELOP_MODE) {
-                parentPath = @"..\..";
-                autoexecDestName = "autoexec-TEST.cfg";
-            }
-            else {
-                parentPath = @".";
-                autoexecDestName = "autoexec.cfg";
-            }
+            String parentPath = (Main.DEVELOP_MODE) ? @"..\.." : @".";
 
             String relativeBasePath = AppDomain.CurrentDomain.BaseDirectory;
             relativeBasePath = Path.Combine(relativeBasePath, parentPath);
@@ -162,56 +154,53 @@ namespace NeoDefaults_Installer {
             return testPath;
         }
 
-        private void CopyFile(String sourceFile, String destFile) {
-            CopyFile(sourceFile, destFile, false);
-        }
-
         /**
          * Copies a 'sourceFile' to a destination. The filepath of the destination is given by 
          * 'destFile', which includes the filename of the file (allowing for a move-and-rename
          * operation to be executed at once). This method will give a few attempts at copying the file
          * over before reporting an issue.
+         * 
+         * sourceFile: The file to be copied.
+         * destFile: The resulting file after the copy is complete.
+         * overwrite: If true, overwrite the existing file. If not, simply skip the operation.
+         *
+         * Returns false if the expected file was not created.
          */
         private void CopyFile(String sourceFile, String destFile, bool overwrite) {
-            int NUM_RETRIES = 3;
+            int numRetries = 3;
 
-            // If 'destFile' already exists before the copy process, notify the user and ask if they
-            // want to continue.
+            // Infuriatingly enough, File.Copy() will throw an IOException both in cases of I/O
+            // issues and if the destination file already exists. To be certain, first check for the
+            // existence of the resulting file. There are currently no scenarios where the user
+            // would need to be immediately notified of this.
             if (!overwrite && File.Exists(destFile)) {
-                // Form dlg1 = new Form();
-                // dlg1.ShowDialog();
-                log.Write("The destination file '" + destFile + "' already exists.");
-
-                // pseudo-code:
-                // switch (response) {
-                //     case overwrite_ok:
-                //         overwrite = true;
-                //         break;
-                //     case skip:
-                //         // The file is no longer needed to be copied over, so leave.
-                //         return;
-                //     case backup:
-                //         // do backup
-                //          break;
-                // }
+                var msg = String.Format("Tried to create '{0}' from '{1}' because the resulting"
+                                        + "file already exists, and overwrite was not permitted.",
+                                        destFile, sourceFile);
+                log.WriteErr(msg);
+                return;
             }
 
             // Allow a few retry attempts in case of transient issues.
-            for (int i = 0; i < NUM_RETRIES; i++) {
+            for (int i = 0; i < numRetries; i++) {
                 try {
                     // Attempt a copy. If it is successful, leave the loop. Otherwise, the exception
                     // is caught.
                     File.Copy(sourceFile, destFile, overwrite);
                     break;
                 }
-                catch (IOException) when (i < NUM_RETRIES - 1) {
-                    Thread.Sleep(1000);
+                catch (Exception) when (i < numRetries - 1) {
+                    Thread.Sleep(500);
                 }
-                catch (IOException ioe) {
-                    String msg = String.Format("A problem occurred when trying to create '{0}' from '{1}'.",
+                catch (Exception e) {
+                    var logMsg = String.Format("A problem occurred when trying to create '{0}' from '{1}'.",
                                                     destFile, sourceFile);
-                    log.WriteErr(msg, ioe.ToString());
-                    // Environment.Exit(1);
+                    log.WriteErr(logMsg, e.ToString());
+
+
+                    // Form dlg1 = new Form();
+                    // dlg1.ShowDialog();
+                    Environment.Exit(1);
                 }
             }
         }
@@ -264,7 +253,7 @@ namespace NeoDefaults_Installer {
                     var logMsg = String.Format("Installing '{0}' font to '{1}'.", fontsPath, destFile);
                     log.Write(logMsg);
 
-                    CopyFile(font, destFile);
+                    CopyFile(font, destFile, false);
                 }
 
                 log.Write("Font installation complete.");
@@ -287,7 +276,7 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Installs autoexec.cfg.
+         * Installs the NeoDefaults.cfg file.
          */
         public async Task InstallConfig() {
             await Task.Run(() => {
@@ -296,8 +285,8 @@ namespace NeoDefaults_Installer {
                 var logMsg = String.Format("Installing autoexec from '{0}' to '{1}'.", sourceAutoexec, destAutoexec);
                 log.Write(logMsg);
 
-                CopyFile(sourceAutoexec, destAutoexec);
-                log.Write("autoexec installation complete.");
+                CopyFile(sourceAutoexec, destAutoexec, true);
+                log.Write("Config installation complete.");
             });
         }
     }
