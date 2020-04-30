@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Security;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,7 +31,7 @@ namespace NeoDefaults_Installer {
         private readonly String autoexecSourceName = "autoexec-alpha.cfg";
 
         // The filename of the destination config file.
-        private readonly String autoexecDestName = "neodefaults.cfg";
+        private readonly String cfgDestName = "neodefaults.cfg";
 
         private static readonly Utilities singleton = new Utilities();
 
@@ -155,7 +156,7 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Copies a 'sourceFile' to a destination. The filepath of the destination is given by 
+         * Copies a 'sourceFile' to a destination. The filepath of the destination is given by
          * 'destFile', which includes the filename of the file (allowing for a move-and-rename
          * operation to be executed at once). This method will give a few attempts at copying the file
          * over before reporting an issue.
@@ -224,6 +225,45 @@ namespace NeoDefaults_Installer {
         }
 
         /**
+         * In order for neodefaults.cfg to be run when TF2 is launched, autoexec.cfg must
+         * execute the file. This method adds the needed lines to the autoexec file in order
+         * to accomplish this. If the autoexec.cfg file does not exist, it will be created.
+         *
+         * neodefaultsPath: The path to the newly-installed neodefaults.cfg file
+         *
+         * Throws an Exception if an unexpected error occurs.
+         */
+        private void AppendLinesToAutoExec(String neodefaultsPath) {
+            String autoexec;
+            String defaultLocation = Path.Combine(tfPath, @"tf\cfg\", "autoexec.cfg");
+            String mastercomfigLocation = Path.Combine(tfPath, @"tf\cfg\user", "autoexec.cfg");
+
+            // Check for a Mastercomfig (https://mastercomfig.com/) install. This is a popular
+            // plugin used by many players, and it expects autoexec.cfg to be stored in cfg/user/
+            // instead of the usual cfg/ directory. In order to fully support these users, the
+            // required execution lines must be added to the correct file.
+            String[] filePaths = Directory.GetFiles(Path.Combine(tfPath, @"tf\custom"),
+                                                    "mastercomfig*preset.vpk",
+                                                    SearchOption.TopDirectoryOnly);
+            autoexec = (filePaths.Length == 0) ? defaultLocation : mastercomfigLocation;
+
+            // File has been found, append lines.
+            StringBuilder sb = new StringBuilder();
+            if (File.Exists(autoexec)) {
+                sb.Append(Environment.NewLine);
+            }
+            sb.Append("//--------Added by the NeoDefaults Installer--------//");
+            sb.Append(Environment.NewLine);
+            sb.Append("exec ");
+            sb.Append(Path.GetFileNameWithoutExtension(neodefaultsPath));
+            sb.Append(Environment.NewLine);
+            sb.Append("//--------------------------------------------------//");
+            sb.Append(Environment.NewLine);
+
+            File.AppendAllText(autoexec, sb.ToString());
+        }
+
+        /**
          * Installs idHUD in the custom/ directory.
          */
         public async Task InstallHUD() {
@@ -276,16 +316,25 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Installs the NeoDefaults.cfg file.
+         * Installs the neoDefaults.cfg file.
          */
         public async Task InstallConfig() {
             await Task.Run(() => {
-                String sourceAutoexec = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
-                String destAutoexec = Path.Combine(tfPath, @"tf\cfg\", autoexecDestName);
-                var logMsg = String.Format("Installing autoexec from '{0}' to '{1}'.", sourceAutoexec, destAutoexec);
+                String sourceConfig = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
+                String destConfig = Path.Combine(tfPath, @"tf\cfg\", cfgDestName);
+                var logMsg = String.Format("Installing config file from '{0}' to '{1}'.", sourceConfig, destConfig);
                 log.Write(logMsg);
 
-                CopyFile(sourceAutoexec, destAutoexec, true);
+                try {
+                    CopyFile(sourceConfig, destConfig, true);
+                    AppendLinesToAutoExec(destConfig);
+                }
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to install the config files.",
+                                 e.ToString());
+                    return;
+                }
+
                 log.Write("Config installation complete.");
             });
         }
