@@ -140,27 +140,56 @@ namespace NeoDefaults_Installer {
 
             if (installHUD) {
                 promptInstall.Text = "Installing the Improved Default HUD...";
-                await utilities.InstallHUD();
+                try {
+                    await utilities.InstallHUD();
+                    progressBox.AppendText("HUD installed.");
+                }
+                catch (Exception e) {
+                    progressBox.AppendText("Error: Failed to install the HUD.");
+                }
                 progressBar.PerformStep();
+                progressBox.AppendText(Environment.NewLine);
 
                 promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
-                await utilities.InstallHUDFonts();
+                try {
+                    await utilities.InstallHUDFonts();
+                    progressBox.AppendText("Error: Failed to install the fonts for the HUD.");
+                }
+                catch (Exception e) {
+
+                }
                 progressBar.PerformStep();
+                progressBox.AppendText(Environment.NewLine);
             }
 
             if (installHitsound) {
                 promptInstall.Text = "Installing hitsound files...";
-                await utilities.InstallHitsound();
+                try {
+                    await utilities.InstallHitsound();
+                    progressBox.AppendText("Hitsound installed.");
+                }
+                catch (Exception e) {
+                    progressBox.AppendText("Error: Failed to install the hitsound.");
+                }
                 progressBar.PerformStep();
+                progressBox.AppendText(Environment.NewLine);
             }
 
-            // Install autoexec.cfg file
+            // Install neodefaults.cfg file
             promptInstall.Text = "Installing config files...";
-            await utilities.InstallConfig();
+            try {
+                await utilities.InstallConfig();
+                progressBox.AppendText("Config installed.");
+            }
+            catch (Exception e) {
+                progressBox.AppendText("Error: Failed to install the config files.");
+            }
             progressBar.PerformStep();
+            progressBox.AppendText(Environment.NewLine);
 
             Thread.Sleep(100);
             promptInstall.Text = "Installation complete.";
+            progressBox.AppendText("Installation complete.");
             // Progress complete. Allow user to continue to next page
             nextInstall.Enabled = true;
         }

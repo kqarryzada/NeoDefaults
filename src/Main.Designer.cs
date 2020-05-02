@@ -62,6 +62,7 @@
             this.promptHUD = new System.Windows.Forms.Label();
             this.backHUD = new System.Windows.Forms.Button();
             this.nextHUD = new System.Windows.Forms.Button();
+            this.progressBox = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -313,6 +314,7 @@
             // 
             // panel5
             // 
+            this.panel5.Controls.Add(this.progressBox);
             this.panel5.Controls.Add(this.progressBar);
             this.panel5.Controls.Add(this.nextInstall);
             this.panel5.Controls.Add(this.promptInstall);
@@ -325,7 +327,7 @@
             // 
             this.progressBar.Location = new System.Drawing.Point(38, 109);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(552, 20);
+            this.progressBar.Size = new System.Drawing.Size(550, 20);
             this.progressBar.TabIndex = 3;
             this.progressBar.Visible = false;
             // 
@@ -442,13 +444,22 @@
             this.nextHUD.UseVisualStyleBackColor = true;
             this.nextHUD.Click += new System.EventHandler(this.Next_Click);
             // 
+            // progressBox
+            // 
+            this.progressBox.Location = new System.Drawing.Point(38, 135);
+            this.progressBox.Multiline = true;
+            this.progressBox.Name = "progressBox";
+            this.progressBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.progressBox.Size = new System.Drawing.Size(550, 231);
+            this.progressBox.TabIndex = 5;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Menu;
-            this.ClientSize = new System.Drawing.Size(2048, 1072);
+            this.ClientSize = new System.Drawing.Size(2048, 975);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel4);
@@ -514,6 +525,7 @@
         private System.Windows.Forms.Button backPath;
         private System.Windows.Forms.Button backHitsound;
         private System.Windows.Forms.Button backHUD;
+        private System.Windows.Forms.TextBox progressBox;
     }
 }
 

@@ -73,7 +73,6 @@
     <Compile Include="error-dialog\ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialog.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Main.cs">
