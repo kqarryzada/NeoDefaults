@@ -114,7 +114,6 @@
             this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
-            this.promptPath.Click += new System.EventHandler(this.prompt_Click);
             // 
             // promptHome
             // 
@@ -124,7 +123,6 @@
             this.promptHome.Size = new System.Drawing.Size(133, 13);
             this.promptHome.TabIndex = 2;
             this.promptHome.Text = "Select the installation type.";
-            this.promptHome.Click += new System.EventHandler(this.prompt_Click);
             // 
             // nextHome
             // 
@@ -145,12 +143,10 @@
             this.title.Size = new System.Drawing.Size(567, 39);
             this.title.TabIndex = 2;
             this.title.Text = "TF2 NeoDefaults Installer";
-            this.title.Click += new System.EventHandler(this.prompt_Click);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
             // buttonPathMessage
             // 
@@ -162,7 +158,6 @@
             this.buttonPathMessage.TabIndex = 2;
             this.buttonPathMessage.Text = "%MESSAGE%";
             this.buttonPathMessage.Visible = false;
-            this.buttonPathMessage.Click += new System.EventHandler(this.prompt_Click);
             // 
             // panel1
             // 
@@ -198,7 +193,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(640, 480);
             this.panel2.TabIndex = 3;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // backPath
             // 
@@ -263,7 +257,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(640, 480);
             this.panel3.TabIndex = 3;
-            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // menu2Hitsound
             // 
@@ -297,7 +290,6 @@
             this.promptHitsound.Size = new System.Drawing.Size(118, 13);
             this.promptHitsound.TabIndex = 2;
             this.promptHitsound.Text = "Install Quake hitsound?";
-            this.promptHitsound.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHitsound
             // 
@@ -328,7 +320,6 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(640, 480);
             this.panel5.TabIndex = 3;
-            this.panel5.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // progressBar
             // 
@@ -337,7 +328,6 @@
             this.progressBar.Size = new System.Drawing.Size(552, 20);
             this.progressBar.TabIndex = 3;
             this.progressBar.Visible = false;
-            this.progressBar.Click += new System.EventHandler(this.progressBar_Click);
             // 
             // nextInstall
             // 
@@ -358,7 +348,6 @@
             this.promptInstall.Size = new System.Drawing.Size(115, 13);
             this.promptInstall.TabIndex = 2;
             this.promptInstall.Text = "Beginning installation...";
-            this.promptInstall.Click += new System.EventHandler(this.prompt_Click);
             // 
             // promptLast
             // 
@@ -368,7 +357,6 @@
             this.promptLast.Size = new System.Drawing.Size(265, 13);
             this.promptLast.TabIndex = 2;
             this.promptLast.Text = "Congrations! You done it. All files successfully installed.";
-            this.promptLast.Click += new System.EventHandler(this.prompt_Click);
             // 
             // panel6
             // 
@@ -378,7 +366,6 @@
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(640, 480);
             this.panel6.TabIndex = 3;
-            this.panel6.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // exitLast
             // 
@@ -401,7 +388,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(640, 480);
             this.panel4.TabIndex = 3;
-            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // menu2HUD
             // 
@@ -435,7 +421,6 @@
             this.promptHUD.Size = new System.Drawing.Size(75, 13);
             this.promptHUD.TabIndex = 2;
             this.promptHUD.Text = "Install idHUD?";
-            this.promptHUD.Click += new System.EventHandler(this.prompt_Click);
             // 
             // backHUD
             // 
@@ -473,7 +458,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "TF2 NeoDefaults Installer v1.0.0";
-            this.Load += new System.EventHandler(this.Main_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);

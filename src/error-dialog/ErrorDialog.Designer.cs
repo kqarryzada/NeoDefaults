@@ -24,10 +24,11 @@
         /// </summary>
         private void InitializeComponent() {
             this.quitButton = new System.Windows.Forms.Button();
-            this.continueAnywayButton = new System.Windows.Forms.Button();
+            this.ContinueButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.errorMessage = new System.Windows.Forms.Label();
             this.errorImage = new System.Windows.Forms.PictureBox();
+            this.CopyButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -41,15 +42,15 @@
             this.quitButton.UseVisualStyleBackColor = true;
             this.quitButton.Click += new System.EventHandler(this.quitButton_Click);
             // 
-            // continueAnywayButton
+            // ContinueButton
             // 
-            this.continueAnywayButton.Location = new System.Drawing.Point(261, 129);
-            this.continueAnywayButton.Name = "continueAnywayButton";
-            this.continueAnywayButton.Size = new System.Drawing.Size(75, 22);
-            this.continueAnywayButton.TabIndex = 1;
-            this.continueAnywayButton.Text = "Okay";
-            this.continueAnywayButton.UseVisualStyleBackColor = true;
-            this.continueAnywayButton.Click += new System.EventHandler(this.continueButton_Click);
+            this.ContinueButton.Location = new System.Drawing.Point(261, 129);
+            this.ContinueButton.Name = "ContinueButton";
+            this.ContinueButton.Size = new System.Drawing.Size(75, 22);
+            this.ContinueButton.TabIndex = 1;
+            this.ContinueButton.Text = "Okay";
+            this.ContinueButton.UseVisualStyleBackColor = true;
+            this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
             // 
             // label2
             // 
@@ -60,7 +61,6 @@
             this.label2.Size = new System.Drawing.Size(63, 13);
             this.label2.TabIndex = 2;
             this.label2.Text = "Critical Error";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // errorMessage
             // 
@@ -71,7 +71,6 @@
             this.errorMessage.Size = new System.Drawing.Size(75, 13);
             this.errorMessage.TabIndex = 2;
             this.errorMessage.Text = "%MESSAGE%";
-            this.errorMessage.Click += new System.EventHandler(this.errorMessage_Click);
             // 
             // errorImage
             // 
@@ -80,7 +79,16 @@
             this.errorImage.Size = new System.Drawing.Size(50, 50);
             this.errorImage.TabIndex = 3;
             this.errorImage.TabStop = false;
-            this.errorImage.Click += new System.EventHandler(this.errorImage_Click);
+            // 
+            // CopyButton
+            // 
+            this.CopyButton.Location = new System.Drawing.Point(12, 127);
+            this.CopyButton.Name = "CopyButton";
+            this.CopyButton.Size = new System.Drawing.Size(136, 22);
+            this.CopyButton.TabIndex = 1;
+            this.CopyButton.Text = "Copy text to clipboard";
+            this.CopyButton.UseVisualStyleBackColor = true;
+            this.CopyButton.Click += new System.EventHandler(this.CopyButton_Click);
             // 
             // ErrorDialog
             // 
@@ -90,7 +98,8 @@
             this.Controls.Add(this.errorImage);
             this.Controls.Add(this.errorMessage);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.continueAnywayButton);
+            this.Controls.Add(this.CopyButton);
+            this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.quitButton);
             this.Name = "ErrorDialog";
             this.ShowIcon = false;
@@ -106,9 +115,10 @@
 
         #endregion
         private System.Windows.Forms.Button quitButton;
-        private System.Windows.Forms.Button continueAnywayButton;
+        private System.Windows.Forms.Button ContinueButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label errorMessage;
         private System.Windows.Forms.PictureBox errorImage;
+        private System.Windows.Forms.Button CopyButton;
     }
 }

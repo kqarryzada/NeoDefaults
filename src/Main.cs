@@ -398,13 +398,5 @@ namespace NeoDefaults_Installer {
                 installHUD = false;
             }
         }
-
-        // Unimplemented methods— take no action if these events are triggered
-        private void label4_Click(object sender, EventArgs e) {}
-        private void Main_Load(object sender, EventArgs e) {}
-        private void openFileDialog1_FileOk(object sender, CancelEventArgs e) {}
-        private void panel2_Paint(object sender, PaintEventArgs e) {}
-        private void progressBar_Click(object sender, EventArgs e) {}
-        private void prompt_Click(object sender, EventArgs e) {}
     }
 }

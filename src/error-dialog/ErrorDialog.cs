@@ -8,13 +8,15 @@ using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     public partial class ErrorDialog : Form {
+        private String Message = "%MESSAGE%";
         public ErrorDialog() {
             InitializeComponent();
             errorImage.Image = SystemIcons.Error.ToBitmap();
         }
 
-        public void DisplayError(String message) {
-            errorMessage.Text = message;
+        public void DisplayError(String msg) {
+            Message = msg;
+            errorMessage.Text = Message;
             this.ShowDialog();
         }
 
@@ -22,13 +24,12 @@ namespace NeoDefaults_Installer {
             Environment.Exit(0);
         }
 
-        // Unimplemented methods— take no action if these events are triggered
-        private void label2_Click(object sender, EventArgs e) {}
-        private void errorImage_Click(object sender, EventArgs e) {}
-        private void errorMessage_Click(object sender, EventArgs e) {}
-
-        private void continueButton_Click(object sender, EventArgs e) {
+        private void ContinueButton_Click(object sender, EventArgs e) {
             this.Dispose();
+        }
+
+        private void CopyButton_Click(object sender, EventArgs e) {
+            Clipboard.SetText(Message);
         }
     }
 }
