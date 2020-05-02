@@ -100,7 +100,7 @@
             // 
             this.buttonPath.Location = new System.Drawing.Point(41, 152);
             this.buttonPath.Name = "buttonPath";
-            this.buttonPath.Size = new System.Drawing.Size(101, 20);
+            this.buttonPath.Size = new System.Drawing.Size(100, 22);
             this.buttonPath.TabIndex = 1;
             this.buttonPath.Text = "Select Folder...";
             this.buttonPath.UseVisualStyleBackColor = true;
@@ -130,7 +130,7 @@
             // 
             this.nextHome.Location = new System.Drawing.Point(515, 385);
             this.nextHome.Name = "nextHome";
-            this.nextHome.Size = new System.Drawing.Size(75, 20);
+            this.nextHome.Size = new System.Drawing.Size(75, 22);
             this.nextHome.TabIndex = 1;
             this.nextHome.Text = "Next";
             this.nextHome.UseVisualStyleBackColor = true;
@@ -181,7 +181,7 @@
             this.nextPath.Enabled = false;
             this.nextPath.Location = new System.Drawing.Point(515, 385);
             this.nextPath.Name = "nextPath";
-            this.nextPath.Size = new System.Drawing.Size(75, 20);
+            this.nextPath.Size = new System.Drawing.Size(75, 22);
             this.nextPath.TabIndex = 1;
             this.nextPath.Text = "Next";
             this.nextPath.UseVisualStyleBackColor = true;
@@ -204,7 +204,7 @@
             // 
             this.backPath.Location = new System.Drawing.Point(434, 385);
             this.backPath.Name = "backPath";
-            this.backPath.Size = new System.Drawing.Size(75, 20);
+            this.backPath.Size = new System.Drawing.Size(75, 22);
             this.backPath.TabIndex = 1;
             this.backPath.Text = "Back";
             this.backPath.UseVisualStyleBackColor = true;
@@ -303,7 +303,7 @@
             // 
             this.backHitsound.Location = new System.Drawing.Point(434, 385);
             this.backHitsound.Name = "backHitsound";
-            this.backHitsound.Size = new System.Drawing.Size(75, 20);
+            this.backHitsound.Size = new System.Drawing.Size(75, 22);
             this.backHitsound.TabIndex = 1;
             this.backHitsound.Text = "Back";
             this.backHitsound.UseVisualStyleBackColor = true;
@@ -313,7 +313,7 @@
             // 
             this.nextHitsound.Location = new System.Drawing.Point(515, 385);
             this.nextHitsound.Name = "nextHitsound";
-            this.nextHitsound.Size = new System.Drawing.Size(75, 20);
+            this.nextHitsound.Size = new System.Drawing.Size(75, 22);
             this.nextHitsound.TabIndex = 1;
             this.nextHitsound.Text = "Next";
             this.nextHitsound.UseVisualStyleBackColor = true;
@@ -344,7 +344,7 @@
             this.nextInstall.Enabled = false;
             this.nextInstall.Location = new System.Drawing.Point(515, 385);
             this.nextInstall.Name = "nextInstall";
-            this.nextInstall.Size = new System.Drawing.Size(75, 20);
+            this.nextInstall.Size = new System.Drawing.Size(75, 22);
             this.nextInstall.TabIndex = 1;
             this.nextInstall.Text = "Next";
             this.nextInstall.UseVisualStyleBackColor = true;
@@ -384,7 +384,7 @@
             // 
             this.exitLast.Location = new System.Drawing.Point(515, 385);
             this.exitLast.Name = "exitLast";
-            this.exitLast.Size = new System.Drawing.Size(75, 20);
+            this.exitLast.Size = new System.Drawing.Size(75, 22);
             this.exitLast.TabIndex = 1;
             this.exitLast.Text = "Exit";
             this.exitLast.UseVisualStyleBackColor = true;
@@ -441,7 +441,7 @@
             // 
             this.backHUD.Location = new System.Drawing.Point(434, 385);
             this.backHUD.Name = "backHUD";
-            this.backHUD.Size = new System.Drawing.Size(75, 20);
+            this.backHUD.Size = new System.Drawing.Size(75, 22);
             this.backHUD.TabIndex = 1;
             this.backHUD.Text = "Back";
             this.backHUD.UseVisualStyleBackColor = true;
@@ -451,7 +451,7 @@
             // 
             this.nextHUD.Location = new System.Drawing.Point(515, 385);
             this.nextHUD.Name = "nextHUD";
-            this.nextHUD.Size = new System.Drawing.Size(75, 20);
+            this.nextHUD.Size = new System.Drawing.Size(75, 22);
             this.nextHUD.TabIndex = 1;
             this.nextHUD.Text = "Next";
             this.nextHUD.UseVisualStyleBackColor = true;
