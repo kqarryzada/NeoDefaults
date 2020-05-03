@@ -144,7 +144,7 @@ namespace NeoDefaults_Installer {
                     await utilities.InstallHUD();
                     progressBox.AppendText("HUD installed.");
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     progressBox.AppendText("Error: Failed to install the HUD.");
                 }
                 progressBar.PerformStep();
@@ -153,10 +153,10 @@ namespace NeoDefaults_Installer {
                 promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
                 try {
                     await utilities.InstallHUDFonts();
-                    progressBox.AppendText("Error: Failed to install the fonts for the HUD.");
+                    progressBox.AppendText("Installed necessary fonts for HUD.");
                 }
-                catch (Exception e) {
-
+                catch (Exception) {
+                    progressBox.AppendText("Error: Failed to install the needed fonts for the HUD.");
                 }
                 progressBar.PerformStep();
                 progressBox.AppendText(Environment.NewLine);
@@ -168,7 +168,7 @@ namespace NeoDefaults_Installer {
                     await utilities.InstallHitsound();
                     progressBox.AppendText("Hitsound installed.");
                 }
-                catch (Exception e) {
+                catch (Exception) {
                     progressBox.AppendText("Error: Failed to install the hitsound.");
                 }
                 progressBar.PerformStep();
@@ -181,7 +181,7 @@ namespace NeoDefaults_Installer {
                 await utilities.InstallConfig();
                 progressBox.AppendText("Config installed.");
             }
-            catch (Exception e) {
+            catch (Exception) {
                 progressBox.AppendText("Error: Failed to install the config files.");
             }
             progressBar.PerformStep();

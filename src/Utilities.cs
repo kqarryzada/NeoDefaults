@@ -175,9 +175,8 @@ namespace NeoDefaults_Installer {
             // existence of the resulting file. There are currently no scenarios where the user
             // would need to be immediately notified of this.
             if (!overwrite && File.Exists(destFile)) {
-                var msg = String.Format("Tried to create '{0}' from '{1}' because the resulting"
-                                        + "file already exists, and overwrite was not permitted.",
-                                        destFile, sourceFile);
+                var msg = String.Format("Attempted to create '{0}' from '{1}', but the file already"
+                                        + " exists. Skipping.", destFile, sourceFile);
                 log.WriteErr(msg);
                 return;
             }
@@ -197,30 +196,25 @@ namespace NeoDefaults_Installer {
                     var logMsg = String.Format("A problem occurred when trying to create '{0}' from '{1}'.",
                                                     destFile, sourceFile);
                     log.WriteErr(logMsg, e.ToString());
-
-
-                    // Form dlg1 = new Form();
-                    // dlg1.ShowDialog();
-                    Environment.Exit(1);
+                    throw e;
                 }
             }
         }
 
         /**
-         * Extracts a zip file to a folder.
-         * 
-         * 'fileName' is a given nickname for the resulting zip file, and is only used iin the
-         * error message if an issue occurs.
-         */
+          * Extracts a zip file to a folder.
+          *
+          * 'fileName' is a given nickname for the resulting zip file, and is only used in the
+          * error message if an issue occurs.
+        */
         private void ExtractZip(String zipFilepath, String destinationFolder, String fileName) {
             try {
                 ZipFile.ExtractToDirectory(zipFilepath, destinationFolder);
             }
-            catch (IOException) {
-                String msg = String.Format("An error occurred when trying to install '{0}' to '{1}'"
+            catch (IOException ioe) {
+                String msg = String.Format("An IOException occurred when trying to install '{0}' to '{1}'"
                                            + ". Do you already have this installed?", fileName, destinationFolder);
-                // TODO: Display this message to the user
-                log.Write(msg);
+                log.WriteErr(msg, ioe.ToString());
             }
         }
 
@@ -265,15 +259,33 @@ namespace NeoDefaults_Installer {
 
         /**
          * Installs idHUD in the custom/ directory.
+         * 
+         * Throws an Exception if an unexpected error occurs.
          */
         public async Task InstallHUD() {
             await Task.Run(() => {
+                // If the hitsound is already installed, delete it and re-install it. It's possible someone
+                // wants to re-install the existing hitsound file.
+                String baseFolder = Path.Combine(tfPath, @"tf\custom\idhud-master");
+                if (Directory.Exists(baseFolder)) {
+                    log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
+                              + " preparation for re-install.");
+                    Directory.Delete(baseFolder, true);
+                }
+
                 String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
                 String destination = Path.Combine(tfPath, @"tf\custom");
                 var logMsg = String.Format("Installing HUD from '{0}' to '{1}'.", zipFilepath, destination);
                 log.Write(logMsg);
 
-                ExtractZip(zipFilepath, destination, "Improved Default HUD");
+                try {
+                    ExtractZip(zipFilepath, destination, "Improved Default HUD");
+                }
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to install the hitsound.",
+                                 e.ToString());
+                    throw e;
+                }
                 log.Write("HUD installation complete.");
             });
         }
@@ -281,6 +293,8 @@ namespace NeoDefaults_Installer {
         /**
          * In order for idhud to work properly, some fonts need to be installed, which are provided
          * in idhud's zip file. This method installs the fonts on the user's machine.
+         * 
+         * Throws an Exception if an unexpected error occurs.
          */
         public async Task InstallHUDFonts() {
             await Task.Run(() => {
@@ -290,10 +304,22 @@ namespace NeoDefaults_Installer {
                 // Copy each file over to the windows fonts directory to install them.
                 foreach (string font in Directory.GetFiles(fontsPath)) {
                     String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
+                    if (File.Exists(destFile)) {
+                        log.Write("The font, " + destFile + ", is already installed. Skipping.");
+                        continue;
+                    }
+
                     var logMsg = String.Format("Installing '{0}' font to '{1}'.", fontsPath, destFile);
                     log.Write(logMsg);
 
-                    CopyFile(font, destFile, false);
+                    try {
+                        CopyFile(font, destFile, false);
+                    }
+                    catch (Exception e) {
+                        log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
+                                 e.ToString());
+                        throw e;
+                    }
                 }
 
                 log.Write("Font installation complete.");
@@ -302,21 +328,42 @@ namespace NeoDefaults_Installer {
 
         /**
          * Installs the custom hitsound.
+         * 
+         * Throws an Exception if an unexpected error occurs.
          */
         public async Task InstallHitsound() {
             await Task.Run(() => {
-                String hitsoundZip = Path.Combine(basePath, @"custom-files\neodeafults-hitsound.zip");
+                // If the hitsound is already installed, delete it and re-install it. It's possible someone
+                // wants to re-install the existing hitsound file.
+                String baseFolder = Path.Combine(basePath, @"custom\neodefaults-hitsound");
+                if (Directory.Exists(baseFolder)) {
+                    log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
+                              + " preparation for re-install.");
+                    Directory.Delete(baseFolder, true);
+                }
+
+                String hitsoundZip = Path.Combine(basePath, @"custom-files\neodefaults-hitsound.zip");
                 String destination = Path.Combine(tfPath, @"tf\custom");
                 var logMsg = String.Format("Installing hitsound from '{0}' to '{1}'.", hitsoundZip, destination);
                 log.Write(logMsg);
 
-                ExtractZip(hitsoundZip, destination, "Custom Quake hitsound");
+                try {
+                    ExtractZip(hitsoundZip, destination, "Custom Quake hitsound");
+                } 
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to install the hitsound.",
+                                 e.ToString());
+                    throw e;
+                }
+
                 log.Write("Hitsound installation complete.");
             });
         }
 
         /**
          * Installs the neoDefaults.cfg file.
+         * 
+         * Throws an Exception if an unexpected error occurs.
          */
         public async Task InstallConfig() {
             await Task.Run(() => {
@@ -332,7 +379,7 @@ namespace NeoDefaults_Installer {
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the config files.",
                                  e.ToString());
-                    return;
+                    throw e;
                 }
 
                 log.Write("Config installation complete.");
