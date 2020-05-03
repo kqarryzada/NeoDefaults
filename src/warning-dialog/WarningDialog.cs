@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NeoDefaults_Installer.warning_dialog {
@@ -13,6 +7,7 @@ namespace NeoDefaults_Installer.warning_dialog {
         public WarningDialog() {
             InitializeComponent();
             DisplayImage.Image = SystemIcons.Warning.ToBitmap();
+            this.TopMost = true;
         }
 
         public DialogResult Display(String message) {

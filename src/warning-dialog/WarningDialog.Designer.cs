@@ -79,6 +79,7 @@
             this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.SkipButton);
             this.Name = "WarningDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Yo, hold up";
             ((System.ComponentModel.ISupportInitialize)(this.DisplayImage)).EndInit();
             this.ResumeLayout(false);

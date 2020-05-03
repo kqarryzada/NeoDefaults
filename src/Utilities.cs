@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NeoDefaults_Installer.warning_dialog;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Security;
@@ -264,10 +265,18 @@ namespace NeoDefaults_Installer {
          */
         public async Task InstallHUD() {
             await Task.Run(() => {
-                // If the hitsound is already installed, delete it and re-install it. It's possible someone
-                // wants to re-install the existing hitsound file.
+                // First check if it's already installed. If so, overwrite the existing files with
+                // the user's permission.
                 String baseFolder = Path.Combine(tfPath, @"tf\custom\idhud-master");
                 if (Directory.Exists(baseFolder)) {
+                    var dialog = new WarningDialog();
+                    var result = dialog.Display("An install of the HUD was detected at '"
+                                                + baseFolder + "'. Would you like to continue"
+                                                + " and re-install, or skip the HUD installation?");
+                    if (result == DialogResult.Cancel) {
+                        log.Write("HUD was already installed, and the user opted out of re-installing.");
+                        return;
+                    }
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
                               + " preparation for re-install.");
                     Directory.Delete(baseFolder, true);
@@ -334,10 +343,18 @@ namespace NeoDefaults_Installer {
          */
         public async Task InstallHitsound() {
             await Task.Run(() => {
-                // If the hitsound is already installed, delete it and re-install it. It's possible someone
-                // wants to re-install the existing hitsound file.
+                // First check if it's already installed. If so, overwrite the existing files with
+                // the user's permission.
                 String baseFolder = Path.Combine(tfPath, @"tf\custom\neodefaults-hitsound");
                 if (Directory.Exists(baseFolder)) {
+                    var dialog = new WarningDialog();
+                    var result = dialog.Display("An install of the hitsound was detected at '"
+                                                + baseFolder + "'. Would you like to continue"
+                                                + " and re-install, or skip the hitsound installation?");
+                    if (result == DialogResult.Cancel) {
+                        log.Write("HUD was already installed, and the user opted out of re-installing.");
+                        return;
+                    }
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
                               + " preparation for re-install.");
                     Directory.Delete(baseFolder, true);
@@ -362,7 +379,8 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Installs the neoDefaults.cfg file.
+         * Installs the neoDefaults.cfg file. If there is an existing install, it will be
+         * overwritten.
          * 
          * Throws an Exception if an unexpected error occurs.
          */

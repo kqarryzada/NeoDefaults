@@ -9,6 +9,7 @@ namespace NeoDefaults_Installer {
         public ErrorDialog() {
             InitializeComponent();
             errorImage.Image = SystemIcons.Error.ToBitmap();
+            this.TopMost = true;
         }
 
         public DialogResult Display(String message) {
