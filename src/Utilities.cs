@@ -292,7 +292,8 @@ namespace NeoDefaults_Installer {
 
         /**
          * In order for idhud to work properly, some fonts need to be installed, which are provided
-         * in idhud's zip file. This method installs the fonts on the user's machine.
+         * in idhud's zip file. This method installs the fonts on the user's machine. If a font is
+         * already installed, the existing one is accepted.
          * 
          * Throws an Exception if an unexpected error occurs.
          */
@@ -335,7 +336,7 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 // If the hitsound is already installed, delete it and re-install it. It's possible someone
                 // wants to re-install the existing hitsound file.
-                String baseFolder = Path.Combine(basePath, @"custom\neodefaults-hitsound");
+                String baseFolder = Path.Combine(tfPath, @"tf\custom\neodefaults-hitsound");
                 if (Directory.Exists(baseFolder)) {
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
                               + " preparation for re-install.");

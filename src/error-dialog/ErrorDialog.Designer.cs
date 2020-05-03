@@ -40,7 +40,7 @@
             this.quitButton.TabIndex = 1;
             this.quitButton.Text = "Quit";
             this.quitButton.UseVisualStyleBackColor = true;
-            this.quitButton.Click += new System.EventHandler(this.quitButton_Click);
+            this.quitButton.Click += new System.EventHandler(this.QuitButton_Click);
             // 
             // ContinueButton
             // 
@@ -95,6 +95,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(434, 161);
+            this.ControlBox = false;
             this.Controls.Add(this.errorImage);
             this.Controls.Add(this.errorMessage);
             this.Controls.Add(this.label2);

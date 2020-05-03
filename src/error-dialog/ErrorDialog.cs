@@ -1,35 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     public partial class ErrorDialog : Form {
-        private String Message = "%MESSAGE%";
+        private String message = "%MESSAGE%";
         public ErrorDialog() {
             InitializeComponent();
             errorImage.Image = SystemIcons.Error.ToBitmap();
         }
 
-        public void DisplayError(String msg) {
-            Message = msg;
-            errorMessage.Text = Message;
-            this.ShowDialog();
+        public DialogResult Display(String message) {
+            this.message = message;
+            errorMessage.Text = message;
+            var result = this.ShowDialog();
+            return result;
         }
 
-        private void quitButton_Click(object sender, EventArgs e) {
+        private void QuitButton_Click(object sender, EventArgs e) {
             Environment.Exit(0);
         }
 
         private void ContinueButton_Click(object sender, EventArgs e) {
-            this.Dispose();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         private void CopyButton_Click(object sender, EventArgs e) {
-            Clipboard.SetText(Message);
+            // The clipboard can only be accessed on an STAThread.
+            Thread thread = new Thread(() => Clipboard.SetText(message));
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
         }
     }
 }

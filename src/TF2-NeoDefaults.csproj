@@ -73,6 +73,10 @@
     <Compile Include="error-dialog\ErrorDialog.Designer.cs">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="warning-dialog\WarningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="warning-dialog\WarningDialog.Designer.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Main.cs">
@@ -86,6 +90,7 @@
     <EmbeddedResource Include="error-dialog\ErrorDialog.resx">
       <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="warning-dialog\WarningDialog.resx" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
