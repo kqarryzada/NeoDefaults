@@ -17,8 +17,8 @@ namespace NeoDefaults_Installer {
         // user's machine.
         private readonly String basePath;
 
-        // Stores the location of the "Team Fortress 2" folder on the user's machine. If unknown,
-        // this will be null.
+        // Stores the location of the "Team Fortress 2/tf/" folder on the user's machine. If 
+        // unknown, this will be null.
         public String tfPath = null;
 
         // TF-path related parameters. You must use String.Format() and specify a drive name to use these.
@@ -118,7 +118,8 @@ namespace NeoDefaults_Installer {
 
             if (hl2Path != null) {
                 // Strip "hl2.exe" from the path to obtain the folder path
-                tfPath = CanonicalizePath(Path.GetDirectoryName(hl2Path));
+                var TeamFortressPath = CanonicalizePath(Path.GetDirectoryName(hl2Path));
+                tfPath = Path.Combine(TeamFortressPath, "tf");
             }
         }
 
@@ -230,14 +231,14 @@ namespace NeoDefaults_Installer {
          */
         private void AppendLinesToAutoExec(String neodefaultsPath) {
             String autoexec;
-            String defaultLocation = Path.Combine(tfPath, @"tf\cfg\", "autoexec.cfg");
-            String mastercomfigLocation = Path.Combine(tfPath, @"tf\cfg\user", "autoexec.cfg");
+            String defaultLocation = Path.Combine(tfPath, @"cfg\", "autoexec.cfg");
+            String mastercomfigLocation = Path.Combine(tfPath, @"cfg\user", "autoexec.cfg");
 
             // Check for a Mastercomfig (https://mastercomfig.com/) install. This is a popular
             // plugin used by many players, and it expects autoexec.cfg to be stored in cfg/user/
             // instead of the usual cfg/ directory. In order to fully support these users, the
             // required execution lines must be added to the correct file.
-            String[] filePaths = Directory.GetFiles(Path.Combine(tfPath, @"tf\custom"),
+            String[] filePaths = Directory.GetFiles(Path.Combine(tfPath, "custom"),
                                                     "mastercomfig*preset.vpk",
                                                     SearchOption.TopDirectoryOnly);
             autoexec = (filePaths.Length == 0) ? defaultLocation : mastercomfigLocation;
@@ -267,7 +268,7 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 // First check if it's already installed. If so, overwrite the existing files with
                 // the user's permission.
-                String baseFolder = Path.Combine(tfPath, @"tf\custom\idhud-master");
+                String baseFolder = Path.Combine(tfPath, @"custom\idhud-master");
                 if (Directory.Exists(baseFolder)) {
                     var dialog = new WarningDialog();
                     var result = dialog.Display("An install of the HUD was detected at '"
@@ -283,7 +284,7 @@ namespace NeoDefaults_Installer {
                 }
 
                 String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
-                String destination = Path.Combine(tfPath, @"tf\custom");
+                String destination = Path.Combine(tfPath, "custom");
                 var logMsg = String.Format("Installing HUD from '{0}' to '{1}'.", zipFilepath, destination);
                 log.Write(logMsg);
 
@@ -308,7 +309,7 @@ namespace NeoDefaults_Installer {
          */
         public async Task InstallHUDFonts() {
             await Task.Run(() => {
-                String fontsPath = Path.Combine(tfPath, @"tf\custom\idhud-master\resource\fonts");
+                String fontsPath = Path.Combine(tfPath, @"custom\idhud-master\resource\fonts");
                 String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
 
                 // Copy each file over to the windows fonts directory to install them.
@@ -345,7 +346,7 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 // First check if it's already installed. If so, overwrite the existing files with
                 // the user's permission.
-                String baseFolder = Path.Combine(tfPath, @"tf\custom\neodefaults-hitsound");
+                String baseFolder = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
                 if (Directory.Exists(baseFolder)) {
                     var dialog = new WarningDialog();
                     var result = dialog.Display("An install of the hitsound was detected at '"
@@ -361,7 +362,7 @@ namespace NeoDefaults_Installer {
                 }
 
                 String hitsoundZip = Path.Combine(basePath, @"custom-files\neodefaults-hitsound.zip");
-                String destination = Path.Combine(tfPath, @"tf\custom");
+                String destination = Path.Combine(tfPath, "custom");
                 var logMsg = String.Format("Installing hitsound from '{0}' to '{1}'.", hitsoundZip, destination);
                 log.Write(logMsg);
 
@@ -387,7 +388,7 @@ namespace NeoDefaults_Installer {
         public async Task InstallConfig() {
             await Task.Run(() => {
                 String sourceConfig = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
-                String destConfig = Path.Combine(tfPath, @"tf\cfg\", cfgDestName);
+                String destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
                 var logMsg = String.Format("Installing config file from '{0}' to '{1}'.", sourceConfig, destConfig);
                 log.Write(logMsg);
 

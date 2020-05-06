@@ -210,12 +210,10 @@ namespace NeoDefaults_Installer {
             buttonPathMessage.Text = path;
             buttonPathMessage.Visible = true;
 
-            // Save the path, as it will be needed later
             utilities.tfPath = path;
 
             // Allow user to proceed to next page
             nextPath.Enabled = true;
-
             return true;
         }
 
