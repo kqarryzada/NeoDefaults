@@ -13,7 +13,7 @@ namespace NeoDefaults_Installer {
             this.TopMost = true;
         }
 
-        public DialogResult Display(String message) {
+        public void DisplayAndExit(String message) {
             this.message = message;
             String displayMessage = message;
             if (message.Length > MAX_MESSAGE_LENGTH) {
@@ -23,7 +23,7 @@ namespace NeoDefaults_Installer {
             ErrorMessage.Text = displayMessage;
 
             var result = this.ShowDialog();
-            return result;
+            Environment.Exit(1);
         }
 
         private void QuitButton_Click(object sender, EventArgs e) {

@@ -297,10 +297,12 @@ namespace NeoDefaults_Installer {
             try {
                 UpdateScreen(stack.Pop());
             }
-            catch (InvalidOperationException) {
-                log.Write("Tried to move to previous screen, but an unexpected error"
-                                + " occurred. The most likely cause is that the stack was popped"
-                                + " when it was empty, but this is not expected behavior.");
+            catch (InvalidOperationException ioe) {
+                log.WriteErr("An error occurred when trying to pop the panel stack:",
+                             ioe.ToString());
+                var dialog = new ErrorDialog();
+                dialog.DisplayAndExit("Tried to move to the previous screen, but an unexpected"
+                                      + " error occurred. The program will now exit.");
             }
         }
 
@@ -337,10 +339,11 @@ namespace NeoDefaults_Installer {
             else {
                 String panelName = (currentPanel == null) ? "<null>" : currentPanel.Name;
                 // It should not be possible to get an unknown panel onto the stack.
-                log.Write("SEVERE ERROR: The current panel is currently set to '" 
-                          + panelName + "', which is not defined.", 
-                          "This is not expected behavior.");
-                Environment.Exit(1);
+                log.WriteErr("SEVERE ERROR: The current panel is currently set to '"
+                             + panelName + "', which is not defined.");
+                var dialog = new ErrorDialog();
+                dialog.DisplayAndExit("An error occurred when trying to go to the next page."
+                                      + " The program will now exit.");
                 return;
             }
             UpdateScreen(nextPanel);
