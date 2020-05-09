@@ -1,5 +1,4 @@
-﻿using NeoDefaults_Installer.warning_dialog;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
 using System.Security;
@@ -7,13 +6,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NeoDefaults_Installer.warning_dialog;
 
 namespace NeoDefaults_Installer {
     /**
      * This class stores helpful methods that are unrelated to UI elements.
      */
     public class Utilities {
-        // Stores the location of the folder containing the this tool (e.g., the .exe file) on the
+        // Stores the location of the folder containing this tool (e.g., the .exe file) on the
         // user's machine.
         private readonly String basePath;
 
@@ -28,16 +28,18 @@ namespace NeoDefaults_Installer {
             @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\hl2.exe",
         };
 
-        // The filename for the source autoexec file that came with the installer.
-        private readonly String autoexecSourceName = "autoexec-alpha.cfg";
+        // The name of the config file to be installed.
+        private readonly String cfgSourceName = "autoexec-alpha.cfg";
 
-        // The filename of the destination config file.
+        // The name of the config file once it has been installed on the user's machine.
         private readonly String cfgDestName = "neodefaults.cfg";
 
         private static readonly Utilities singleton = new Utilities();
 
         private readonly Logger log = Logger.GetInstance();
 
+        // Return codes for installations. These help report whether an install failed, 
+        // succeeded, etc.
         public enum InstallStatus {
             FAIL,
             SUCCESS,
@@ -53,7 +55,7 @@ namespace NeoDefaults_Installer {
             relativeBasePath = Path.Combine(relativeBasePath, parentPath);
             basePath = new FileInfo(relativeBasePath).FullName;
 
-            // On startup, try to determine the path to the TF2 installation.
+            // On startup, try to determine the path to the TF2 installation on the machine.
             SearchForTF2Install();
         }
 
@@ -62,7 +64,11 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Tries to find a TF2 installation in the most common locations.
+         * Searches for a TF2 installation in the most common locations on the machine.
+         *
+         * This method obtains all the drives available on the system, then searches for a TF2 path
+         * under each drive until either a valid install is found, or until all possibilities have
+         * been exhausted.
          */
         private async void SearchForTF2Install() {
             // Obtain the list of drive names on the system.
@@ -130,7 +136,7 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Returns the canonicalized filepath for 'path'.
+         * Returns the canonicalized filepath for 'path', or 'null' if there was a problem.
          */
         public String CanonicalizePath(String path) {
             log.Write("Attempting to canonicalize the path of: " + path);
@@ -157,7 +163,7 @@ namespace NeoDefaults_Installer {
             }
 
             if (testPath != null) {
-                log.Write("Path was found to be: " + testPath);
+                log.Write("The path was found to be: " + testPath);
                 log.Write();
             }
             return testPath;
@@ -289,6 +295,7 @@ namespace NeoDefaults_Installer {
                     Directory.Delete(baseFolder, true);
                 }
 
+                // Begin install
                 String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
                 String destination = Path.Combine(tfPath, "custom");
                 var logMsg = String.Format("Installing HUD from '{0}' to '{1}'.", zipFilepath, destination);
@@ -394,7 +401,7 @@ namespace NeoDefaults_Installer {
          */
         public async Task<InstallStatus> InstallConfig() {
             return await Task.Run(() => {
-                String sourceConfig = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
+                String sourceConfig = Path.Combine(basePath, @"custom-files\", cfgSourceName);
                 String destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
                 var logMsg = String.Format("Installing config file from '{0}' to '{1}'.", sourceConfig, destConfig);
                 log.Write(logMsg);

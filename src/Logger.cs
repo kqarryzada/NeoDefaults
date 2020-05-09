@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Diagnostics;
 using System.IO;
 
@@ -7,12 +6,16 @@ namespace NeoDefaults_Installer {
     public class Logger {
         private static readonly Logger singleton = new Logger();
 
+        // The reference to the file being logged.
         private readonly FileStream logFile;
 
+        // The name of the folder that will hold the log files.
         private readonly String BASE_FOLDER_NAME = "NeoDefaults";
 
+        // String divider used for a visual barrier for error messages in the log file.
         private readonly String DIVIDER =
             "---------------------------------------------------------------------------------\n\r";
+
 
         private Logger() {
             String commonAppData = Environment.GetFolderPath(

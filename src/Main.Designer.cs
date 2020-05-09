@@ -115,6 +115,9 @@
             this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
+            // Enable text wrapping for the message
+            this.promptPath.MaximumSize = new System.Drawing.Size(580, 0);
+            this.promptPath.AutoSize = true;
             // 
             // promptHome
             // 

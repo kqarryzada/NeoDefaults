@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
-        public static readonly bool DEVELOP_MODE = true;
-
         // Defines the default size of the main screen.
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
 
         // The approximate number of components expected to be installed. This includes elements
-        // like the autoexec file, the HUD, etc.
+        // like the autoexec file, the HUD, etc. This is used to determine what percentage of the
+        // progress bar should be filled each time a component finishes installing.
         private readonly int NUM_COMPONENTS = 4;
 
-        // A reference to the panel object that is currently being displayed on the main screen.
+        // A reference to the panel that is currently being displayed on the main screen.
         private Panel currentPanel;
 
-        // Specifies whether user requested additional customizations.
+        // Specifies whether the user requested additional customizations.
         private bool installHUD = true;
         private bool installHitsound = true;
 
-        // Specifies install type
+        // Specifies the installation type.
         private bool isBasicInstallEnabled = true;
 
         // Keeps track of which previous menus were accessed, so that they can be made available if
@@ -36,6 +33,13 @@ namespace NeoDefaults_Installer {
 
         // Logfile containing useful information on what the program has been doing
         Logger log;
+
+        // Store the DEBUG flag as a member variable to allow using its value in if statements.
+#if DEBUG
+        public static readonly bool DEVELOP_MODE = true;
+#else
+        public static readonly bool DEVELOP_MODE = false;
+#endif
 
 
         public Main() {
@@ -84,7 +88,6 @@ namespace NeoDefaults_Installer {
                     String fpCheck = filepath.ToLower();
                     if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
                         // Clear any previously displayed message
-                        // buttonPathMessage.Visible = false;
                         buttonPathMessage.ForeColor = Color.DimGray;
                         buttonPathMessage.Text = "";
                         buttonPathMessage.Visible = false;
@@ -103,6 +106,7 @@ namespace NeoDefaults_Installer {
             // Since the hl2.exe file was given, return the parent directory.
             return (valid) ? Path.GetDirectoryName(filepath) : null;
         }
+
 
         /**
          * Writes information about the program state to the log file.
@@ -137,6 +141,7 @@ namespace NeoDefaults_Installer {
 
             progressBar.Visible = true;
         }
+
 
         /**
          * Installs the requested files to the appropriate locations. These operations are done on
@@ -262,6 +267,7 @@ namespace NeoDefaults_Installer {
             nextInstall.Enabled = true;
         }
 
+
         /**
          * Saves the location of the user's TF2 install. The full canonical path of 'path' is
          * computed by this method.
@@ -371,14 +377,12 @@ namespace NeoDefaults_Installer {
         /**
          * When navigating to the path page (the page that asks the user to enter their TF path),
          * the program needs to load elements based on whether or not a TF2 install has been found.
-         * This method will only make changes to the UI once.
+         * To avoid issues when navigating between pages, this method will only make changes to the
+         * UI once.
          */
-        private bool first = true;
+        private bool visited = false;
         private void PreparePathPanel() {
-            // If the path to the TF2 install was found during startup, disable the ability for
-            // the user to reset it. This is done only once to prevent strange issues when switching
-            // between panels.
-            if (!first)
+            if (visited)
                 return;
 
             String currSavedPath = utilities.tfPath;
@@ -392,11 +396,11 @@ namespace NeoDefaults_Installer {
             }
             else {
                 promptPath.Text = "Select the location where you installed your game, and find the"
-                                  + " \"hl2.exe\" file.\n\r This is usually in a location that looks like:\n\r"
+                                  + " \"hl2.exe\" file. This is usually in a location that looks like:\n\r"
                                   + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
             }
 
-            first = false;
+            visited = true;
         }
 
 
