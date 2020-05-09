@@ -50,44 +50,57 @@ namespace NeoDefaults_Installer {
             this.MaximizeBox = false;
         }
 
+
         /**
-         * When the "Select Folder" button is clicked, launch a menu to allow the user to specify
-         * the location of their install. Currently, this makes use of a file-based search and asks
-         * the user to provide the 'hl2.exe' file, despite needing a folder.
-         * 
-         * This was done since the typical tree-based folder navigation menu is quite ugly, and
-         * it's apparently difficult to successfully use the more modern menu (which is used here)
-         * but return a folder instead (at least, it seemed that way to me). Hence, the program asks
-         * for the 'hl2.exe' file in the nicer mavigation menu, and strips off the filename to
-         * record the "Team Fortress 2" folder.
+         * Launches a dialog box and asks the user to provide the path to their TF2 install.
          *
-         * Returns a String representing the filepath the user selected.
+         * This is triggered when the "Select Folder" button is clicked.Currently, this makes use of
+         * a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
+         * folder.
+         * 
+         * The .exe is requested despite the fact that the folder is what's really desired. This is
+         * because the old-school tree-based folder navigation menu is quite ugly, and it's
+         * apparently difficult to configure the more modern menu and have it return a folder (at
+         * least, it seemed that way to me). Hence, the program asks for the 'hl2.exe' file in the
+         * nicer mavigation menu, and the path will later be modified to record the
+         * "Team Fortress 2/tf" folder.
+         *
+         * Returns a String representing the path to the "Team Fortress 2" folder.
          */
         private String RequestFilepath() {
             String filepath = "";
-            bool valid = true;
+            bool valid = false;
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog()) {
-                openFileDialog.InitialDirectory = @"C:\";
-                openFileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 1;
+            using (var fileDialog = new OpenFileDialog()) {
+                fileDialog.InitialDirectory = @"C:\";
+                fileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
+                fileDialog.FilterIndex = 1;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK) {
+                if (fileDialog.ShowDialog() == DialogResult.OK) {
                     // Get the path of specified file
-                    filepath = openFileDialog.FileName;
+                    filepath = fileDialog.FileName;
 
-                    // Validate the filepath
+                    // Validate the provided filepath
                     String fpCheck = filepath.ToLower();
-                    if (!fpCheck.Contains("hl2.exe") || !fpCheck.Contains("team fortress 2")) {
+                    if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
+                        // Clear any previously displayed message
+                        // buttonPathMessage.Visible = false;
+                        buttonPathMessage.ForeColor = Color.DimGray;
+                        buttonPathMessage.Text = "";
+                        buttonPathMessage.Visible = false;
+
+                        valid = true;
+                    }
+                    else {
                         // Refuse
                         buttonPathMessage.ForeColor = Color.Red;
-                        buttonPathMessage.Text = "Invalid file provided.";
-                        valid = false;
+                        buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file.";
+                        buttonPathMessage.Visible = true;
                     }
                 }
             }
 
-            // Since hl2.exe is selected, point 'filePath' at the parent directory if it is not null.
+            // Since the hl2.exe file was given, return the parent directory.
             return (valid) ? Path.GetDirectoryName(filepath) : null;
         }
 
@@ -432,7 +445,7 @@ namespace NeoDefaults_Installer {
         private void buttonPath_Click(object sender, EventArgs e) {
             String filepath = RequestFilepath();
             if (filepath != null) {
-                filepath = utilities.CanonicalizePath(filepath);
+                filepath = utilities.CanonicalizePath(Path.Combine(filepath, "tf"));
 
                 // Attempt setting the filepath
                 if (SetTFPath(filepath))
