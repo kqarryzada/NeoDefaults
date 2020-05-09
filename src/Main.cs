@@ -152,13 +152,12 @@ namespace NeoDefaults_Installer {
 
             if (installHUD) {
                 // --- HUD --- //
-                // If the HUD installation is skipped, don't bother trying to install the fonts.
-                bool skipFontInstall = false;
+                bool installFonts = true;
 
                 promptInstall.Text = "Installing the Improved Default HUD...";
                 String HUDMessage = "";
-                var HUDSuccess = await utilities.InstallHUD();
-                switch (HUDSuccess) {
+                var HUDStatus = await utilities.InstallHUD();
+                switch (HUDStatus) {
                     case Utilities.InstallStatus.FAIL:
                         HUDMessage = "Error: Failed to install the Improved Default HUD.";
                         break;
@@ -167,26 +166,27 @@ namespace NeoDefaults_Installer {
                         break;
                     case Utilities.InstallStatus.OPT_OUT:
                         HUDMessage = "HUD installation skipped.";
-                        skipFontInstall = true;
+                        installFonts = false;
                         break;
                     default:
                         log.WriteErr("Received an unexpected return value when trying to install"
-                                     + " the HUD: " + HUDSuccess);
+                                     + " the HUD: " + HUDStatus);
                         break;
                 }
-                progressBox.AppendText(HUDMessage);
-                progressBox.AppendText(Environment.NewLine);
+                log.Write("HUD installation returned with status: " + HUDStatus);
+                progressBox.AppendText(HUDMessage + Environment.NewLine);
                 progressBar.PerformStep();
 
 
                 // --- Fonts --- //
-                if (!skipFontInstall) {
+                // If the user opts out of installing the HUD, then skip installing the fonts.
+                if (installFonts) {
                     log.Write("Installing font files...");
 
                     promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
                     String fontsMessage = "";
-                    var fontsSuccess = await utilities.InstallHUDFonts();
-                    switch (fontsSuccess) {
+                    var fontsStatus = await utilities.InstallHUDFonts();
+                    switch (fontsStatus) {
                         case Utilities.InstallStatus.FAIL:
                             fontsMessage = "Error: Failed to install the needed fonts for the HUD.";
                             break;
@@ -195,11 +195,11 @@ namespace NeoDefaults_Installer {
                             break;
                         default:
                             log.WriteErr("Received an unexpected return value when trying to install"
-                                         + " the HUD fonts: " + fontsSuccess);
+                                         + " the HUD fonts: " + fontsStatus);
                             break;
                     }
-                    progressBox.AppendText(fontsMessage);
-                    progressBox.AppendText(Environment.NewLine);
+                    log.Write("Font installation returned with status: " + fontsStatus);
+                    progressBox.AppendText(fontsMessage + Environment.NewLine);
                 }
                 else {
                     log.Write("Font installation skipped.");
@@ -212,8 +212,8 @@ namespace NeoDefaults_Installer {
             if (installHitsound) {
                 promptInstall.Text = "Installing hitsound files...";
                 String hitMessage = "";
-                var hitSuccess = await utilities.InstallHitsound();
-                switch (hitSuccess) {
+                var hitStatus = await utilities.InstallHitsound();
+                switch (hitStatus) {
                     case Utilities.InstallStatus.FAIL:
                         hitMessage = "Error: Failed to install the hitsound.";
                         break;
@@ -225,11 +225,11 @@ namespace NeoDefaults_Installer {
                         break;
                     default:
                         log.WriteErr("Received an unexpected return value when trying to install"
-                                     + " the hitsound: " + hitSuccess);
+                                     + " the hitsound: " + hitStatus);
                         break;
                 }
-                progressBox.AppendText(hitMessage);
-                progressBox.AppendText(Environment.NewLine);
+                log.Write("Hitsound installation returned with status: " + hitStatus);
+                progressBox.AppendText(hitMessage + Environment.NewLine);
                 progressBar.PerformStep();
             }
 
@@ -237,8 +237,8 @@ namespace NeoDefaults_Installer {
             // --- Config files --- //
             promptInstall.Text = "Installing config files...";
             String configMessage = "";
-            var configSuccess = await utilities.InstallConfig();
-            switch (configSuccess) {
+            var configStatus = await utilities.InstallConfig();
+            switch (configStatus) {
                 case Utilities.InstallStatus.FAIL:
                     configMessage = "Error: Failed to install the config files.";
                     break;
@@ -247,15 +247,14 @@ namespace NeoDefaults_Installer {
                     break;
                 default:
                     log.WriteErr("Received an unexpected return value when trying to install"
-                                 + " the config files: " + configSuccess);
+                                 + " the config files: " + configStatus);
                     break;
             }
-            progressBox.AppendText(configMessage);
-            progressBox.AppendText(Environment.NewLine);
+            log.Write("Config installation returned with status: " + configStatus);
+            progressBox.AppendText(configMessage + Environment.NewLine);
             progressBar.PerformStep();
 
 
-            // Thread.Sleep(100);
             log.Write();
             promptInstall.Text = "Installation complete.";
             progressBox.AppendText("Installation complete.");
