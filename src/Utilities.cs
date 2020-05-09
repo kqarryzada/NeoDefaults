@@ -36,7 +36,13 @@ namespace NeoDefaults_Installer {
 
         private static readonly Utilities singleton = new Utilities();
 
-        private Logger log = Logger.GetInstance();
+        private readonly Logger log = Logger.GetInstance();
+
+        public enum InstallStatus {
+            FAIL,
+            SUCCESS,
+            OPT_OUT
+        };
 
         private Utilities() {
             // When developing, the base filepath is two parent directories above the
@@ -261,11 +267,9 @@ namespace NeoDefaults_Installer {
 
         /**
          * Installs idHUD in the custom/ directory.
-         * 
-         * Throws an Exception if an unexpected error occurs.
          */
-        public async Task InstallHUD() {
-            await Task.Run(() => {
+        public async Task<InstallStatus> InstallHUD() {
+            return await Task.Run(() => {
                 // First check if it's already installed. If so, overwrite the existing files with
                 // the user's permission.
                 String baseFolder = Path.Combine(tfPath, @"custom\idhud-master");
@@ -278,7 +282,7 @@ namespace NeoDefaults_Installer {
                     );
                     if (result != DialogResult.OK) {
                         log.Write("HUD was already installed, and the user opted out of re-installing.");
-                        return;
+                        return InstallStatus.OPT_OUT;
                     }
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
                               + " preparation for re-install.");
@@ -296,9 +300,11 @@ namespace NeoDefaults_Installer {
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the hitsound.",
                                  e.ToString());
-                    throw e;
+                    return InstallStatus.FAIL;
                 }
+
                 log.Write("HUD installation complete.");
+                return InstallStatus.SUCCESS;
             });
         }
 
@@ -306,11 +312,9 @@ namespace NeoDefaults_Installer {
          * In order for idhud to work properly, some fonts need to be installed, which are provided
          * in idhud's zip file. This method installs the fonts on the user's machine. If a font is
          * already installed, the existing one is accepted.
-         * 
-         * Throws an Exception if an unexpected error occurs.
          */
-        public async Task InstallHUDFonts() {
-            await Task.Run(() => {
+        public async Task<InstallStatus> InstallHUDFonts() {
+            return await Task.Run(() => {
                 String fontsPath = Path.Combine(tfPath, @"custom\idhud-master\resource\fonts");
                 String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
 
@@ -330,22 +334,22 @@ namespace NeoDefaults_Installer {
                     }
                     catch (Exception e) {
                         log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
-                                 e.ToString());
-                        throw e;
+                                     e.ToString());
+                        return InstallStatus.FAIL;
                     }
                 }
 
                 log.Write("Font installation complete.");
+                return InstallStatus.SUCCESS;
             });
         }
 
         /**
-         * Installs the custom hitsound.
-         * 
-         * Throws an Exception if an unexpected error occurs.
+         * Installs the custom hitsound. This is done on a background thread to avoid locking 
+         * the UI.
          */
-        public async Task InstallHitsound() {
-            await Task.Run(() => {
+        public async Task<InstallStatus> InstallHitsound() {
+            return await Task.Run(() => {
                 // First check if it's already installed. If so, overwrite the existing files with
                 // the user's permission.
                 String baseFolder = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
@@ -358,7 +362,7 @@ namespace NeoDefaults_Installer {
                     );
                     if (result != DialogResult.OK) {
                         log.Write("Hitsound was already installed, and the user opted out of re-installing.");
-                        return;
+                        return InstallStatus.OPT_OUT;
                     }
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
                               + " preparation for re-install.");
@@ -376,21 +380,20 @@ namespace NeoDefaults_Installer {
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the hitsound.",
                                  e.ToString());
-                    throw e;
+                    return InstallStatus.FAIL;
                 }
 
                 log.Write("Hitsound installation complete.");
+                return InstallStatus.SUCCESS;
             });
         }
 
         /**
          * Installs the neoDefaults.cfg file. If there is an existing install, it will be
          * overwritten.
-         * 
-         * Throws an Exception if an unexpected error occurs.
          */
-        public async Task InstallConfig() {
-            await Task.Run(() => {
+        public async Task<InstallStatus> InstallConfig() {
+            return await Task.Run(() => {
                 String sourceConfig = Path.Combine(basePath, @"custom-files\", autoexecSourceName);
                 String destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
                 var logMsg = String.Format("Installing config file from '{0}' to '{1}'.", sourceConfig, destConfig);
@@ -403,10 +406,11 @@ namespace NeoDefaults_Installer {
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the config files.",
                                  e.ToString());
-                    throw e;
+                    return InstallStatus.FAIL;
                 }
 
                 log.Write("Config installation complete.");
+                return InstallStatus.SUCCESS;
             });
         }
     }

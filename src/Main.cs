@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 
-
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
         public static readonly bool DEVELOP_MODE = true;
@@ -139,55 +138,112 @@ namespace NeoDefaults_Installer {
             InitializeProgressbar();
 
             if (installHUD) {
-                promptInstall.Text = "Installing the Improved Default HUD...";
-                try {
-                    await utilities.InstallHUD();
-                    progressBox.AppendText("HUD installed.");
-                }
-                catch (Exception) {
-                    progressBox.AppendText("Error: Failed to install the HUD.");
-                }
-                progressBar.PerformStep();
-                progressBox.AppendText(Environment.NewLine);
+                // --- HUD --- //
+                // If the HUD installation is skipped, don't bother trying to install the fonts.
+                bool skipFontInstall = false;
 
-                promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
-                try {
-                    await utilities.InstallHUDFonts();
-                    progressBox.AppendText("Installed necessary fonts for HUD.");
+                promptInstall.Text = "Installing the Improved Default HUD...";
+                String HUDMessage = "";
+                var HUDSuccess = await utilities.InstallHUD();
+                switch (HUDSuccess) {
+                    case Utilities.InstallStatus.FAIL:
+                        HUDMessage = "Error: Failed to install the Improved Default HUD.";
+                        break;
+                    case Utilities.InstallStatus.SUCCESS:
+                        HUDMessage = "Successfully installed the Improved Default HUD.";
+                        break;
+                    case Utilities.InstallStatus.OPT_OUT:
+                        HUDMessage = "HUD installation skipped.";
+                        skipFontInstall = true;
+                        break;
+                    default:
+                        log.WriteErr("Received an unexpected return value when trying to install"
+                                     + " the HUD: " + HUDSuccess);
+                        break;
                 }
-                catch (Exception) {
-                    progressBox.AppendText("Error: Failed to install the needed fonts for the HUD.");
+                progressBox.AppendText(HUDMessage);
+                progressBox.AppendText(Environment.NewLine);
+                progressBar.PerformStep();
+
+
+                // --- Fonts --- //
+                if (!skipFontInstall) {
+                    log.Write("Installing font files...");
+
+                    promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
+                    String fontsMessage = "";
+                    var fontsSuccess = await utilities.InstallHUDFonts();
+                    switch (fontsSuccess) {
+                        case Utilities.InstallStatus.FAIL:
+                            fontsMessage = "Error: Failed to install the needed fonts for the HUD.";
+                            break;
+                        case Utilities.InstallStatus.SUCCESS:
+                            fontsMessage = "Installed necessary fonts for HUD.";
+                            break;
+                        default:
+                            log.WriteErr("Received an unexpected return value when trying to install"
+                                         + " the HUD fonts: " + fontsSuccess);
+                            break;
+                    }
+                    progressBox.AppendText(fontsMessage);
+                    progressBox.AppendText(Environment.NewLine);
+                }
+                else {
+                    log.Write("Font installation skipped.");
                 }
                 progressBar.PerformStep();
-                progressBox.AppendText(Environment.NewLine);
             }
 
+
+            // --- Hitsound --- //
             if (installHitsound) {
                 promptInstall.Text = "Installing hitsound files...";
-                try {
-                    await utilities.InstallHitsound();
-                    progressBox.AppendText("Hitsound installed.");
+                String hitMessage = "";
+                var hitSuccess = await utilities.InstallHitsound();
+                switch (hitSuccess) {
+                    case Utilities.InstallStatus.FAIL:
+                        hitMessage = "Error: Failed to install the hitsound.";
+                        break;
+                    case Utilities.InstallStatus.SUCCESS:
+                        hitMessage = "Hitsound installed.";
+                        break;
+                    case Utilities.InstallStatus.OPT_OUT:
+                        hitMessage = "Hitsound install skipped.";
+                        break;
+                    default:
+                        log.WriteErr("Received an unexpected return value when trying to install"
+                                     + " the hitsound: " + hitSuccess);
+                        break;
                 }
-                catch (Exception) {
-                    progressBox.AppendText("Error: Failed to install the hitsound.");
-                }
-                progressBar.PerformStep();
+                progressBox.AppendText(hitMessage);
                 progressBox.AppendText(Environment.NewLine);
+                progressBar.PerformStep();
             }
 
-            // Install neodefaults.cfg file
+
+            // --- Config files --- //
             promptInstall.Text = "Installing config files...";
-            try {
-                await utilities.InstallConfig();
-                progressBox.AppendText("Config installed.");
+            String configMessage = "";
+            var configSuccess = await utilities.InstallConfig();
+            switch (configSuccess) {
+                case Utilities.InstallStatus.FAIL:
+                    configMessage = "Error: Failed to install the config files.";
+                    break;
+                case Utilities.InstallStatus.SUCCESS:
+                    configMessage = "Config installed.";
+                    break;
+                default:
+                    log.WriteErr("Received an unexpected return value when trying to install"
+                                 + " the config files: " + configSuccess);
+                    break;
             }
-            catch (Exception) {
-                progressBox.AppendText("Error: Failed to install the config files.");
-            }
-            progressBar.PerformStep();
+            progressBox.AppendText(configMessage);
             progressBox.AppendText(Environment.NewLine);
+            progressBar.PerformStep();
 
-            Thread.Sleep(100);
+
+            // Thread.Sleep(100);
+            log.Write();
             promptInstall.Text = "Installation complete.";
             progressBox.AppendText("Installation complete.");
             // Progress complete. Allow user to continue to next page
