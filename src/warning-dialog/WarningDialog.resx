@@ -117,4 +117,51 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAGBgAAAEAIACICQAAFgAAACgAAAAYAAAAMAAAAAEAIAAAAAAAAAkAACMuAAAjLgAAAAAAAAAA
+        AAD////////////////////////////////////////////////6+vr/6enp/9zc3P/c3Nz/6enp//r6
+        +v//////////////////////////////////////////////////////////////////////////////
+        ///9/f3/2dnZ/5OTk/9WVlb/MzMz/yEhIf8hISH/MzMz/1ZWVv+Tk5P/2dnZ//39/f//////////////
+        /////////////////////////////////////////////+bm5v9/f3//ICAg/wEBAf8BAQH/CgoK/wIC
+        Av8CAgL/CgoK/wEBAf8BAQH/ICAg/35+fv/l5eX/////////////////////////////////////////
+        ////////zMzM/0BAQP8BAQH/Dg4O/1FRUf+enp7/ra2t/xoaGv8aGhr/ra2t/52dnf9RUVH/Dg4O/wEB
+        Af9AQED/zc3N///////////////////////////////////////MzMz/Li4u/wAAAP85OTn/tbW1//b2
+        9v//////3t7e/x8fH/8fHx//3t7e///////39/f/tbW1/zg4OP8AAAD/Ly8v/8zMzP//////////////
+        /////////////+Xl5f9BQUH/AAAA/05OTv/e3t7/////////////////3t7e/x8fH/8fHx//3t7e////
+        /////////////9/f3/9OTk7/AAAA/0FBQf/l5eX//////////////////v7+/35+fv8AAAD/OTk5/97e
+        3v//////////////////////8PDw/1dXV/9XV1f/8PDw///////////////////////e3t7/OTk5/wAA
+        AP9/f3///v7+////////////2NjY/yAgIP8NDQ3/tLS0/////////////////////////////////+/v
+        7//v7+//////////////////////////////////tbW1/w0NDf8hISH/2NjY////////////k5OT/wAA
+        AP9RUVH/9vb2////////////////////////////////////////////////////////////////////
+        ////////9vb2/1FRUf8AAAD/lJSU///////6+vr/VlZW/wAAAP+dnZ3/////////////////////////
+        /////////////////////////////////////////////////////////////52dnf8AAAD/V1dX//r6
+        +v/p6en/NDQ0/woKCv+urq7/4uLi/9/f3//v7+//////////////////////////////////////////
+        /////////////+/v7//f39//4uLi/66urv8KCgr/NDQ0/+rq6v/c3Nz/ISEh/wEBAf8bGxv/ICAg/x4e
+        Hv9XV1f/8PDw////////////////////////////////////////////8PDw/1dXV/8eHh7/ICAg/xsb
+        G/8BAQH/ISEh/9zc3P/c3Nz/ISEh/wEBAf8bGxv/ICAg/x4eHv9XV1f/8PDw////////////////////
+        ////////////////////////8PDw/1dXV/8eHh7/ICAg/xsbG/8BAQH/ISEh/9zc3P/p6en/NDQ0/woK
+        Cv+urq7/4uLi/9/f3//v7+///////////////////////////////////////////////////////+/v
+        7//f39//4uLi/66urv8KCgr/NDQ0/+rq6v/6+vr/VlZW/wAAAP+dnZ3/////////////////////////
+        /////////////////////////////////////////////////////////////52dnf8AAAD/VlZW//r6
+        +v//////k5OT/wAAAP9RUVH/9vb2////////////////////////////////////////////////////
+        ////////////////////////9vb2/1FRUf8AAAD/k5OT////////////2NjY/yAgIP8NDQ3/tbW1////
+        /////////////////////////////+/v7//v7+//////////////////////////////////tbW1/w0N
+        Df8gICD/2NjY/////////////v7+/319ff8AAAD/Ojo6/9/f3///////////////////////8PDw/1dX
+        V/9XV1f/8PDw///////////////////////e3t7/OTk5/wAAAP9+fn7//v7+/////////////////+Xl
+        5f9AQED/AAAA/09PT//f39//////////////////3t7e/x8fH/8fHx//3t7e/////////////////9/f
+        3/9PT0//AAAA/0BAQP/l5eX////////////////////////////MzMz/Li4u/wAAAP86Ojr/tra2//f3
+        9///////3t7e/x8fH/8fHx//3t7e///////39/f/tra2/zk5Of8AAAD/Li4u/8zMzP//////////////
+        ////////////////////////zMzM/z8/P/8BAQH/Dg4O/1FRUf+enp7/ra2t/xoaGv8aGhr/ra2t/56e
+        nv9RUVH/Dg4O/wEBAf9AQED/zMzM/////////////////////////////////////////////////+bm
+        5v9+fn7/Hx8f/wEBAf8BAQH/CgoK/wICAv8CAgL/CgoK/wEBAf8BAQH/ICAg/35+fv/l5eX/////////
+        ///////////////////////////////////////////////////9/f3/2NjY/5KSkv9VVVX/MzMz/yEh
+        If8hISH/MzMz/1ZWVv+Tk5P/2dnZ//39/f//////////////////////////////////////////////
+        ///////////////////////////////////6+vr/6enp/9zc3P/c3Nz/6enp//r6+v//////////////
+        //////////////////////////////////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAA=
+</value>
+  </data>
 </root>

@@ -271,10 +271,12 @@ namespace NeoDefaults_Installer {
                 String baseFolder = Path.Combine(tfPath, @"custom\idhud-master");
                 if (Directory.Exists(baseFolder)) {
                     var dialog = new WarningDialog();
-                    var result = dialog.Display("An install of the HUD was detected at '"
-                                                + baseFolder + "'. Would you like to continue"
-                                                + " and re-install, or skip the HUD installation?");
-                    if (result == DialogResult.Cancel) {
+                    var result = dialog.Display(
+                        "An install of the HUD was detected at '" + baseFolder
+                        + "'. Would you like to continue and overwrite the existing files, or skip"
+                        + " the HUD installation?"
+                    );
+                    if (result != DialogResult.OK) {
                         log.Write("HUD was already installed, and the user opted out of re-installing.");
                         return;
                     }
@@ -349,11 +351,13 @@ namespace NeoDefaults_Installer {
                 String baseFolder = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
                 if (Directory.Exists(baseFolder)) {
                     var dialog = new WarningDialog();
-                    var result = dialog.Display("An install of the hitsound was detected at '"
-                                                + baseFolder + "'. Would you like to continue"
-                                                + " and re-install, or skip the hitsound installation?");
-                    if (result == DialogResult.Cancel) {
-                        log.Write("HUD was already installed, and the user opted out of re-installing.");
+                    var result = dialog.Display(
+                        "An install of the hitsound was detected at '" + baseFolder
+                        + "'. Would you like to continue and overwrite the existing files, or skip"
+                        + " the hitsound installation?"
+                    );
+                    if (result != DialogResult.OK) {
+                        log.Write("Hitsound was already installed, and the user opted out of re-installing.");
                         return;
                     }
                     log.Write("'" + baseFolder + "' was found to already exist. Deleting in"

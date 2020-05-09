@@ -4,6 +4,8 @@ using System.Windows.Forms;
 
 namespace NeoDefaults_Installer.warning_dialog {
     public partial class WarningDialog : Form {
+        private readonly int MAX_MESSAGE_LENGTH = 750;
+
         public WarningDialog() {
             InitializeComponent();
             DisplayImage.Image = SystemIcons.Warning.ToBitmap();
@@ -11,7 +13,11 @@ namespace NeoDefaults_Installer.warning_dialog {
         }
 
         public DialogResult Display(String message) {
-            errorMessage.Text = message;
+            if (message.Length > MAX_MESSAGE_LENGTH) {
+                message = message.Substring(0, MAX_MESSAGE_LENGTH);
+                message += "...";
+            }
+            WarningMessage.Text = message;
             var result = this.ShowDialog();
             return result;
         }

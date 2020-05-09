@@ -26,7 +26,7 @@
             this.quitButton = new System.Windows.Forms.Button();
             this.ContinueButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.errorMessage = new System.Windows.Forms.Label();
+            this.ErrorMessage = new System.Windows.Forms.Label();
             this.errorImage = new System.Windows.Forms.PictureBox();
             this.CopyButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorImage)).BeginInit();
@@ -34,7 +34,7 @@
             // 
             // quitButton
             // 
-            this.quitButton.Location = new System.Drawing.Point(347, 129);
+            this.quitButton.Location = new System.Drawing.Point(617, 127);
             this.quitButton.Name = "quitButton";
             this.quitButton.Size = new System.Drawing.Size(75, 22);
             this.quitButton.TabIndex = 1;
@@ -44,7 +44,7 @@
             // 
             // ContinueButton
             // 
-            this.ContinueButton.Location = new System.Drawing.Point(261, 129);
+            this.ContinueButton.Location = new System.Drawing.Point(531, 127);
             this.ContinueButton.Name = "ContinueButton";
             this.ContinueButton.Size = new System.Drawing.Size(75, 22);
             this.ContinueButton.TabIndex = 1;
@@ -64,13 +64,16 @@
             // 
             // errorMessage
             // 
-            this.errorMessage.AutoSize = true;
-            this.errorMessage.Location = new System.Drawing.Point(73, 46);
-            this.errorMessage.Margin = new System.Windows.Forms.Padding(3);
-            this.errorMessage.Name = "errorMessage";
-            this.errorMessage.Size = new System.Drawing.Size(75, 13);
-            this.errorMessage.TabIndex = 2;
-            this.errorMessage.Text = "%MESSAGE%";
+            this.ErrorMessage.AutoSize = true;
+            this.ErrorMessage.Location = new System.Drawing.Point(73, 46);
+            this.ErrorMessage.Margin = new System.Windows.Forms.Padding(3);
+            this.ErrorMessage.Name = "errorMessage";
+            this.ErrorMessage.Size = new System.Drawing.Size(75, 13);
+            this.ErrorMessage.TabIndex = 2;
+            this.ErrorMessage.Text = "%MESSAGE%";
+            // Enable text wrapping for the message
+            this.ErrorMessage.MaximumSize = new System.Drawing.Size(620, 0);
+            this.ErrorMessage.AutoSize = true;
             // 
             // errorImage
             // 
@@ -94,14 +97,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(434, 161);
+            this.ClientSize = new System.Drawing.Size(704, 161);
             this.ControlBox = false;
             this.Controls.Add(this.errorImage);
-            this.Controls.Add(this.errorMessage);
+            this.Controls.Add(this.ErrorMessage);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.CopyButton);
             this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.quitButton);
+            this.MaximizeBox = false;
             this.Name = "ErrorDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -118,7 +122,7 @@
         private System.Windows.Forms.Button quitButton;
         private System.Windows.Forms.Button ContinueButton;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label errorMessage;
+        private System.Windows.Forms.Label ErrorMessage;
         private System.Windows.Forms.PictureBox errorImage;
         private System.Windows.Forms.Button CopyButton;
     }

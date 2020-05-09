@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     public partial class ErrorDialog : Form {
+        private readonly int MAX_MESSAGE_LENGTH = 750;
         private String message = "%MESSAGE%";
         public ErrorDialog() {
             InitializeComponent();
@@ -14,7 +15,13 @@ namespace NeoDefaults_Installer {
 
         public DialogResult Display(String message) {
             this.message = message;
-            errorMessage.Text = message;
+            String displayMessage = message;
+            if (message.Length > MAX_MESSAGE_LENGTH) {
+                displayMessage = displayMessage.Substring(0, MAX_MESSAGE_LENGTH);
+                displayMessage += "...";
+            }
+            ErrorMessage.Text = displayMessage;
+
             var result = this.ShowDialog();
             return result;
         }
