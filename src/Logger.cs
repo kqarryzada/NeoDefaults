@@ -41,33 +41,54 @@ namespace NeoDefaults_Installer {
             File.WriteAllText(fileName, firstLine);
         }
 
+
         public static Logger GetInstance() {
             return singleton;
         }
 
-        private void Print(String s) {
-            File.AppendAllText(logFile.Name, s + Environment.NewLine);
-            if (Main.DEVELOP_MODE)
-                Debug.Print("Log: " + s);
-        }
-
+        /**
+         * Writes the specified text to the log.
+         *
+         * If an error occurs in writing to the log file, this method will silently fail.
+         */
         public void Write(params String[] logLines) {
             // If called with no parameters, just print a newline.
             if (logLines.Length == 0)
                 logLines = new[] { "" } ;
 
-            foreach (String s in logLines) {
-                File.AppendAllText(logFile.Name, s + Environment.NewLine);
-                if (Main.DEVELOP_MODE)
-                    Debug.Print("Log: " + s);
+            try {
+                foreach (String s in logLines) {
+                    File.AppendAllText(logFile.Name, s + Environment.NewLine);
+                    if (Main.DEVELOP_MODE)
+                        Debug.Print("Log: " + s);
+                }
+            }
+            catch (Exception e) {
+                // If the write fails, there's really not much that can be done.
+                Debug.Print("Failed to write the requested message.");
+                Debug.Print(e.ToString());
             }
         }
 
+
+        /**
+         * Writes the error message to the log, and surrounds it with a divider to make it very
+         * apparent that an error happened.
+         *
+         * If an error occurs in writing to the log file, this method will silently fail.
+         */
         public void WriteErr(params String[] logLines) {
-            File.AppendAllText(logFile.Name, DIVIDER);
-            File.AppendAllText(logFile.Name, "Error: ");
-            Write(logLines);
-            File.AppendAllText(logFile.Name, DIVIDER);
+            try {
+                File.AppendAllText(logFile.Name, DIVIDER);
+                File.AppendAllText(logFile.Name, "Error: ");
+                Write(logLines);
+                File.AppendAllText(logFile.Name, DIVIDER);
+            }
+            catch (Exception e) {
+                // If the write fails, there's really not much that can be done.
+                Debug.Print("Failed to write an error message.");
+                Debug.Print(e.ToString());
+            }
         }
     }
 }

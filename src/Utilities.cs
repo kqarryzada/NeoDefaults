@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.IO.Compression;
 using System.Security;
@@ -62,6 +63,7 @@ namespace NeoDefaults_Installer {
         public static Utilities GetInstance() {
             return singleton;
         }
+
 
         /**
          * Searches for a TF2 installation in the most common locations on the machine.
@@ -135,6 +137,7 @@ namespace NeoDefaults_Installer {
             }
         }
 
+
         /**
          * Returns the canonicalized filepath for 'path', or 'null' if there was a problem.
          */
@@ -169,6 +172,7 @@ namespace NeoDefaults_Installer {
             return testPath;
         }
 
+
         /**
          * Copies a 'sourceFile' to a destination. The filepath of the destination is given by
          * 'destFile', which includes the filename of the file (allowing for a move-and-rename
@@ -181,18 +185,16 @@ namespace NeoDefaults_Installer {
          *
          * Returns false if the expected file was not created.
          */
-        private void CopyFile(String sourceFile, String destFile, bool overwrite) {
+        private bool CopyFile(String sourceFile, String destFile, bool overwrite) {
             int numRetries = 3;
 
-            // Infuriatingly enough, File.Copy() will throw an IOException both in cases of I/O
-            // issues and if the destination file already exists. To be certain, first check for the
-            // existence of the resulting file. There are currently no scenarios where the user
-            // would need to be immediately notified of this.
+            // To be certain that any IOException isn't related to an existing file, first check
+            // that the resulting file doesn't already exist.
             if (!overwrite && File.Exists(destFile)) {
-                var msg = String.Format("Attempted to create '{0}' from '{1}', but the file already"
-                                        + " exists. Skipping.", destFile, sourceFile);
+                var msg = "Attempted to create '" + destFile + "' from '" + sourceFile
+                            + "', but the file already exists. Skipping.";
                 log.WriteErr(msg);
-                return;
+                return false;
             }
 
             // Allow a few retry attempts in case of transient issues.
@@ -207,30 +209,16 @@ namespace NeoDefaults_Installer {
                     Thread.Sleep(500);
                 }
                 catch (Exception e) {
-                    var logMsg = String.Format("A problem occurred when trying to create '{0}' from '{1}'.",
-                                                    destFile, sourceFile);
+                    var logMsg = "A problem occurred when trying to create '" + destFile + "' from '" 
+                                    + sourceFile + "'.";
                     log.WriteErr(logMsg, e.ToString());
-                    throw e;
+                    return false;
                 }
             }
+
+            return true;
         }
 
-        /**
-          * Extracts a zip file to a folder.
-          *
-          * 'fileName' is a given nickname for the resulting zip file, and is only used in the
-          * error message if an issue occurs.
-        */
-        private void ExtractZip(String zipFilepath, String destinationFolder, String fileName) {
-            try {
-                ZipFile.ExtractToDirectory(zipFilepath, destinationFolder);
-            }
-            catch (IOException ioe) {
-                String msg = String.Format("An IOException occurred when trying to install '{0}' to '{1}'"
-                                           + ". Do you already have this installed?", fileName, destinationFolder);
-                log.WriteErr(msg, ioe.ToString());
-            }
-        }
 
         /**
          * In order for neodefaults.cfg to be run when TF2 is launched, autoexec.cfg must
@@ -252,7 +240,7 @@ namespace NeoDefaults_Installer {
             // required execution lines must be added to the correct file.
             String[] filePaths = Directory.GetFiles(Path.Combine(tfPath, "custom"),
                                                     "mastercomfig*preset.vpk",
-                                                    SearchOption.TopDirectoryOnly);
+                                                     SearchOption.TopDirectoryOnly);
             autoexec = (filePaths.Length == 0) ? defaultLocation : mastercomfigLocation;
 
             // File has been found, append lines.
@@ -271,71 +259,134 @@ namespace NeoDefaults_Installer {
             File.AppendAllText(autoexec, sb.ToString());
         }
 
+
         /**
-         * Installs idHUD in the custom/ directory.
+         * Attempts to unzip a source file into a target directory. If the install files already
+         * exist on the user's machine, the user is asked whether we should overwrite the existing files
+         * or skip this component.
+         *
+         * source:          The location of the zip file that is to be installed.
+         * destination:     The path to the expected resulting folder. For example, if a component is
+         *                  being installed under 'custom', this would be 
+         *                  "<full-path-to-custom>\component-name".
+         * name:            The nickname for the component being installed.
+         *
+         * Throws an Exception if an unexpected error occurs.
+         */
+        private InstallStatus InstallZip(String source, String destination, String name) {
+            // First check if the zip file is already installed. If so, overwrite the existing files
+            // with the user's permission.
+            if (Directory.Exists(destination)) {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("An install of the ");
+                sb.Append(name);
+                sb.Append(" was detected at '");
+                sb.Append(destination);
+                sb.Append("'. Would you like to continue and overwrite the existing files,");
+                sb.Append(" or skip the installation of this component?");
+
+                // Display the prompt and record the user's request.
+                var dialog = new WarningDialog();
+                var result = dialog.Display(sb.ToString());
+                if (result != DialogResult.OK) {
+                    log.Write("HUD was already installed, and the user opted out of re-installing.");
+                    return InstallStatus.OPT_OUT;
+                }
+                else {
+                    log.Write("'" + destination + "' was found to already exist. Deleting in"
+                              + " preparation for re-install.");
+                    Directory.Delete(destination, true);
+                }
+            }
+            log.Write("Installing " + name + " from '" + source + "' to '" + destination + "'.");
+
+            // Specify the parent of the destination to avoid a nested folder, e.g.,
+            // '<path-to-parent>\component-name\component-name'.
+            var destinationParent = Path.Combine(destination, "..");
+            ZipFile.ExtractToDirectory(source, destinationParent);
+            log.Write(name + " installation complete.");
+            return InstallStatus.SUCCESS;
+        }
+
+
+        /**
+         * Installs the custom hitsound. This is executed on a background thread to avoid locking 
+         * the UI.
+         */
+        public async Task<InstallStatus> InstallHitsound() {
+            return await Task.Run(() => {
+                try {
+                    String zipFilepath = Path.Combine(basePath, @"custom-files\neodefaults-hitsound.zip");
+                    String destination = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
+
+                    return InstallZip(zipFilepath, destination, "hitsound");
+
+                }
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to install the hitsound:", e.ToString());
+                    return InstallStatus.FAIL;
+                }
+            });
+        }
+
+
+        /**
+         * Installs idHUD in the custom/ directory. This is executed on a background thread to avoid
+         * locking  the UI.
          */
         public async Task<InstallStatus> InstallHUD() {
             return await Task.Run(() => {
-                // First check if it's already installed. If so, overwrite the existing files with
-                // the user's permission.
-                String baseFolder = Path.Combine(tfPath, @"custom\idhud-master");
-                if (Directory.Exists(baseFolder)) {
-                    var dialog = new WarningDialog();
-                    var result = dialog.Display(
-                        "An install of the HUD was detected at '" + baseFolder
-                        + "'. Would you like to continue and overwrite the existing files, or skip"
-                        + " the HUD installation?"
-                    );
-                    if (result != DialogResult.OK) {
-                        log.Write("HUD was already installed, and the user opted out of re-installing.");
-                        return InstallStatus.OPT_OUT;
-                    }
-                    log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
-                              + " preparation for re-install.");
-                    Directory.Delete(baseFolder, true);
-                }
-
-                // Begin install
-                String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
-                String destination = Path.Combine(tfPath, "custom");
-                var logMsg = String.Format("Installing HUD from '{0}' to '{1}'.", zipFilepath, destination);
-                log.Write(logMsg);
-
                 try {
-                    ExtractZip(zipFilepath, destination, "Improved Default HUD");
+                    String zipFilepath = Path.Combine(basePath, @"custom-files\idhud-master.zip");
+                    String destination = Path.Combine(tfPath, @"custom\idhud-master");
+
+                    return InstallZip(zipFilepath, destination, "HUD");
+
                 }
                 catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to install the hitsound.",
-                                 e.ToString());
+                    log.WriteErr("An error occurred when trying to install the HUD:", e.ToString());
                     return InstallStatus.FAIL;
                 }
-
-                log.Write("HUD installation complete.");
-                return InstallStatus.SUCCESS;
             });
         }
+
 
         /**
          * In order for idhud to work properly, some fonts need to be installed, which are provided
          * in idhud's zip file. This method installs the fonts on the user's machine. If a font is
-         * already installed, the existing one is accepted.
+         * already installed, the existing one is accepted. This is executed on a background thread
+         * to avoid locking  the UI.
          */
         public async Task<InstallStatus> InstallHUDFonts() {
             return await Task.Run(() => {
-                String fontsPath = Path.Combine(tfPath, @"custom\idhud-master\resource\fonts");
-                String windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
+                String fontsPath = "";
+                String windowsFontsPath = "";
+                try {
+                    fontsPath = Path.Combine(tfPath, @"custom\idhud-master\resource\fonts");
+                    windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
+                }
+                catch (Exception e) {
+                    log.WriteErr("Failed to prepare the fonts for installation.", e.ToString());
+                    return InstallStatus.FAIL;
+                }
 
                 // Copy each file over to the windows fonts directory to install them.
-                foreach (string font in Directory.GetFiles(fontsPath)) {
+                string[] fontsToInstall;
+                try {
+                    fontsToInstall = Directory.GetFiles(fontsPath);
+                }
+                catch (Exception e) {
+                    log.WriteErr("Was unable to retrieve the fonts that need to be installed:", e.ToString());
+                    return InstallStatus.FAIL;
+                }
+                foreach (string font in fontsToInstall) {
                     String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
                     if (File.Exists(destFile)) {
                         log.Write("The font, " + destFile + ", is already installed. Skipping.");
                         continue;
                     }
 
-                    var logMsg = String.Format("Installing '{0}' font to '{1}'.", fontsPath, destFile);
-                    log.Write(logMsg);
-
+                    log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
                     try {
                         CopyFile(font, destFile, false);
                     }
@@ -351,69 +402,46 @@ namespace NeoDefaults_Installer {
             });
         }
 
-        /**
-         * Installs the custom hitsound. This is done on a background thread to avoid locking 
-         * the UI.
-         */
-        public async Task<InstallStatus> InstallHitsound() {
-            return await Task.Run(() => {
-                // First check if it's already installed. If so, overwrite the existing files with
-                // the user's permission.
-                String baseFolder = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
-                if (Directory.Exists(baseFolder)) {
-                    var dialog = new WarningDialog();
-                    var result = dialog.Display(
-                        "An install of the hitsound was detected at '" + baseFolder
-                        + "'. Would you like to continue and overwrite the existing files, or skip"
-                        + " the hitsound installation?"
-                    );
-                    if (result != DialogResult.OK) {
-                        log.Write("Hitsound was already installed, and the user opted out of re-installing.");
-                        return InstallStatus.OPT_OUT;
-                    }
-                    log.Write("'" + baseFolder + "' was found to already exist. Deleting in"
-                              + " preparation for re-install.");
-                    Directory.Delete(baseFolder, true);
-                }
-
-                String hitsoundZip = Path.Combine(basePath, @"custom-files\neodefaults-hitsound.zip");
-                String destination = Path.Combine(tfPath, "custom");
-                var logMsg = String.Format("Installing hitsound from '{0}' to '{1}'.", hitsoundZip, destination);
-                log.Write(logMsg);
-
-                try {
-                    ExtractZip(hitsoundZip, destination, "Custom Quake hitsound");
-                } 
-                catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to install the hitsound.",
-                                 e.ToString());
-                    return InstallStatus.FAIL;
-                }
-
-                log.Write("Hitsound installation complete.");
-                return InstallStatus.SUCCESS;
-            });
-        }
 
         /**
          * Installs the neoDefaults.cfg file. If there is an existing install, it will be
-         * overwritten.
+         * overwritten. This is executed on a background thread to avoid locking  the UI.
          */
         public async Task<InstallStatus> InstallConfig() {
             return await Task.Run(() => {
-                String sourceConfig = Path.Combine(basePath, @"custom-files\", cfgSourceName);
-                String destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
-                var logMsg = String.Format("Installing config file from '{0}' to '{1}'.", sourceConfig, destConfig);
-                log.Write(logMsg);
-
+                String sourceConfig = "";
+                String destConfig = ""; 
                 try {
-                    CopyFile(sourceConfig, destConfig, true);
+                    sourceConfig = Path.Combine(basePath, @"custom-files\", cfgSourceName);
+                    destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
+                }
+                catch (Exception e) {
+                    log.WriteErr("Failed to prepare the config for installation.", e.ToString());
+                    return InstallStatus.FAIL;
+                }
+
+
+                log.Write("Installing config file from '" + sourceConfig + "' to '" + destConfig + "'.");
+                bool success = CopyFile(sourceConfig, destConfig, true);
+                if (!success) {
+                    return InstallStatus.FAIL;
+                } 
+
+                // Modify autoexec.cfg so that the newly installed config will execute when TF2
+                // is launched.
+                try {
                     AppendLinesToAutoExec(destConfig);
                 }
                 catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to install the config files.",
-                                 e.ToString());
-                    return InstallStatus.FAIL;
+                    log.WriteErr("An error occurred when trying to append to autoexec.cfg.",
+                                    e.ToString());
+
+                    // Notify the user that they should modify this manually
+                    String message = "Tried to modify 'autoexec.cfg' and failed. To fix this,"
+                                     + " try re-running the installation. If the problem"
+                                     + " persists, check the FAQ for advice on dealing with errors.";
+                    var dialog = new WarningDialog();
+                    dialog.Display(message);
                 }
 
                 log.Write("Config installation complete.");
