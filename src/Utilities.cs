@@ -39,6 +39,10 @@ namespace NeoDefaults_Installer {
 
         private readonly Logger log = Logger.GetInstance();
 
+        // An installation of TF2 should take up around 21 GB of space. Thus, if a drive on the
+        // filesystem is less than 16 GB, don't bother searching it for a TF2 install.
+        private readonly long MIN_DRIVE_SIZE = 16 * ((long) 1 << 30);
+
         // Return codes for installations. These help report whether an install failed, 
         // succeeded, etc.
         public enum InstallStatus {
@@ -98,8 +102,18 @@ namespace NeoDefaults_Installer {
             // Search each common installation path for files under all drives on the system.
             await Task.Run(() => {
                 try {
+                    log.PrintDivider();
+                    log.Write("Beginning automatic filepath check..." + Environment.NewLine);
                     foreach (DriveInfo drive in systemDrives) {
-                        log.Write();
+                        long size = drive.TotalSize;
+                        if (size <= MIN_DRIVE_SIZE) {
+                            log.Write("Skipping over the " + drive.Name + " drive since it has size '"
+                                      + size + "', which is less than the threshold of " 
+                                      + MIN_DRIVE_SIZE + ".");
+                            log.Write();
+                            continue;
+                        }
+
                         foreach (String _path in defaultInstallLocations) {
                             path = String.Format(_path, drive.Name);
 
@@ -113,7 +127,12 @@ namespace NeoDefaults_Installer {
                                 goto EndOfLoop;
                             }
                         }
+                        log.Write();
                     }
+
+                EndOfLoop:
+                    log.PrintDivider();
+                    log.Write();
                 }
                 catch (FormatException f) {
                     path = (path == null) ? "<null>" : path;
@@ -126,8 +145,6 @@ namespace NeoDefaults_Installer {
                                  + " drive. The provided drive was likely null.",
                                  a.ToString());
                 }
-
-            EndOfLoop:;
             });
 
             if (hl2Path != null) {

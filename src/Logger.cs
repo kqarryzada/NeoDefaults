@@ -12,7 +12,7 @@ namespace NeoDefaults_Installer {
         // The name of the folder that will hold the log files.
         private readonly String BASE_FOLDER_NAME = "NeoDefaults";
 
-        // String divider used for a visual barrier for error messages in the log file.
+        // String divider used for a visual barrier for messages in the log file.
         private readonly String DIVIDER =
             "---------------------------------------------------------------------------------\n\r";
 
@@ -44,6 +44,23 @@ namespace NeoDefaults_Installer {
 
         public static Logger GetInstance() {
             return singleton;
+        }
+
+
+        /**
+         * Prints the divider in the log file to help visually establish a certain area.
+         *
+         * If an error occurs in writing to the log file, this method will silently fail.
+         */
+        public void PrintDivider() {
+            try {
+                File.AppendAllText(logFile.Name, DIVIDER);
+            }
+            catch (Exception e) {
+                // If the write fails, there's really not much that can be done.
+                Debug.Print("Failed to print the DIVIDER characters.");
+                Debug.Print(e.ToString());
+            }
         }
 
         /**
