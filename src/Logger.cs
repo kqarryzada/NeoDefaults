@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace NeoDefaults_Installer {
     public class Logger {
@@ -36,9 +37,36 @@ namespace NeoDefaults_Installer {
             logFile = File.Create(fileName);
             logFile.Close();
 
-            var firstLine = String.Format("Logfile initialized on {0}.", DateTime.Now) 
-                                + Environment.NewLine;
-            File.WriteAllText(fileName, firstLine);
+            InitializeLogFile();
+        }
+
+
+        /**
+         *  Initializes the log file upon the beginning of the program's run. The 'logFile' member
+         *  variable must be initialized before this method is called.
+         *
+         *  Throws an Exception if an unexpected error occurs.
+         */
+        private void InitializeLogFile() {
+            if (logFile.Name == null) {
+                throw new ArgumentNullException();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Logfile initialized on: ");
+            sb.AppendLine(DateTime.Now.ToString());
+            sb.Append("Version ");
+            sb.AppendLine(Main.PRODUCT_VERSION);
+            sb.AppendLine();
+
+            try {
+                File.WriteAllText(logFile.Name, sb.ToString());
+            }
+            catch (Exception e) {
+                Debug.Print("Failed to initialize log file:");
+                Debug.Print(e.ToString());
+                throw;
+            }
         }
 
 

@@ -34,16 +34,25 @@ namespace NeoDefaults_Installer {
         // Logfile containing useful information on what the program has been doing
         Logger log;
 
-        // Store the DEBUG flag as a member variable to allow using its value in if statements.
 #if DEBUG
+        // Store the DEBUG flag as a member variable to allow using its value in if statements.
         public static readonly bool DEVELOP_MODE = true;
+
+        // Version value of the program while being developed
+        public static readonly String PRODUCT_VERSION = "1.0.0-SNAPSHOT";
 #else
         public static readonly bool DEVELOP_MODE = false;
+
+        public static readonly String PRODUCT_VERSION = "1.0.0";
 #endif
 
 
         public Main() {
             InitializeComponent();
+
+            // Append the version to the title bar of the application window
+            this.Text += PRODUCT_VERSION;
+
             utilities = Utilities.GetInstance();
             log = Logger.GetInstance();
 

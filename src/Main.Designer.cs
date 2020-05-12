@@ -50,6 +50,7 @@
             this.backHitsound = new System.Windows.Forms.Button();
             this.nextHitsound = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.progressBox = new System.Windows.Forms.TextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.nextInstall = new System.Windows.Forms.Button();
             this.promptInstall = new System.Windows.Forms.Label();
@@ -62,7 +63,6 @@
             this.promptHUD = new System.Windows.Forms.Label();
             this.backHUD = new System.Windows.Forms.Button();
             this.nextHUD = new System.Windows.Forms.Button();
-            this.progressBox = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -326,6 +326,15 @@
             this.panel5.Size = new System.Drawing.Size(640, 480);
             this.panel5.TabIndex = 3;
             // 
+            // progressBox
+            // 
+            this.progressBox.Location = new System.Drawing.Point(38, 135);
+            this.progressBox.Multiline = true;
+            this.progressBox.Name = "progressBox";
+            this.progressBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.progressBox.Size = new System.Drawing.Size(550, 231);
+            this.progressBox.TabIndex = 5;
+            // 
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(38, 109);
@@ -447,15 +456,6 @@
             this.nextHUD.UseVisualStyleBackColor = true;
             this.nextHUD.Click += new System.EventHandler(this.Next_Click);
             // 
-            // progressBox
-            // 
-            this.progressBox.Location = new System.Drawing.Point(38, 135);
-            this.progressBox.Multiline = true;
-            this.progressBox.Name = "progressBox";
-            this.progressBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.progressBox.Size = new System.Drawing.Size(550, 231);
-            this.progressBox.TabIndex = 5;
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -471,7 +471,7 @@
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
-            this.Text = "TF2 NeoDefaults Installer v1.0.0";
+            this.Text = "TF2 NeoDefaults Installer v";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
