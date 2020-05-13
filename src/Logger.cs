@@ -4,6 +4,19 @@ using System.IO;
 using System.Text;
 
 namespace NeoDefaults_Installer {
+
+    /**
+     * This class is responsible for handling writes to the log file.
+     *
+     * In the unlikely event that the log file fails to initialize on program startup, there's
+     * really not much that can be done. While it's a huge problem, especially if the log is needed
+     * to be viewed after the program has run, it's really not worth crashing the entire program
+     * just because of the log file. If there's a serious underlying problem, it would likely be
+     * exposed later during the program's run.
+     *
+     * Unless a method explicitly states that it can throw an exception, all methods in this class
+     * will be silent upon a failure and return without completing the requested task.
+     */
     public class Logger {
         private static readonly Logger singleton = new Logger();
 
@@ -45,7 +58,7 @@ namespace NeoDefaults_Installer {
          *  Initializes the log file upon the beginning of the program's run. The 'logFile' member
          *  variable must be initialized before this method is called.
          *
-         *  Throws an Exception if an unexpected error occurs.
+         *  Throws an ArgumentNullException if the logfile is null.
          */
         private void InitializeLogFile() {
             if (logFile.Name == null) {
@@ -53,19 +66,18 @@ namespace NeoDefaults_Installer {
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("Logfile initialized on: ");
-            sb.AppendLine(DateTime.Now.ToString());
-            sb.Append("Version ");
-            sb.AppendLine(Main.PRODUCT_VERSION);
-            sb.AppendLine();
-
             try {
+                sb.Append("Logfile initialized on: ");
+                sb.AppendLine(DateTime.Now.ToString());
+                sb.Append("Version ");
+                sb.AppendLine(Main.PRODUCT_VERSION);
+                sb.AppendLine();
+
                 File.WriteAllText(logFile.Name, sb.ToString());
             }
             catch (Exception e) {
                 Debug.Print("Failed to initialize log file:");
                 Debug.Print(e.ToString());
-                throw;
             }
         }
 
@@ -76,30 +88,33 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Prints the divider in the log file to help visually establish a certain area.
-         *
-         * If an error occurs in writing to the log file, this method will silently fail.
+         * Prints the divider in the log file to help visually establish a certain area. If the
+         * logfile is uninitialized, the write attempt will be ignored.
          */
         public void PrintDivider() {
+            if (logFile == null)
+                return;
+
             try {
                 File.AppendAllText(logFile.Name, DIVIDER);
             }
             catch (Exception e) {
-                // If the write fails, there's really not much that can be done.
                 Debug.Print("Failed to print the DIVIDER characters.");
                 Debug.Print(e.ToString());
             }
         }
 
         /**
-         * Writes the specified text to the log.
-         *
-         * If an error occurs in writing to the log file, this method will silently fail.
+         * Writes the specified text to the log. If the logfile is uninitialized, the write attempt
+         * will be ignored.
          */
         public void Write(params String[] logLines) {
+            if (logFile == null)
+                return;
+
             // If called with no parameters, just print a newline.
             if (logLines.Length == 0)
-                logLines = new[] { "" } ;
+                logLines = new[] { "" };
 
             try {
                 foreach (String s in logLines) {
@@ -109,7 +124,6 @@ namespace NeoDefaults_Installer {
                 }
             }
             catch (Exception e) {
-                // If the write fails, there's really not much that can be done.
                 Debug.Print("Failed to write the requested message.");
                 Debug.Print(e.ToString());
             }
@@ -118,11 +132,13 @@ namespace NeoDefaults_Installer {
 
         /**
          * Writes the error message to the log, and surrounds it with a divider to make it very
-         * apparent that an error happened.
-         *
-         * If an error occurs in writing to the log file, this method will silently fail.
+         * apparent that an error happened. If the logfile is uninitialized, the write attempt will
+         * be ignored.
          */
         public void WriteErr(params String[] logLines) {
+            if (logFile == null)
+                return;
+
             try {
                 File.AppendAllText(logFile.Name, DIVIDER);
                 File.AppendAllText(logFile.Name, "Error: ");
@@ -130,7 +146,6 @@ namespace NeoDefaults_Installer {
                 File.AppendAllText(logFile.Name, DIVIDER);
             }
             catch (Exception e) {
-                // If the write fails, there's really not much that can be done.
                 Debug.Print("Failed to write an error message.");
                 Debug.Print(e.ToString());
             }
