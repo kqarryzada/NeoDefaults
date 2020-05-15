@@ -4,5 +4,6 @@
 .vs/
 *.user
 
-# For now, don't include plugins in repo
-custom-files/
+# For now, don't include HUD in repo
+Windows/resource/idhud-master.zip
+
