@@ -269,10 +269,10 @@ namespace NeoDefaults_Installer {
             progressBar.PerformStep();
 
 
-            log.Write();
+            log.Write("Installation complete." + Environment.NewLine);
             promptInstall.Text = "Installation complete.";
             progressBox.AppendText("Installation complete.");
-            // Progress complete. Allow user to continue to next page
+            // Allow user to continue to the next page
             nextInstall.Enabled = true;
         }
 

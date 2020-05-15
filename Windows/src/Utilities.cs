@@ -29,11 +29,18 @@ namespace NeoDefaults_Installer {
             @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\hl2.exe",
         };
 
+        // The name of the folder inside of tf/cfg/ that holds the installer config files.
+        private readonly String configFolderName = "NeoDefaults";
+
         // The name of the config file to be installed.
-        private readonly String cfgSourceName = "autoexec-alpha.cfg";
+        private readonly String sourceCfgName = "NeoDefaults-v1.0.0-SNAPSHOT.cfg";
 
         // The name of the config file once it has been installed on the user's machine.
-        private readonly String cfgDestName = "neodefaults.cfg";
+        private readonly String destCfgName = "neodefaults.cfg";
+
+        // The name of the custom config file, which allows a user to override any values that are
+        // set by the NeoDefaults config.
+        private readonly String customCfgName = "custom.cfg";
 
         private static readonly Utilities singleton = new Utilities();
 
@@ -200,9 +207,9 @@ namespace NeoDefaults_Installer {
          * destFile: The resulting file after the copy is complete.
          * overwrite: If true, overwrite the existing file. If not, simply skip the operation.
          *
-         * Returns false if the expected file was not created.
+         * Throws an Exception if an unexpected error occurs.
          */
-        private bool CopyFile(String sourceFile, String destFile, bool overwrite) {
+        private void CopyFile(String sourceFile, String destFile, bool overwrite) {
             int numRetries = 3;
 
             // To be certain that any IOException isn't related to an existing file, first check
@@ -210,8 +217,7 @@ namespace NeoDefaults_Installer {
             if (!overwrite && File.Exists(destFile)) {
                 var msg = "Attempted to create '" + destFile + "' from '" + sourceFile
                             + "', but the file already exists. Skipping.";
-                log.WriteErr(msg);
-                return false;
+                throw new IOException(msg);
             }
 
             // Allow a few retry attempts in case of transient issues.
@@ -223,17 +229,11 @@ namespace NeoDefaults_Installer {
                     break;
                 }
                 catch (Exception) when (i < numRetries - 1) {
+                    // As long as there are remaining attempts allowed, wait and try again.
+                    // Otherwise, throw the error.
                     Thread.Sleep(500);
                 }
-                catch (Exception e) {
-                    var logMsg = "A problem occurred when trying to create '" + destFile + "' from '" 
-                                    + sourceFile + "'.";
-                    log.WriteErr(logMsg, e.ToString());
-                    return false;
-                }
             }
-
-            return true;
         }
 
 
@@ -265,13 +265,12 @@ namespace NeoDefaults_Installer {
             if (File.Exists(autoexec)) {
                 sb.Append(Environment.NewLine);
             }
-            sb.Append("//--------Added by the NeoDefaults Installer--------//");
-            sb.Append(Environment.NewLine);
+            sb.AppendLine("//--------Added by the NeoDefaults Installer--------//");
             sb.Append("exec ");
-            sb.Append(Path.GetFileNameWithoutExtension(neodefaultsPath));
-            sb.Append(Environment.NewLine);
-            sb.Append("//--------------------------------------------------//");
-            sb.Append(Environment.NewLine);
+            sb.Append(configFolderName);
+            sb.Append("/");
+            sb.AppendLine(Path.GetFileNameWithoutExtension(neodefaultsPath));
+            sb.AppendLine("//--------------------------------------------------//");
 
             File.AppendAllText(autoexec, sb.ToString());
         }
@@ -333,8 +332,8 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHitsound() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(basePath, @"resource\neodefaults-hitsound.zip");
-                    String destination = Path.Combine(tfPath, @"custom\neodefaults-hitsound");
+                    String zipFilepath = Path.Combine(basePath, @"resource\NeoDefaults-hitsound.zip");
+                    String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
                     return InstallZip(zipFilepath, destination, "hitsound");
 
@@ -393,23 +392,25 @@ namespace NeoDefaults_Installer {
                     fontsToInstall = Directory.GetFiles(fontsPath);
                 }
                 catch (Exception e) {
-                    log.WriteErr("Was unable to retrieve the fonts that need to be installed:", e.ToString());
+                    log.WriteErr("Was unable to retrieve the fonts that need to be installed:",
+                                    e.ToString());
                     return InstallStatus.FAIL;
                 }
-                foreach (string font in fontsToInstall) {
-                    String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
-                    if (File.Exists(destFile)) {
-                        log.Write("The font, " + destFile + ", is already installed. Skipping.");
-                        continue;
-                    }
 
-                    log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
+                foreach (string font in fontsToInstall) {
                     try {
+                        String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
+                        if (File.Exists(destFile)) {
+                            log.Write("The font, " + destFile + ", is already installed. Skipping.");
+                            continue;
+                        }
+
+                        log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
                         CopyFile(font, destFile, false);
                     }
                     catch (Exception e) {
                         log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
-                                     e.ToString());
+                                        e.ToString());
                         return InstallStatus.FAIL;
                     }
                 }
@@ -421,33 +422,52 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Installs the neoDefaults.cfg file. If there is an existing install, it will be
+         * Installs the neodefaults.cfg file. If there is an existing install, it will be
          * overwritten. This is executed on a background thread to avoid locking  the UI.
          */
         public async Task<InstallStatus> InstallConfig() {
             return await Task.Run(() => {
-                String sourceConfig = "";
-                String destConfig = ""; 
+                // First create the tf/cfg/NeoDefaults folder.
+                String configFolderPath = "";
                 try {
-                    sourceConfig = Path.Combine(basePath, @"resource\", cfgSourceName);
-                    destConfig = Path.Combine(tfPath, "cfg", cfgDestName);
+                    configFolderPath = Path.Combine(tfPath, "cfg", configFolderName);
+                    Directory.CreateDirectory(configFolderPath);
                 }
                 catch (Exception e) {
-                    log.WriteErr("Failed to prepare the config for installation.", e.ToString());
+                    log.WriteErr("An error occurred when trying to create the base folder for the config.",
+                                    e.ToString());
                     return InstallStatus.FAIL;
                 }
 
 
-                log.Write("Installing config file from '" + sourceConfig + "' to '" + destConfig + "'.");
-                bool success = CopyFile(sourceConfig, destConfig, true);
-                if (!success) {
+                // Create the config file.
+                String sourceCfg = "";
+                String destCfg = "";
+                try {
+                    sourceCfg = Path.Combine(basePath, "resource", sourceCfgName);
+                    destCfg = Path.Combine(configFolderPath, destCfgName);
+
+                    if (File.Exists(destCfg)) {
+                        File.SetAttributes(destCfg, FileAttributes.Normal);
+                    }
+                    log.Write("Installing config file from '" + sourceCfg + "' to '" + destCfg + "'.");
+                    CopyFile(sourceCfg, destCfg, true);
+
+                    // Set file as read-only to encourage using the custom.cfg file instead.
+                    File.SetAttributes(destCfg, FileAttributes.ReadOnly);
+                }
+                catch (Exception e) {
+                    var logMsg = "An error occurred when trying to create '" + destCfg + "' from '"
+                                    + sourceCfg + "'.";
+                    log.WriteErr(logMsg, e.ToString());
                     return InstallStatus.FAIL;
-                } 
+                }
+
 
                 // Modify autoexec.cfg so that the newly installed config will execute when TF2
                 // is launched.
                 try {
-                    AppendLinesToAutoExec(destConfig);
+                    AppendLinesToAutoExec(destCfg);
                 }
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to append to autoexec.cfg.",
@@ -459,6 +479,24 @@ namespace NeoDefaults_Installer {
                                      + " persists, check the FAQ for advice on dealing with errors.";
                     var dialog = new WarningDialog();
                     dialog.Display(message);
+                }
+
+
+                // Create the custom file, if it does not already exist.
+                try {
+                    String sourceCustom = Path.Combine(basePath, "resource", customCfgName);
+                    String destCustom = Path.Combine(configFolderPath, customCfgName);
+
+                    // If there's already a custom file on the machine, then the user already
+                    // has settings defined, so they should not be overridden.
+                    if (!File.Exists(destCustom)) {
+                        CopyFile(sourceCustom, destCustom, false);
+                    }
+
+                }
+                catch (Exception e) {
+                    log.WriteErr("Failed to create the " + customCfgName + " file.", e.ToString());
+                    return InstallStatus.FAIL;
                 }
 
                 log.Write("Config installation complete.");
