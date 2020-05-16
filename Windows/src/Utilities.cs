@@ -24,9 +24,9 @@ namespace NeoDefaults_Installer {
 
         // TF-path related parameters. You must use String.Format() and specify a drive name to use these.
         private readonly String[] defaultInstallLocations = {
-            @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe",
-            @"{0}Steam\SteamApps\common\Team Fortress 2\hl2.exe",
-            @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\hl2.exe",
+            @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\tf",
+            @"{0}Steam\SteamApps\common\Team Fortress 2\tf",
+            @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\tf",
         };
 
         // The name of the folder inside of tf/cfg/ that holds the installer config files.
@@ -101,7 +101,7 @@ namespace NeoDefaults_Installer {
                 }
             });
             // Will hold the location to a TF2 install, if not null.
-            String hl2Path = null;
+            String installPath = null;
 
             // Placeholder for paths being checked. Allocated here for use by debug messages.
             String path = null;
@@ -125,8 +125,8 @@ namespace NeoDefaults_Installer {
                             path = String.Format(_path, drive.Name);
 
                             log.Write("Checking if the path exists: " + path);
-                            if (File.Exists(path)) {
-                                hl2Path = path;
+                            if (Directory.Exists(path)) {
+                                installPath = path;
                                 log.Write();
                                 log.Write("Found install at: " + path);
 
@@ -147,10 +147,9 @@ namespace NeoDefaults_Installer {
                 }
             });
 
-            if (hl2Path != null) {
-                // Strip "hl2.exe" from the path to obtain the folder path
-                var TeamFortressPath = CanonicalizePath(Path.GetDirectoryName(hl2Path));
-                tfPath = Path.Combine(TeamFortressPath, "tf");
+            if (installPath != null) {
+                // If the operation fails, the value of tfPath will still remain null.
+                tfPath = CanonicalizePath(Path.GetDirectoryName(installPath));
             }
         }
 
