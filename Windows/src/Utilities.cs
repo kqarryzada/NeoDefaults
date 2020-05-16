@@ -285,14 +285,14 @@ namespace NeoDefaults_Installer {
                 // Display the prompt and record the user's request.
                 var dialog = new WarningDialog();
                 var result = dialog.Display(sb.ToString());
-                if (result != DialogResult.OK) {
-                    log.Write("HUD was already installed, and the user opted out of re-installing.");
-                    return InstallStatus.OPT_OUT;
+                if (result == DialogResult.OK) {
+                    log.Write("'" + destination + "' was found to already exist. Received permission"
+                              + " from the user to delete this.");
+                    Directory.Delete(destination, true);
                 }
                 else {
-                    log.Write("'" + destination + "' was found to already exist. Deleting in"
-                              + " preparation for re-install.");
-                    Directory.Delete(destination, true);
+                    log.Write(name + " was already installed, and the user opted out of re-installing.");
+                    return InstallStatus.OPT_OUT;
                 }
             }
             log.Write("Installing " + name + " from '" + source + "' to '" + destination + "'.");
