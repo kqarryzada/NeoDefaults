@@ -32,23 +32,30 @@ namespace NeoDefaults_Installer {
 
 
         private Logger() {
-            String commonAppData = Environment.GetFolderPath(
-                                        Environment.SpecialFolder.CommonApplicationData);
+            try {
+                String commonAppData = Environment.GetFolderPath(
+                                            Environment.SpecialFolder.CommonApplicationData);
 
-            String logFilePath = Path.Combine(commonAppData, BASE_FOLDER_NAME);
-            DirectoryInfo dir = Directory.CreateDirectory(logFilePath);
+                String logFilePath = Path.Combine(commonAppData, BASE_FOLDER_NAME);
+                DirectoryInfo dir = Directory.CreateDirectory(logFilePath);
 
-            String fileName = Path.Combine(logFilePath, "log.txt");
-            String fileNamePrev = Path.Combine(logFilePath, "log_prev.txt");
-            if (File.Exists(fileNamePrev)) {
-                // Rotate the existing file to an old one. Only keep one previous record.
-                File.Delete(fileNamePrev);
+                // The existing 'log.txt' file will be rotated to 'log_prev.txt'. Only one previous
+                // record is kept.
+                String fileName = Path.Combine(logFilePath, "log.txt");
+                String fileNamePrev = Path.Combine(logFilePath, "log_prev.txt");
+                if (File.Exists(fileNamePrev)) {
+                    File.Delete(fileNamePrev);
+                }
+                if (File.Exists(fileName)) {
+                    File.Move(fileName, fileNamePrev);
+                }
+                logFile = File.Create(fileName);
+                logFile.Close();
             }
-            if (File.Exists(fileName)) {
-                File.Move(fileName, fileNamePrev);
+            catch (Exception e) {
+                Debug.Print("A failure occurred when trying to create the log file.");
+                Debug.Print(e.ToString());
             }
-            logFile = File.Create(fileName);
-            logFile.Close();
 
             InitializeLogFile();
         }

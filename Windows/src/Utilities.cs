@@ -141,16 +141,9 @@ namespace NeoDefaults_Installer {
                     log.PrintDivider();
                     log.Write();
                 }
-                catch (FormatException f) {
-                    path = (path == null) ? "<null>" : path;
-                    log.WriteErr("An issue occurred when trying to format the name of a drive"
-                                 + " into '" + path + "'.",
-                                 f.ToString());
-                }
-                catch (ArgumentNullException a) {
-                    log.WriteErr("A null pointer was found when trying to format the name of a"
-                                 + " drive. The provided drive was likely null.",
-                                 a.ToString());
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to search the system for a TF2 install:",
+                                    e.ToString());
                 }
             });
 
@@ -172,19 +165,8 @@ namespace NeoDefaults_Installer {
             try {
                 testPath = Path.GetFullPath(path);
             }
-            catch (PathTooLongException p) {
-                log.WriteErr("Tried to set the path of the TF2 install, but it was too long."
-                             + " The provided path was:\n\r",
-                             path,
-                             p.ToString());
-            }
-            catch (SecurityException s) {
-                log.WriteErr("Did not have permission to obtain the canonical path of '" + path
-                             + "'. Aborting.",
-                             s.ToString());
-            }
             catch (Exception e) {
-                path = (path == null) ? "<null>" : path;
+                path = path ?? "<null>";
                 log.WriteErr("Could not obtain the canonical path of '" + path + "'. Aborting.",
                             e.ToString());
             }
