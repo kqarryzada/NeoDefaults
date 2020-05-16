@@ -187,7 +187,7 @@ namespace NeoDefaults_Installer {
                                      + " the HUD: " + HUDStatus);
                         break;
                 }
-                log.Write("HUD installation returned with status: " + HUDStatus);
+                log.WriteLn("HUD installation returned with status: " + HUDStatus);
                 progressBox.AppendText(HUDMessage + Environment.NewLine);
                 progressBar.PerformStep();
 
@@ -212,7 +212,7 @@ namespace NeoDefaults_Installer {
                                          + " the HUD fonts: " + fontsStatus);
                             break;
                     }
-                    log.Write("Font installation returned with status: " + fontsStatus);
+                    log.WriteLn("Font installation returned with status: " + fontsStatus);
                     progressBox.AppendText(fontsMessage + Environment.NewLine);
                 }
                 else {
@@ -242,7 +242,7 @@ namespace NeoDefaults_Installer {
                                      + " the hitsound: " + hitStatus);
                         break;
                 }
-                log.Write("Hitsound installation returned with status: " + hitStatus);
+                log.WriteLn("Hitsound installation returned with status: " + hitStatus);
                 progressBox.AppendText(hitMessage + Environment.NewLine);
                 progressBar.PerformStep();
             }
@@ -264,14 +264,15 @@ namespace NeoDefaults_Installer {
                                  + " the config files: " + configStatus);
                     break;
             }
-            log.Write("Config installation returned with status: " + configStatus);
+            log.WriteLn("Config installation returned with status: " + configStatus);
             progressBox.AppendText(configMessage + Environment.NewLine);
             progressBar.PerformStep();
 
 
-            log.Write("Installation complete." + Environment.NewLine);
-            promptInstall.Text = "Installation complete.";
-            progressBox.AppendText("Installation complete.");
+            String completeMessage = "Installation complete.";
+            log.WriteLn(completeMessage);
+            promptInstall.Text = completeMessage;
+            progressBox.AppendText(completeMessage);
             // Allow user to continue to the next page
             nextInstall.Enabled = true;
         }

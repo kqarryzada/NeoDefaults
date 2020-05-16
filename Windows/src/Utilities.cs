@@ -110,14 +110,13 @@ namespace NeoDefaults_Installer {
             await Task.Run(() => {
                 try {
                     log.PrintDivider();
-                    log.Write("Beginning automatic filepath check..." + Environment.NewLine);
+                    log.WriteLn("Beginning automatic filepath check...");
                     foreach (DriveInfo drive in systemDrives) {
                         long size = drive.TotalSize;
                         if (size <= MIN_DRIVE_SIZE) {
-                            log.Write("Skipping over the " + drive.Name + " drive since it has size '"
-                                      + size + "', which is less than the threshold of " 
-                                      + MIN_DRIVE_SIZE + ".");
-                            log.Write();
+                            log.WriteLn("Skipping over the " + drive.Name + " drive since it has size '"
+                                        + size + "', which is less than the threshold of "
+                                        + MIN_DRIVE_SIZE + " bytes.");
                             continue;
                         }
 
@@ -127,8 +126,7 @@ namespace NeoDefaults_Installer {
                             log.Write("Checking if the path exists: " + path);
                             if (Directory.Exists(path)) {
                                 installPath = path;
-                                log.Write();
-                                log.Write("Found install at: " + path);
+                                log.Write(Environment.NewLine + "Found install at: " + path);
 
                                 // It's a nested loop. Stop being judgemental.
                                 goto EndOfLoop;
@@ -171,8 +169,7 @@ namespace NeoDefaults_Installer {
             }
 
             if (testPath != null) {
-                log.Write("The path was found to be: " + testPath);
-                log.Write();
+                log.WriteLn("The path was found to be: " + testPath);
             }
             return testPath;
         }
@@ -316,7 +313,7 @@ namespace NeoDefaults_Installer {
                     String zipFilepath = Path.Combine(basePath, @"resource\NeoDefaults-hitsound.zip");
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
-                    return InstallZip(zipFilepath, destination, "hitsound");
+                    return InstallZip(zipFilepath, destination, "Hitsound");
 
                 }
                 catch (Exception e) {

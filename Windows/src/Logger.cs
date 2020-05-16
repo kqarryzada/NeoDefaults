@@ -112,10 +112,13 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Writes the specified text to the log. If the logfile is uninitialized, the write attempt
-         * will be ignored.
+         * Assembles the provided text into a single String and writes the message to the logfile.
+         * If the logfile is uninitialized, the write attempt will be ignored.
+         *
+         * newline:     Indicates whether an extra newline should be appended to the message.
+         * logLines:    The message to write to the logfile.
          */
-        public void Write(params String[] logLines) {
+        private void Write(bool newline, params String[] logLines) {
             if (logFile == null)
                 return;
 
@@ -124,16 +127,36 @@ namespace NeoDefaults_Installer {
                 logLines = new[] { "" };
 
             try {
+                var sb = new StringBuilder();
                 foreach (String s in logLines) {
-                    File.AppendAllText(logFile.Name, s + Environment.NewLine);
+                    sb.AppendLine(s);
+
                     if (Main.DEVELOP_MODE)
                         Debug.Print("Log: " + s);
                 }
+                if (newline)
+                    sb.AppendLine();
+
+                File.AppendAllText(logFile.Name, sb.ToString());
             }
             catch (Exception e) {
                 Debug.Print("Failed to write the requested message.");
                 Debug.Print(e.ToString());
             }
+        }
+
+        /**
+         * Writes the specified text to the log.
+         */
+        public void Write(params String[] message) {
+            Write(false, message);
+        }
+
+        /**
+         * Writes the specified text to the log, with an extra newline added to the end.
+         */
+        public void WriteLn(params String[] message) {
+            Write(true, message);
         }
 
 
