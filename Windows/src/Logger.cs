@@ -147,6 +147,8 @@ namespace NeoDefaults_Installer {
 
         /**
          * Writes the specified text to the log.
+         *
+         * If 'message' is null, a newline will be printed.
          */
         public void Write(params String[] message) {
             Write(false, message);

@@ -201,8 +201,6 @@ namespace NeoDefaults_Installer {
             // Allow a few retry attempts in case of transient issues.
             for (int i = 0; i < numRetries; i++) {
                 try {
-                    // Attempt a copy. If it is successful, leave the loop. Otherwise, the exception
-                    // is caught.
                     File.Copy(sourceFile, destFile, overwrite);
                     break;
                 }
@@ -314,7 +312,6 @@ namespace NeoDefaults_Installer {
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
                     return InstallZip(zipFilepath, destination, "Hitsound");
-
                 }
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the hitsound:", e.ToString());
@@ -335,7 +332,6 @@ namespace NeoDefaults_Installer {
                     String destination = Path.Combine(tfPath, @"custom\idhud-master");
 
                     return InstallZip(zipFilepath, destination, "HUD");
-
                 }
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the HUD:", e.ToString());
