@@ -6,6 +6,8 @@ using System.Windows.Forms;
 
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
+        public static readonly String PRODUCT_VERSION = "1.0.0-SNAPSHOT";
+
         // Defines the default size of the main screen.
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
 
@@ -37,13 +39,8 @@ namespace NeoDefaults_Installer {
 #if DEBUG
         // Store the DEBUG flag as a member variable to allow using its value in if statements.
         public static readonly bool DEVELOP_MODE = true;
-
-        // Version value of the program while being developed
-        public static readonly String PRODUCT_VERSION = "1.0.0-SNAPSHOT";
 #else
         public static readonly bool DEVELOP_MODE = false;
-
-        public static readonly String PRODUCT_VERSION = "1.0.0";
 #endif
 
 
