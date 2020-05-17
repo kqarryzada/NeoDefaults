@@ -82,6 +82,11 @@ namespace NeoDefaults_Installer {
          * This method obtains all the drives available on the system, then searches for a TF2 path
          * under each drive until either a valid install is found, or until all possibilities have
          * been exhausted.
+         *
+         * If a potential install is found, it will be stored in the 'tfPath' private member
+         * variable, but will not officially be recognized until it is handled in Main (specifically
+         * in Main.PreparePathPanel()) since there are UI elements that depend on whether or not the
+         * install was automatically found.
          */
         private async void SearchForTF2Install() {
             // Obtain the list of drive names on the system.
@@ -146,8 +151,14 @@ namespace NeoDefaults_Installer {
             });
 
             if (installPath != null) {
-                // If the operation fails, the value of tfPath will still remain null.
-                tfPath = CanonicalizePath(Path.GetDirectoryName(installPath));
+                try {
+                    String parent = Path.GetDirectoryName(installPath);
+                    tfPath = Path.Combine(parent, "tf");
+                }
+                catch (Exception e) {
+                    log.WriteErr("Failed to set the TF2 install path from '" + installPath + "'.",
+                                    e.ToString());
+                }
             }
         }
 
