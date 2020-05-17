@@ -2,7 +2,6 @@
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.IO.Compression;
-using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,6 +48,13 @@ namespace NeoDefaults_Installer {
         // An installation of TF2 should take up around 21 GB of space. Thus, if a drive on the
         // filesystem is less than 16 GB, don't bother searching it for a TF2 install.
         private readonly long MIN_DRIVE_SIZE = 16 * ((long) 1 << 30);
+
+        // The header and footer to surround the "exec" statement that gets added to autoexec.cfg.
+        private readonly String AutoexecHeader =
+                                        "//--------Added by the NeoDefaults Installer--------//";
+
+        private readonly String AutoexecFooter =
+                                        "//--------------------------------------------------//";
 
         // Return codes for installations. These help report whether an install failed, 
         // succeeded, etc.
@@ -246,18 +252,34 @@ namespace NeoDefaults_Installer {
                                                     "mastercomfig*preset.vpk",
                                                      SearchOption.TopDirectoryOnly);
             autoexec = (filePaths.Length == 0) ? defaultLocation : mastercomfigLocation;
+            bool alreadyExists = File.Exists(autoexec);
 
-            // File has been found, append lines.
+
+            if (alreadyExists) {
+                // Check if the "exec" statement has already been appended to autoexec.cfg.
+                using (var fs = File.Open(autoexec, FileMode.Open, FileAccess.Read)) {
+                    var reader = new StreamReader(fs);
+                    String line;
+                    while ((line = reader.ReadLine()) != null) {
+                        if (line.Equals(AutoexecHeader)) {
+                            // The "exec" statement is already there, so there's no need to
+                            // modify anything.
+                            return;
+                        }
+                    }
+                }
+            }
+
             StringBuilder sb = new StringBuilder();
-            if (File.Exists(autoexec)) {
+            if (alreadyExists) {
                 sb.Append(Environment.NewLine);
             }
-            sb.AppendLine("//--------Added by the NeoDefaults Installer--------//");
+            sb.AppendLine(AutoexecHeader);
             sb.Append("exec ");
             sb.Append(configFolderName);
             sb.Append("/");
             sb.AppendLine(Path.GetFileNameWithoutExtension(neodefaultsPath));
-            sb.AppendLine("//--------------------------------------------------//");
+            sb.AppendLine(AutoexecFooter);
 
             File.AppendAllText(autoexec, sb.ToString());
         }
