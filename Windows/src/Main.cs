@@ -204,6 +204,9 @@ namespace NeoDefaults_Installer {
                         case Utilities.InstallStatus.SUCCESS:
                             fontsMessage = "Installed necessary fonts for HUD.";
                             break;
+                        case Utilities.InstallStatus.ALREADY_INSTALLED:
+                            fontsMessage = "All HUD font files are already installed.";
+                            break;
                         default:
                             log.WriteErr("Received an unexpected return value when trying to install"
                                          + " the HUD fonts: " + fontsStatus);
@@ -267,7 +270,7 @@ namespace NeoDefaults_Installer {
 
 
             String completeMessage = "Installation complete.";
-            log.WriteLn(completeMessage);
+            log.Write(completeMessage);
             promptInstall.Text = completeMessage;
             progressBox.AppendText(completeMessage);
             // Allow user to continue to the next page

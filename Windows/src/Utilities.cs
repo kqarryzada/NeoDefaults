@@ -61,7 +61,8 @@ namespace NeoDefaults_Installer {
         public enum InstallStatus {
             FAIL,
             SUCCESS,
-            OPT_OUT
+            OPT_OUT,
+            ALREADY_INSTALLED,
         };
 
         private Utilities() {
@@ -404,26 +405,29 @@ namespace NeoDefaults_Installer {
                     return InstallStatus.FAIL;
                 }
 
-                foreach (string font in fontsToInstall) {
-                    try {
+                int numSkippedFonts = 0;
+                try {
+                    foreach (string font in fontsToInstall) {
                         String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
                         if (File.Exists(destFile)) {
                             log.Write("The font, " + destFile + ", is already installed. Skipping.");
-                            continue;
+                            numSkippedFonts++;
                         }
-
-                        log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
-                        CopyFile(font, destFile, false);
+                        else {
+                            log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
+                            CopyFile(font, destFile, false);
+                        }
                     }
-                    catch (Exception e) {
-                        log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
-                                        e.ToString());
-                        return InstallStatus.FAIL;
-                    }
+                }
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
+                                    e.ToString());
+                    return InstallStatus.FAIL;
                 }
 
                 log.Write("Font installation complete.");
-                return InstallStatus.SUCCESS;
+                return (numSkippedFonts == fontsToInstall.Length) ?
+                            InstallStatus.ALREADY_INSTALLED : InstallStatus.SUCCESS;
             });
         }
 
