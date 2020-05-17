@@ -220,6 +220,10 @@ namespace NeoDefaults_Installer {
                 }
                 progressBar.PerformStep();
             }
+            else {
+                progressBox.AppendText("Opted out of the HUD installation. Skipping."
+                                       + Environment.NewLine);
+            }
 
 
             // --- Hitsound --- //
@@ -245,6 +249,10 @@ namespace NeoDefaults_Installer {
                 log.WriteLn("Hitsound installation returned with status: " + hitStatus);
                 progressBox.AppendText(hitMessage + Environment.NewLine);
                 progressBar.PerformStep();
+            }
+            else {
+                progressBox.AppendText("Opted out of the hitsound installation. Skipping."
+                                       + Environment.NewLine);
             }
 
 
