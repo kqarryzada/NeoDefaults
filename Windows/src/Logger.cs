@@ -28,7 +28,7 @@ namespace NeoDefaults_Installer {
 
         // String divider used for a visual barrier for messages in the log file.
         private readonly String DIVIDER =
-            "---------------------------------------------------------------------------------\n\r";
+            "---------------------------------------------------------------------------------";
 
 
         private Logger() {
@@ -103,13 +103,14 @@ namespace NeoDefaults_Installer {
                 return;
 
             try {
-                File.AppendAllText(logFile.Name, DIVIDER);
+                File.AppendAllText(logFile.Name, DIVIDER + Environment.NewLine);
             }
             catch (Exception e) {
                 Debug.Print("Failed to print the DIVIDER characters.");
                 Debug.Print(e.ToString());
             }
         }
+
 
         /**
          * Assembles the provided text into a single String and writes the message to the logfile.
@@ -128,12 +129,9 @@ namespace NeoDefaults_Installer {
 
             try {
                 var sb = new StringBuilder();
-                foreach (String s in logLines) {
+                foreach (String s in logLines)
                     sb.AppendLine(s);
 
-                    if (Main.DEVELOP_MODE)
-                        Debug.Print("Log: " + s);
-                }
                 if (newline)
                     sb.AppendLine();
 
@@ -172,10 +170,15 @@ namespace NeoDefaults_Installer {
                 return;
 
             try {
-                File.AppendAllText(logFile.Name, DIVIDER);
-                File.AppendAllText(logFile.Name, "Error: ");
-                Write(logLines);
-                File.AppendAllText(logFile.Name, DIVIDER);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine(DIVIDER);
+                sb.Append("Error: ");
+                foreach (String line in logLines)
+                    sb.AppendLine(line);
+                sb.AppendLine(DIVIDER);
+                sb.AppendLine();
+
+                File.AppendAllText(logFile.Name, sb.ToString());
             }
             catch (Exception e) {
                 Debug.Print("Failed to write an error message.");
