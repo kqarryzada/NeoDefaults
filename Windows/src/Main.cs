@@ -64,23 +64,23 @@ namespace NeoDefaults_Installer {
         /**
          * Launches a dialog box and asks the user to provide the path to their TF2 install.
          *
-         * This is triggered when the "Select Folder" button is clicked.Currently, this makes use of
-         * a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
+         * This is triggered when the "Select Folder" button is clicked. Currently, this makes use
+         * of a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
          * folder.
-         * 
-         * The .exe is requested despite the fact that the folder is what's really desired. This is
-         * because the old-school tree-based folder navigation menu is quite ugly, and it's
-         * apparently difficult to configure the more modern menu and have it return a folder (at
-         * least, it seemed that way to me). Hence, the program asks for the 'hl2.exe' file in the
-         * nicer mavigation menu, and the path will later be modified to record the
-         * "Team Fortress 2/tf" folder.
          *
-         * Returns a String representing the path to the "Team Fortress 2" folder.
+         * Returns a String representing the path to the "Team Fortress 2/tf" folder. If the
+         * operation was cancelled or invalid, the String will be null.
          */
         private String RequestFilepath() {
-            String filepath = "";
+            String hl2Path = "";
             bool valid = false;
 
+            // The .exe is requested despite the fact that a folder is what's really desired. This
+            // is because the old-school tree-based folder navigation menu is quite ugly, and it's
+            // apparently difficult to configure the more modern menu and have it return a folder
+            // (at least, it seemed that way to me). Hence, the program asks for the 'hl2.exe' file
+            // in the nicer mavigation menu, and the path will be modified to record the
+            // "Team Fortress 2/tf" folder.
             using (var fileDialog = new OpenFileDialog()) {
                 fileDialog.InitialDirectory = @"C:\";
                 fileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
@@ -88,12 +88,13 @@ namespace NeoDefaults_Installer {
 
                 if (fileDialog.ShowDialog() == DialogResult.OK) {
                     // Get the path of specified file
-                    filepath = fileDialog.FileName;
+                    hl2Path = fileDialog.FileName;
+                    log.Write("Attempting to set the user-given path: " + hl2Path);
 
                     // Validate the provided filepath
-                    String fpCheck = filepath.ToLower();
+                    String fpCheck = hl2Path.ToLower();
                     if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
-                        // Clear any previously displayed message
+                        // Clear any previously-displayed message
                         buttonPathMessage.ForeColor = Color.DimGray;
                         buttonPathMessage.Text = "";
                         buttonPathMessage.Visible = false;
@@ -101,7 +102,6 @@ namespace NeoDefaults_Installer {
                         valid = true;
                     }
                     else {
-                        // Refuse
                         buttonPathMessage.ForeColor = Color.Red;
                         buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file.";
                         buttonPathMessage.Visible = true;
@@ -109,8 +109,24 @@ namespace NeoDefaults_Installer {
                 }
             }
 
-            // Since the hl2.exe file was given, return the parent directory.
-            return (valid) ? Path.GetDirectoryName(filepath) : null;
+            String retval = null;
+            if (valid) {
+                log.WriteLn("The path was considered valid.");
+                try {
+                    // Modify the path to return the tf/ folder.
+                    String parent = Path.GetDirectoryName(hl2Path);
+                    retval = Path.Combine(parent, "tf");
+                }
+                catch (Exception e) {
+                    log.WriteErr("Failed to obtain the path to tf/ from: " + hl2Path,
+                                    e.ToString());
+                }
+            }
+            else {
+                log.WriteLn("The path was considered invalid.");
+            }
+
+            return retval;
         }
 
 
@@ -403,21 +419,19 @@ namespace NeoDefaults_Installer {
             if (visited)
                 return;
 
+            String displayMessage;
             String currSavedPath = utilities.tfPath;
             if (currSavedPath != null) {
-                // Once the TF2 installation has been found, disallow it from being reset to prevent
-                // potential issues.
                 SetTFPath(currSavedPath);
-                buttonPath.Enabled = false;
-                promptPath.Text = "Found the path to the default TF2 install file. Proceed to the" 
-                                  + " next page.";
+                displayMessage = "Found the path to the default TF2 install file. Proceed to the"
+                                 + " next page.";
             }
             else {
-                promptPath.Text = "Select the location where you installed your game, and find the"
-                                  + " \"hl2.exe\" file. This is usually in a location that looks like:\n\r"
-                                  + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
+                displayMessage = "Select the location where you installed your game, and find the"
+                                 + " \"hl2.exe\" file. This is usually in a location that looks like:\n\r"
+                                 + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
             }
-
+            promptPath.Text = displayMessage;
             visited = true;
         }
 
@@ -468,15 +482,14 @@ namespace NeoDefaults_Installer {
          */
         private void buttonPath_Click(object sender, EventArgs e) {
             String filepath = RequestFilepath();
+            bool success = false;
             if (filepath != null) {
-                filepath = utilities.CanonicalizePath(Path.Combine(filepath, "tf"));
-
-                // Attempt setting the filepath
-                if (SetTFPath(filepath))
-                    return;
+                log.Write("Attempting to set the filepath to: " + filepath);
+                success = SetTFPath(filepath);
             }
 
-            nextPath.Enabled = false;
+            if (!success)
+                nextPath.Enabled = false;
         }
 
         /**

@@ -175,13 +175,15 @@ namespace NeoDefaults_Installer {
          */
         public String CanonicalizePath(String path) {
             log.Write("Attempting to canonicalize the path of: " + path);
-            String testPath = null;
+            if (path == null) {
+                return null;
+            }
 
+            String testPath = null;
             try {
                 testPath = Path.GetFullPath(path);
             }
             catch (Exception e) {
-                path = path ?? "<null>";
                 log.WriteErr("Could not obtain the canonical path of '" + path + "'. Aborting.",
                             e.ToString());
             }
