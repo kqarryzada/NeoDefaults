@@ -63,12 +63,14 @@
             this.promptHUD = new System.Windows.Forms.Label();
             this.backHUD = new System.Windows.Forms.Button();
             this.nextHUD = new System.Windows.Forms.Button();
+            this.imageLast = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageLast)).BeginInit();
             this.SuspendLayout();
             // 
             // menu1Home
@@ -111,12 +113,11 @@
             // 
             this.promptPath.AutoSize = true;
             this.promptPath.Location = new System.Drawing.Point(39, 87);
+            this.promptPath.MaximumSize = new System.Drawing.Size(580, 0);
             this.promptPath.Name = "promptPath";
             this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
-            // Enable text wrapping for the message
-            this.promptPath.MaximumSize = new System.Drawing.Size(580, 0);
             this.promptPath.AutoSize = true;
             // 
             // promptHome
@@ -366,14 +367,15 @@
             // promptLast
             // 
             this.promptLast.AutoSize = true;
-            this.promptLast.Location = new System.Drawing.Point(39, 87);
+            this.promptLast.Location = new System.Drawing.Point(89, 87);
             this.promptLast.Name = "promptLast";
-            this.promptLast.Size = new System.Drawing.Size(265, 13);
+            this.promptLast.Size = new System.Drawing.Size(105, 13);
             this.promptLast.TabIndex = 2;
-            this.promptLast.Text = "Congrations! You done it. All files successfully installed.";
+            this.promptLast.Text = "%EXIT_MESSAGE%";
             // 
             // panel6
             // 
+            this.panel6.Controls.Add(this.imageLast);
             this.panel6.Controls.Add(this.exitLast);
             this.panel6.Controls.Add(this.promptLast);
             this.panel6.Location = new System.Drawing.Point(1290, 485);
@@ -456,6 +458,14 @@
             this.nextHUD.UseVisualStyleBackColor = true;
             this.nextHUD.Click += new System.EventHandler(this.Next_Click);
             // 
+            // imageLast
+            // 
+            this.imageLast.Location = new System.Drawing.Point(42, 87);
+            this.imageLast.Name = "imageLast";
+            this.imageLast.Size = new System.Drawing.Size(50, 50);
+            this.imageLast.TabIndex = 10;
+            this.imageLast.TabStop = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -484,6 +494,7 @@
             this.panel6.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageLast)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -529,6 +540,7 @@
         private System.Windows.Forms.Button backHitsound;
         private System.Windows.Forms.Button backHUD;
         private System.Windows.Forms.TextBox progressBox;
+        private System.Windows.Forms.PictureBox imageLast;
     }
 }
 

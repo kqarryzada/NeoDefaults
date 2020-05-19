@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
@@ -25,6 +28,9 @@ namespace NeoDefaults_Installer {
 
         // Specifies the installation type.
         private bool isBasicInstallEnabled = true;
+
+        // Keeps track of which installations failed so that they may be reported at the end.
+        private readonly List<String> failedComponents = new List<String>();
 
         // Keeps track of which previous menus were accessed, so that they can be made available if
         // someone clicks "Back".
@@ -179,7 +185,7 @@ namespace NeoDefaults_Installer {
 
             if (installHUD) {
                 // --- HUD --- //
-                bool installFonts = true;
+                bool installFonts = false;
 
                 promptInstall.Text = "Installing the Improved Default HUD...";
                 String HUDMessage = "";
@@ -187,13 +193,14 @@ namespace NeoDefaults_Installer {
                 switch (HUDStatus) {
                     case Utilities.InstallStatus.FAIL:
                         HUDMessage = "Error: Failed to install the Improved Default HUD.";
+                        failedComponents.Add("Improved Default HUD");
                         break;
                     case Utilities.InstallStatus.SUCCESS:
                         HUDMessage = "Successfully installed the Improved Default HUD.";
+                        installFonts = true;
                         break;
                     case Utilities.InstallStatus.OPT_OUT:
                         HUDMessage = "HUD installation skipped.";
-                        installFonts = false;
                         break;
                     default:
                         log.WriteErr("Received an unexpected return value when trying to install"
@@ -216,6 +223,7 @@ namespace NeoDefaults_Installer {
                     switch (fontsStatus) {
                         case Utilities.InstallStatus.FAIL:
                             fontsMessage = "Error: Failed to install the needed fonts for the HUD.";
+                            failedComponents.Add("Fonts for the Improved Default HUD");
                             break;
                         case Utilities.InstallStatus.SUCCESS:
                             fontsMessage = "Installed necessary fonts for HUD.";
@@ -250,6 +258,7 @@ namespace NeoDefaults_Installer {
                 switch (hitStatus) {
                     case Utilities.InstallStatus.FAIL:
                         hitMessage = "Error: Failed to install the hitsound.";
+                        failedComponents.Add("Hitsound");
                         break;
                     case Utilities.InstallStatus.SUCCESS:
                         hitMessage = "Hitsound installed.";
@@ -279,6 +288,7 @@ namespace NeoDefaults_Installer {
             switch (configStatus) {
                 case Utilities.InstallStatus.FAIL:
                     configMessage = "Error: Failed to install the config files.";
+                    failedComponents.Add("Config");
                     break;
                 case Utilities.InstallStatus.SUCCESS:
                     configMessage = "Config installed.";
@@ -292,11 +302,11 @@ namespace NeoDefaults_Installer {
             progressBox.AppendText(configMessage + Environment.NewLine);
             progressBar.PerformStep();
 
-
             String completeMessage = "Installation complete.";
+            if (failedComponents.Any())
+                completeMessage += " There was a problem with one or more components.";
             log.Write(completeMessage);
             promptInstall.Text = completeMessage;
-            progressBox.AppendText(completeMessage);
             // Allow user to continue to the next page
             nextInstall.Enabled = true;
         }
@@ -323,6 +333,36 @@ namespace NeoDefaults_Installer {
             // Allow user to proceed to next page
             nextPath.Enabled = true;
             return true;
+        }
+
+
+        /**
+         * Prepares the final page with a "success" message if there were no failures. Otherwise,
+         * the component failures are listed on this page.
+         */
+        private void PrepareFarewellPage() {
+            String message;
+            Image image;
+            if (!failedComponents.Any()) {
+                image = SystemIcons.Information.ToBitmap();
+                message = "Congrations! You done it. All files successfully installed.";
+            }
+            else {
+                image = SystemIcons.Error.ToBitmap();
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("The following components failed to install:");
+                sb.AppendLine();
+                foreach (String component in failedComponents) {
+                    sb.Append("• ");
+                    sb.AppendLine(component);
+                }
+
+                message = sb.ToString();
+            }
+
+            promptLast.Text = message;
+            imageLast.Image = image;
         }
 
 
@@ -369,8 +409,10 @@ namespace NeoDefaults_Installer {
                 nextPanel = panel4;
             else if (currentPanel == panel4)
                 nextPanel = panel5;
-            else if (currentPanel == panel5)
+            else if (currentPanel == panel5) {
+                PrepareFarewellPage();
                 nextPanel = panel6;
+            }
             else if (currentPanel == panel6) {
                 // The button on the last screen exits.
                 Environment.Exit(0);
