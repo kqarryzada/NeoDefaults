@@ -234,8 +234,8 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * In order for neodefaults.cfg to be run when TF2 is launched, autoexec.cfg must
-         * execute the file. This method adds the needed lines to the autoexec file in order
+         * In order for neodefaults.cfg to be run when TF2 is launched, autoexec.cfg must execute
+         * the file. This method adds the necessary 'exec' statement to the autoexec file in order
          * to accomplish this. If the autoexec.cfg file does not exist, it will be created.
          *
          * neodefaultsPath: The path to the newly-installed neodefaults.cfg file
@@ -254,7 +254,8 @@ namespace NeoDefaults_Installer {
             String[] filePaths = Directory.GetFiles(Path.Combine(tfPath, "custom"),
                                                     "mastercomfig*preset.vpk",
                                                      SearchOption.TopDirectoryOnly);
-            autoexec = (filePaths.Length == 0) ? defaultLocation : mastercomfigLocation;
+            bool mastercomfigEnabled = filePaths.Length != 0;
+            autoexec = (mastercomfigEnabled) ? mastercomfigLocation : defaultLocation;
             bool alreadyExists = File.Exists(autoexec);
 
 
@@ -271,6 +272,11 @@ namespace NeoDefaults_Installer {
                         }
                     }
                 }
+            }
+            else if (mastercomfigEnabled) {
+                // If mastercomfig is in use, make sure the "user" directory exists before
+                // proceeding. This operation is idempotent.
+                Directory.CreateDirectory(Path.Combine(tfPath, @"cfg\user"));
             }
 
             StringBuilder sb = new StringBuilder();
