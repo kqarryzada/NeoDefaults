@@ -406,8 +406,6 @@ namespace NeoDefaults_Installer {
                     nextPanel = panel5;
             }
             else if (currentPanel == panel3)
-                nextPanel = panel4;
-            else if (currentPanel == panel4)
                 nextPanel = panel5;
             else if (currentPanel == panel5) {
                 PrepareFarewellPage();
@@ -535,43 +533,19 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Records the user's wish to opt into installing idHUD.
+         * Records the user's wish to opt into or out of installing the custom hitsound.
          */
-        private void menu1Hitsound_CheckedChanged(object sender, EventArgs e) {
-            RadioButton element = (RadioButton) sender;
-            if (element.Checked) {
-                installHitsound = true;
-            }
+        private void HitsoundBox_CheckedChanged(object sender, EventArgs e) {
+            CheckBox element = (CheckBox) sender;
+            installHitsound = element.Checked;
         }
 
         /**
-         * Records the user's wish to opt out of installing idHUD.
+         * Records the user's wish to opt into or out of installing idHUD.
          */
-        private void menu1HUD_CheckedChanged(object sender, EventArgs e) {
-            RadioButton element = (RadioButton) sender;
-            if (element.Checked) {
-                installHUD = true;
-            }
-        }
-
-        /**
-         * Records the user's wish to opt into installing the custom hitsound.
-         */
-        private void menu2Hitsound_CheckedChanged(object sender, EventArgs e) {
-            RadioButton element = (RadioButton) sender;
-            if (element.Checked) {
-                installHitsound = false;
-            }
-        }
-
-        /**
-         * Records the user's wish to opt out of installing the custom hitsound.
-         */
-        private void menu2HUD_CheckedChanged(object sender, EventArgs e) {
-            RadioButton element = (RadioButton) sender;
-            if (element.Checked) {
-                installHUD = false;
-            }
+        private void HUDBox_CheckedChanged(object sender, EventArgs e) {
+            CheckBox element = (CheckBox) sender;
+            installHUD = element.Checked;
         }
     }
 }

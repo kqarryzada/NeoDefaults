@@ -23,6 +23,7 @@
         ///  the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.menu1Home = new System.Windows.Forms.RadioButton();
             this.menu2Home = new System.Windows.Forms.RadioButton();
@@ -44,11 +45,14 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.button2 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.menu2Hitsound = new System.Windows.Forms.RadioButton();
-            this.menu1Hitsound = new System.Windows.Forms.RadioButton();
-            this.promptHitsound = new System.Windows.Forms.Label();
-            this.backHitsound = new System.Windows.Forms.Button();
-            this.nextHitsound = new System.Windows.Forms.Button();
+            this.CfgBox = new System.Windows.Forms.CheckBox();
+            this.HUDBox = new System.Windows.Forms.CheckBox();
+            this.HitsoundBox = new System.Windows.Forms.CheckBox();
+            this.NextOpt = new System.Windows.Forms.Button();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.LabelOpt = new System.Windows.Forms.Label();
+            this.BackOpt = new System.Windows.Forms.Button();
             this.panel5 = new System.Windows.Forms.Panel();
             this.progressBox = new System.Windows.Forms.TextBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -56,20 +60,16 @@
             this.promptInstall = new System.Windows.Forms.Label();
             this.promptLast = new System.Windows.Forms.Label();
             this.panel6 = new System.Windows.Forms.Panel();
-            this.exitLast = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.menu2HUD = new System.Windows.Forms.RadioButton();
-            this.menu1HUD = new System.Windows.Forms.RadioButton();
-            this.promptHUD = new System.Windows.Forms.Label();
-            this.backHUD = new System.Windows.Forms.Button();
-            this.nextHUD = new System.Windows.Forms.Button();
             this.imageLast = new System.Windows.Forms.PictureBox();
+            this.exitLast = new System.Windows.Forms.Button();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
-            this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageLast)).BeginInit();
             this.SuspendLayout();
             // 
@@ -118,7 +118,6 @@
             this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
             this.promptPath.Text = "Select the path to your \"Team Fortress 2\" folder:";
-            this.promptPath.AutoSize = true;
             // 
             // promptHome
             // 
@@ -253,68 +252,111 @@
             // 
             // panel3
             // 
-            this.panel3.Controls.Add(this.menu2Hitsound);
-            this.panel3.Controls.Add(this.menu1Hitsound);
-            this.panel3.Controls.Add(this.promptHitsound);
-            this.panel3.Controls.Add(this.backHitsound);
-            this.panel3.Controls.Add(this.nextHitsound);
+            this.panel3.Controls.Add(this.CfgBox);
+            this.panel3.Controls.Add(this.HUDBox);
+            this.panel3.Controls.Add(this.HitsoundBox);
+            this.panel3.Controls.Add(this.NextOpt);
+            this.panel3.Controls.Add(this.pictureBox2);
+            this.panel3.Controls.Add(this.pictureBox1);
+            this.panel3.Controls.Add(this.LabelOpt);
+            this.panel3.Controls.Add(this.BackOpt);
             this.panel3.Location = new System.Drawing.Point(1290, 0);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(640, 480);
             this.panel3.TabIndex = 3;
             // 
-            // menu2Hitsound
+            // CfgBox
             // 
-            this.menu2Hitsound.AutoSize = true;
-            this.menu2Hitsound.Location = new System.Drawing.Point(39, 131);
-            this.menu2Hitsound.Name = "menu2Hitsound";
-            this.menu2Hitsound.Size = new System.Drawing.Size(39, 17);
-            this.menu2Hitsound.TabIndex = 3;
-            this.menu2Hitsound.Text = "No";
-            this.menu2Hitsound.UseVisualStyleBackColor = true;
-            this.menu2Hitsound.CheckedChanged += new System.EventHandler(this.menu2Hitsound_CheckedChanged);
+            this.CfgBox.AutoSize = true;
+            this.CfgBox.Checked = true;
+            this.CfgBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CfgBox.Enabled = false;
+            this.CfgBox.Location = new System.Drawing.Point(39, 204);
+            this.CfgBox.Name = "CfgBox";
+            this.CfgBox.Size = new System.Drawing.Size(215, 17);
+            this.CfgBox.TabIndex = 6;
+            this.CfgBox.Text = "NeoDefaults config file (always installed)";
+            this.CfgBox.UseVisualStyleBackColor = true;
             // 
-            // menu1Hitsound
+            // HUDBox
             // 
-            this.menu1Hitsound.AutoSize = true;
-            this.menu1Hitsound.Checked = true;
-            this.menu1Hitsound.Location = new System.Drawing.Point(39, 109);
-            this.menu1Hitsound.Name = "menu1Hitsound";
-            this.menu1Hitsound.Size = new System.Drawing.Size(124, 17);
-            this.menu1Hitsound.TabIndex = 3;
-            this.menu1Hitsound.TabStop = true;
-            this.menu1Hitsound.Text = "Yes (Recommended)";
-            this.menu1Hitsound.UseVisualStyleBackColor = true;
-            this.menu1Hitsound.CheckedChanged += new System.EventHandler(this.menu1Hitsound_CheckedChanged);
+            this.HUDBox.AutoSize = true;
+            this.HUDBox.Checked = true;
+            this.HUDBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.HUDBox.Location = new System.Drawing.Point(39, 178);
+            this.HUDBox.Name = "HUDBox";
+            this.HUDBox.Size = new System.Drawing.Size(134, 17);
+            this.HUDBox.TabIndex = 6;
+            this.HUDBox.Text = "Improved Default HUD";
+            this.HUDBox.UseVisualStyleBackColor = true;
+            this.HUDBox.CheckedChanged += new System.EventHandler(this.HUDBox_CheckedChanged);
             // 
-            // promptHitsound
+            // HitsoundBox
             // 
-            this.promptHitsound.AutoSize = true;
-            this.promptHitsound.Location = new System.Drawing.Point(39, 87);
-            this.promptHitsound.Name = "promptHitsound";
-            this.promptHitsound.Size = new System.Drawing.Size(118, 13);
-            this.promptHitsound.TabIndex = 2;
-            this.promptHitsound.Text = "Install Quake hitsound?";
+            this.HitsoundBox.AutoSize = true;
+            this.HitsoundBox.Checked = true;
+            this.HitsoundBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.HitsoundBox.Location = new System.Drawing.Point(39, 152);
+            this.HitsoundBox.Name = "HitsoundBox";
+            this.HitsoundBox.Size = new System.Drawing.Size(120, 17);
+            this.HitsoundBox.TabIndex = 6;
+            this.HitsoundBox.Text = "Custom hitsound file";
+            this.HitsoundBox.UseVisualStyleBackColor = true;
+            this.HitsoundBox.CheckedChanged += new System.EventHandler(this.HitsoundBox_CheckedChanged);
             // 
-            // backHitsound
+            // NextOpt
             // 
-            this.backHitsound.Location = new System.Drawing.Point(434, 385);
-            this.backHitsound.Name = "backHitsound";
-            this.backHitsound.Size = new System.Drawing.Size(75, 22);
-            this.backHitsound.TabIndex = 1;
-            this.backHitsound.Text = "Back";
-            this.backHitsound.UseVisualStyleBackColor = true;
-            this.backHitsound.Click += new System.EventHandler(this.Prev_Click);
+            this.NextOpt.Location = new System.Drawing.Point(515, 385);
+            this.NextOpt.Name = "NextOpt";
+            this.NextOpt.Size = new System.Drawing.Size(75, 22);
+            this.NextOpt.TabIndex = 1;
+            this.NextOpt.Text = "Install";
+            this.NextOpt.UseVisualStyleBackColor = true;
+            this.NextOpt.Click += new System.EventHandler(this.Next_Click);
             // 
-            // nextHitsound
+            // pictureBox2
             // 
-            this.nextHitsound.Location = new System.Drawing.Point(515, 385);
-            this.nextHitsound.Name = "nextHitsound";
-            this.nextHitsound.Size = new System.Drawing.Size(75, 22);
-            this.nextHitsound.TabIndex = 1;
-            this.nextHitsound.Text = "Next";
-            this.nextHitsound.UseVisualStyleBackColor = true;
-            this.nextHitsound.Click += new System.EventHandler(this.Next_Click);
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(174, 175);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 5;
+            this.pictureBox2.TabStop = false;
+            this.toolTip.SetToolTip(this.pictureBox2, "A custom HUD that makes small improvements and fixes to the way the game normally" +
+        " looks.");
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(159, 149);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 5;
+            this.pictureBox1.TabStop = false;
+            this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings that will be applied to TF2 have been specifically tuned fo" +
+        "r this sound file. ");
+            // 
+            // LabelOpt
+            // 
+            this.LabelOpt.AutoSize = true;
+            this.LabelOpt.Location = new System.Drawing.Point(39, 84);
+            this.LabelOpt.MaximumSize = new System.Drawing.Size(550, 0);
+            this.LabelOpt.Name = "LabelOpt";
+            this.LabelOpt.Size = new System.Drawing.Size(539, 26);
+            this.LabelOpt.TabIndex = 2;
+            this.LabelOpt.Text = resources.GetString("LabelOpt.Text");
+            // 
+            // BackOpt
+            // 
+            this.BackOpt.Location = new System.Drawing.Point(434, 385);
+            this.BackOpt.Name = "BackOpt";
+            this.BackOpt.Size = new System.Drawing.Size(75, 22);
+            this.BackOpt.TabIndex = 1;
+            this.BackOpt.Text = "Back";
+            this.BackOpt.UseVisualStyleBackColor = true;
+            this.BackOpt.Click += new System.EventHandler(this.Prev_Click);
             // 
             // panel5
             // 
@@ -351,7 +393,7 @@
             this.nextInstall.Name = "nextInstall";
             this.nextInstall.Size = new System.Drawing.Size(75, 22);
             this.nextInstall.TabIndex = 1;
-            this.nextInstall.Text = "Next";
+            this.nextInstall.Text = "Finish";
             this.nextInstall.UseVisualStyleBackColor = true;
             this.nextInstall.Click += new System.EventHandler(this.Next_Click);
             // 
@@ -383,6 +425,14 @@
             this.panel6.Size = new System.Drawing.Size(640, 480);
             this.panel6.TabIndex = 3;
             // 
+            // imageLast
+            // 
+            this.imageLast.Location = new System.Drawing.Point(42, 87);
+            this.imageLast.Name = "imageLast";
+            this.imageLast.Size = new System.Drawing.Size(50, 50);
+            this.imageLast.TabIndex = 10;
+            this.imageLast.TabStop = false;
+            // 
             // exitLast
             // 
             this.exitLast.Location = new System.Drawing.Point(515, 385);
@@ -393,78 +443,11 @@
             this.exitLast.UseVisualStyleBackColor = true;
             this.exitLast.Click += new System.EventHandler(this.Next_Click);
             // 
-            // panel4
+            // toolTip
             // 
-            this.panel4.Controls.Add(this.menu2HUD);
-            this.panel4.Controls.Add(this.menu1HUD);
-            this.panel4.Controls.Add(this.promptHUD);
-            this.panel4.Controls.Add(this.backHUD);
-            this.panel4.Controls.Add(this.nextHUD);
-            this.panel4.Location = new System.Drawing.Point(0, 485);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(640, 480);
-            this.panel4.TabIndex = 3;
-            // 
-            // menu2HUD
-            // 
-            this.menu2HUD.AutoSize = true;
-            this.menu2HUD.Location = new System.Drawing.Point(39, 131);
-            this.menu2HUD.Name = "menu2HUD";
-            this.menu2HUD.Size = new System.Drawing.Size(39, 17);
-            this.menu2HUD.TabIndex = 3;
-            this.menu2HUD.Text = "No";
-            this.menu2HUD.UseVisualStyleBackColor = true;
-            this.menu2HUD.CheckedChanged += new System.EventHandler(this.menu2HUD_CheckedChanged);
-            // 
-            // menu1HUD
-            // 
-            this.menu1HUD.AutoSize = true;
-            this.menu1HUD.Checked = true;
-            this.menu1HUD.Location = new System.Drawing.Point(39, 109);
-            this.menu1HUD.Name = "menu1HUD";
-            this.menu1HUD.Size = new System.Drawing.Size(124, 17);
-            this.menu1HUD.TabIndex = 3;
-            this.menu1HUD.TabStop = true;
-            this.menu1HUD.Text = "Yes (Recommended)";
-            this.menu1HUD.UseVisualStyleBackColor = true;
-            this.menu1HUD.CheckedChanged += new System.EventHandler(this.menu1HUD_CheckedChanged);
-            // 
-            // promptHUD
-            // 
-            this.promptHUD.AutoSize = true;
-            this.promptHUD.Location = new System.Drawing.Point(39, 87);
-            this.promptHUD.Name = "promptHUD";
-            this.promptHUD.Size = new System.Drawing.Size(75, 13);
-            this.promptHUD.TabIndex = 2;
-            this.promptHUD.Text = "Install idHUD?";
-            // 
-            // backHUD
-            // 
-            this.backHUD.Location = new System.Drawing.Point(434, 385);
-            this.backHUD.Name = "backHUD";
-            this.backHUD.Size = new System.Drawing.Size(75, 22);
-            this.backHUD.TabIndex = 1;
-            this.backHUD.Text = "Back";
-            this.backHUD.UseVisualStyleBackColor = true;
-            this.backHUD.Click += new System.EventHandler(this.Prev_Click);
-            // 
-            // nextHUD
-            // 
-            this.nextHUD.Location = new System.Drawing.Point(515, 385);
-            this.nextHUD.Name = "nextHUD";
-            this.nextHUD.Size = new System.Drawing.Size(75, 22);
-            this.nextHUD.TabIndex = 1;
-            this.nextHUD.Text = "Next";
-            this.nextHUD.UseVisualStyleBackColor = true;
-            this.nextHUD.Click += new System.EventHandler(this.Next_Click);
-            // 
-            // imageLast
-            // 
-            this.imageLast.Location = new System.Drawing.Point(42, 87);
-            this.imageLast.Name = "imageLast";
-            this.imageLast.Size = new System.Drawing.Size(50, 50);
-            this.imageLast.TabIndex = 10;
-            this.imageLast.TabStop = false;
+            this.toolTip.AutoPopDelay = 15000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // Main
             // 
@@ -475,7 +458,6 @@
             this.ClientSize = new System.Drawing.Size(2048, 975);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel6);
-            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -488,12 +470,12 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageLast)).EndInit();
             this.ResumeLayout(false);
 
@@ -520,27 +502,25 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Button nextHitsound;
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button nextInstall;
         private System.Windows.Forms.Panel panel6;
         private System.Windows.Forms.Button exitLast;
-        private System.Windows.Forms.Label promptHitsound;
-        private System.Windows.Forms.RadioButton menu2Hitsound;
-        private System.Windows.Forms.RadioButton menu1Hitsound;
+        private System.Windows.Forms.Label LabelOpt;
         private System.Windows.Forms.Label promptInstall;
         private System.Windows.Forms.Label promptLast;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.RadioButton menu2HUD;
-        private System.Windows.Forms.RadioButton menu1HUD;
-        private System.Windows.Forms.Label promptHUD;
-        private System.Windows.Forms.Button nextHUD;
+        private System.Windows.Forms.Button NextOpt;
         private System.Windows.Forms.Button backPath;
-        private System.Windows.Forms.Button backHitsound;
-        private System.Windows.Forms.Button backHUD;
+        private System.Windows.Forms.Button BackOpt;
         private System.Windows.Forms.TextBox progressBox;
         private System.Windows.Forms.PictureBox imageLast;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.CheckBox HUDBox;
+        private System.Windows.Forms.CheckBox HitsoundBox;
+        private System.Windows.Forms.CheckBox CfgBox;
     }
 }
 
