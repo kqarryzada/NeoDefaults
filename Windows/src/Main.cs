@@ -172,6 +172,42 @@ namespace NeoDefaults_Installer {
 
 
         /**
+         * Logs the status of an attempted component install, and updates the progress box to
+         * indicate the status to the user in a nicer message.
+         *
+         * longName: The full name of the installed component
+         * shortName: The nickname of the installed component
+         * status: The result code of the attempted install
+         */
+        private void LogInstallStatus(String longName, String shortName, Utilities.InstallStatus status) {
+            log.WriteLn("The " + shortName + " installation returned with status: " + status);
+
+            String message = "";
+            switch (status) {
+                case Utilities.InstallStatus.FAIL:
+                    message = "Error: Failed to install the " + longName + ".";
+                    failedComponents.Add(longName);
+                    break;
+                case Utilities.InstallStatus.SUCCESS:
+                    message = "Installed the " + longName + ".";
+                    break;
+                case Utilities.InstallStatus.OPT_OUT:
+                    message = "The " + shortName + " installation was skipped.";
+                    break;
+                case Utilities.InstallStatus.ALREADY_INSTALLED:
+                    message = "All " + shortName + " files are already installed.";
+                    break;
+                default:
+                    log.WriteErr("Received an unexpected return value when trying to install"
+                                 + " the " + longName + ": " + status);
+                    break;
+            }
+
+            progressBox.AppendText(message + Environment.NewLine);
+        }
+
+
+        /**
          * Installs the requested files to the appropriate locations. These operations are done on
          * their own threads to allow the UI to be responsive while the user waits for the
          * installation to complete.
@@ -183,61 +219,22 @@ namespace NeoDefaults_Installer {
             // Initialize before starting the installation
             InitializeProgressbar();
 
+
             if (installHUD) {
                 // --- HUD --- //
-                bool installFonts = false;
-
-                promptInstall.Text = "Installing the Improved Default HUD...";
-                String HUDMessage = "";
+                String HUDComponentName = "Improved Default HUD";
+                promptInstall.Text = "Installing the " + HUDComponentName + "...";
                 var HUDStatus = await utilities.InstallHUD();
-                switch (HUDStatus) {
-                    case Utilities.InstallStatus.FAIL:
-                        HUDMessage = "Error: Failed to install the Improved Default HUD.";
-                        failedComponents.Add("Improved Default HUD");
-                        break;
-                    case Utilities.InstallStatus.SUCCESS:
-                        HUDMessage = "Successfully installed the Improved Default HUD.";
-                        installFonts = true;
-                        break;
-                    case Utilities.InstallStatus.OPT_OUT:
-                        HUDMessage = "HUD installation skipped.";
-                        break;
-                    default:
-                        log.WriteErr("Received an unexpected return value when trying to install"
-                                     + " the HUD: " + HUDStatus);
-                        break;
-                }
-                log.WriteLn("HUD installation returned with status: " + HUDStatus);
-                progressBox.AppendText(HUDMessage + Environment.NewLine);
+                LogInstallStatus(HUDComponentName, "HUD", HUDStatus);
                 progressBar.PerformStep();
 
 
                 // --- Fonts --- //
-                // If the user opts out of installing the HUD, then skip installing the fonts.
-                if (installFonts) {
-                    log.Write("Installing font files...");
-
-                    promptInstall.Text = "Installing required fonts for the Improved Default HUD...";
-                    String fontsMessage = "";
+                if (HUDStatus == Utilities.InstallStatus.SUCCESS) {
+                    String fontComponentName = "HUD font files";
+                    promptInstall.Text = "Installing the " + fontComponentName + "...";
                     var fontsStatus = await utilities.InstallHUDFonts();
-                    switch (fontsStatus) {
-                        case Utilities.InstallStatus.FAIL:
-                            fontsMessage = "Error: Failed to install the needed fonts for the HUD.";
-                            failedComponents.Add("Fonts for the Improved Default HUD");
-                            break;
-                        case Utilities.InstallStatus.SUCCESS:
-                            fontsMessage = "Installed necessary fonts for HUD.";
-                            break;
-                        case Utilities.InstallStatus.ALREADY_INSTALLED:
-                            fontsMessage = "All HUD font files are already installed.";
-                            break;
-                        default:
-                            log.WriteErr("Received an unexpected return value when trying to install"
-                                         + " the HUD fonts: " + fontsStatus);
-                            break;
-                    }
-                    log.WriteLn("Font installation returned with status: " + fontsStatus);
-                    progressBox.AppendText(fontsMessage + Environment.NewLine);
+                    LogInstallStatus(fontComponentName, "font", fontsStatus);
                 }
                 else {
                     log.Write("Font installation skipped.");
@@ -252,27 +249,10 @@ namespace NeoDefaults_Installer {
 
             // --- Hitsound --- //
             if (installHitsound) {
-                promptInstall.Text = "Installing hitsound files...";
-                String hitMessage = "";
+                String hitsoundComponentName = "hitsound files";
+                promptInstall.Text = "Installing the " + hitsoundComponentName + "...";
                 var hitStatus = await utilities.InstallHitsound();
-                switch (hitStatus) {
-                    case Utilities.InstallStatus.FAIL:
-                        hitMessage = "Error: Failed to install the hitsound.";
-                        failedComponents.Add("Hitsound");
-                        break;
-                    case Utilities.InstallStatus.SUCCESS:
-                        hitMessage = "Hitsound installed.";
-                        break;
-                    case Utilities.InstallStatus.OPT_OUT:
-                        hitMessage = "Hitsound install skipped.";
-                        break;
-                    default:
-                        log.WriteErr("Received an unexpected return value when trying to install"
-                                     + " the hitsound: " + hitStatus);
-                        break;
-                }
-                log.WriteLn("Hitsound installation returned with status: " + hitStatus);
-                progressBox.AppendText(hitMessage + Environment.NewLine);
+                LogInstallStatus(hitsoundComponentName, "hitsound", hitStatus);
                 progressBar.PerformStep();
             }
             else {
@@ -282,25 +262,12 @@ namespace NeoDefaults_Installer {
 
 
             // --- Config files --- //
-            promptInstall.Text = "Installing config files...";
-            String configMessage = "";
+            String configComponentName = "NeoDefaults config files";
+            promptInstall.Text = "Installing " + configComponentName + "...";
             var configStatus = await utilities.InstallConfig();
-            switch (configStatus) {
-                case Utilities.InstallStatus.FAIL:
-                    configMessage = "Error: Failed to install the config files.";
-                    failedComponents.Add("Config");
-                    break;
-                case Utilities.InstallStatus.SUCCESS:
-                    configMessage = "Config installed.";
-                    break;
-                default:
-                    log.WriteErr("Received an unexpected return value when trying to install"
-                                 + " the config files: " + configStatus);
-                    break;
-            }
-            log.WriteLn("Config installation returned with status: " + configStatus);
-            progressBox.AppendText(configMessage + Environment.NewLine);
+            LogInstallStatus(configComponentName, "config", configStatus);
             progressBar.PerformStep();
+
 
             String completeMessage = "Installation complete.";
             if (failedComponents.Any())
@@ -354,8 +321,9 @@ namespace NeoDefaults_Installer {
                 sb.AppendLine("The following components failed to install:");
                 sb.AppendLine();
                 foreach (String component in failedComponents) {
+                    String capitalized = component.First().ToString().ToUpper() + component.Substring(1);
                     sb.Append("• ");
-                    sb.AppendLine(component);
+                    sb.AppendLine(capitalized);
                 }
 
                 message = sb.ToString();
