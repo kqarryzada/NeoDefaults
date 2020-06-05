@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
@@ -41,6 +40,15 @@ namespace NeoDefaults_Installer {
 
         // Logfile containing useful information on what the program has been doing
         Logger log;
+
+        private static readonly String INSTALL_NOT_FOUND =
+                                "Select the location where you installed your game, and find the"
+                                + " 'hl2.exe' file. This is usually in a location that looks like:\n\r"
+                                + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
+
+        // Tracks whether the user has ever successfully provided the path to the TF2 install.
+        private bool folderManuallySelected = false;
+
 
 #if DEBUG
         // Store the DEBUG flag as a member variable to allow using its value in if statements.
@@ -92,30 +100,34 @@ namespace NeoDefaults_Installer {
                 fileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
                 fileDialog.FilterIndex = 1;
 
-                if (fileDialog.ShowDialog() == DialogResult.OK) {
-                    // Get the path of specified file
-                    hl2Path = fileDialog.FileName;
-                    log.Write("Attempting to set the user-given path: " + hl2Path);
+                if (fileDialog.ShowDialog() != DialogResult.OK) {
+                    // The operation was cancelled
+                    return null;
+                }
 
-                    // Validate the provided filepath
-                    String fpCheck = hl2Path.ToLower();
-                    if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
-                        // Clear any previously-displayed message
-                        buttonPathMessage.ForeColor = Color.DimGray;
-                        buttonPathMessage.Text = "";
-                        buttonPathMessage.Visible = false;
+                // Get the path of specified file
+                hl2Path = fileDialog.FileName;
+                log.Write("Attempting to set the user-given path: " + hl2Path);
 
-                        valid = true;
-                    }
-                    else {
-                        buttonPathMessage.ForeColor = Color.Red;
-                        buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file.";
-                        buttonPathMessage.Visible = true;
-                    }
+                // Validate the provided filepath
+                String fpCheck = hl2Path.ToLower();
+                if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
+                    // Clear any previously-displayed message
+                    buttonPathMessage.ForeColor = Color.DimGray;
+                    buttonPathMessage.Text = "";
+                    buttonPathMessage.Visible = false;
+
+                    valid = true;
+                }
+                else {
+                    buttonPathMessage.ForeColor = Color.Red;
+                    buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file.";
+                    buttonPathMessage.Visible = true;
                 }
             }
 
             String retval = null;
+            String description = INSTALL_NOT_FOUND;
             if (valid) {
                 log.WriteLn("The path was considered valid.");
                 try {
@@ -127,11 +139,15 @@ namespace NeoDefaults_Installer {
                     log.WriteErr("Failed to obtain the path to tf/ from: " + hl2Path,
                                     e.ToString());
                 }
+
+                description = "The TF2 install path was recognized. Proceed to the next page.";
+                folderManuallySelected = true;
             }
             else {
                 log.WriteLn("The path was considered invalid.");
             }
 
+            promptPath.Text = description;
             return retval;
         }
 
@@ -419,28 +435,35 @@ namespace NeoDefaults_Installer {
         /**
          * When navigating to the path page (the page that asks the user to enter their TF path),
          * the program needs to load elements based on whether or not a TF2 install has been found.
-         * To avoid issues when navigating between pages, this method will only make changes to the
-         * UI once.
          */
-        private bool visited = false;
         private void PreparePathPanel() {
-            if (visited)
-                return;
+            // Basic installs will immediately move to the installation page
+            nextPath.Text = (isBasicInstallEnabled) ? "Install" : "Next";
 
             String displayMessage;
             String currSavedPath = utilities.tfPath;
             if (currSavedPath != null) {
                 SetTFPath(currSavedPath);
-                displayMessage = "Found the path to the default TF2 install file. Proceed to the"
-                                 + " next page.";
+                if (folderManuallySelected) {
+                    displayMessage = "The following TF2 install path was recognized. Proceed to the"
+                                     + " next page.";
+                }
+                else {
+                    // If there has never been a successful user selection of the tfPath, then
+                    // tfPath was found by Utilities.SearchForTF2Install. Made a mention of
+                    // "automatically found" to clarify that the program found this on its own.
+                    displayMessage = "The TF2 install path was automatically found. Proceed to the"
+                                     + " next page.";
+                }
             }
             else {
-                displayMessage = "Select the location where you installed your game, and find the"
-                                 + " \"hl2.exe\" file. This is usually in a location that looks like:\n\r"
-                                 + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\hl2.exe";
+                // Clear any previously-displayed error messages upon arriving at this panel.
+                buttonPathMessage.Text = "";
+
+                displayMessage = INSTALL_NOT_FOUND;
             }
             promptPath.Text = displayMessage;
-            visited = true;
+            buttonPathMessage.ForeColor = Color.DimGray;
         }
 
 
