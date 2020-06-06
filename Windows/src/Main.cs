@@ -450,7 +450,7 @@ namespace NeoDefaults_Installer {
                 }
                 else {
                     // If there has never been a successful user selection of the tfPath, then
-                    // tfPath was found by Utilities.SearchForTF2Install. Made a mention of
+                    // tfPath was found by Utilities.SearchForTF2Install. Make a mention of
                     // "automatically found" to clarify that the program found this on its own.
                     displayMessage = "The TF2 install path was automatically found. Proceed to the"
                                      + " next page.";
