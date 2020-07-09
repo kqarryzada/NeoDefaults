@@ -32,7 +32,7 @@ namespace NeoDefaults_Installer {
         private readonly String configFolderName = "NeoDefaults";
 
         // The name of the config file to be installed.
-        private readonly String sourceCfgName = "NeoDefaults-v1.0.0-SNAPSHOT.cfg";
+        private readonly String sourceCfgName = "NeoDefaults-v" + Main.PRODUCT_VERSION + ".cfg";
 
         // The name of the config file once it has been installed on the user's machine.
         private readonly String destCfgName = "neodefaults.cfg";
