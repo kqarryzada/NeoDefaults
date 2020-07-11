@@ -27,11 +27,7 @@ namespace NeoDefaults_Installer {
         }
 
         private void QuitButton_Click(object sender, EventArgs e) {
-            Environment.Exit(0);
-        }
-
-        private void ContinueButton_Click(object sender, EventArgs e) {
-            this.DialogResult = DialogResult.OK;
+            this.DialogResult = DialogResult.Abort;
             this.Close();
         }
 

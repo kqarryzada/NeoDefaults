@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -13,9 +12,9 @@ namespace NeoDefaults_Installer {
      * This class stores helpful methods that are unrelated to UI elements.
      */
     public class Utilities {
-        // Stores the location of the folder containing this tool (e.g., the .exe file) on the
-        // user's machine.
-        private readonly String basePath;
+        // Stores the location of the resource/ directory, which contains the files that are to be
+        // installed (e.g., the source cfg file, the hitsound file, etc.).
+        private readonly String resourcePath;
 
         // Stores the location of the "Team Fortress 2/tf/" folder on the user's machine. If 
         // unknown, this will be null.
@@ -66,13 +65,22 @@ namespace NeoDefaults_Installer {
         };
 
         private Utilities() {
-            // When developing, the base filepath is two parent directories above the
-            // executable.
-            String parentPath = (Main.DEVELOP_MODE) ? @"..\.." : @".";
+            String relativeResourcePath = (Main.DEVELOP_MODE) ? @"..\..\..\resource" : "resource";
+            try {
+                resourcePath = Path.GetFullPath(
+                                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeResourcePath));
+            }
+            catch (Exception e) {
+                log.WriteErr("Failed to initialize the resource path.", e.ToString());
+                throw e;
+            }
 
-            String relativeBasePath = AppDomain.CurrentDomain.BaseDirectory;
-            relativeBasePath = Path.Combine(relativeBasePath, parentPath);
-            basePath = new FileInfo(relativeBasePath).FullName;
+            if (!Directory.Exists(resourcePath)) {
+                String msg = "Could not find the path to '" + resourcePath + "'. Was the folder deleted?";
+                log.WriteErr(msg);
+                var dialog = new ErrorDialog();
+                dialog.DisplayAndExit(msg);
+            }
 
             // On startup, try to determine the path to the TF2 installation on the machine.
             SearchForTF2Install();
@@ -350,7 +358,7 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHitsound() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(basePath, @"resource\NeoDefaults-hitsound.zip");
+                    String zipFilepath = Path.Combine(resourcePath, "NeoDefaults-hitsound.zip");
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
                     return InstallZip(zipFilepath, destination, "Hitsound");
@@ -370,7 +378,7 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHUD() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(basePath, @"resource\idhud-master.zip");
+                    String zipFilepath = Path.Combine(resourcePath, "idhud-master.zip");
                     String destination = Path.Combine(tfPath, @"custom\idhud-master");
 
                     return InstallZip(zipFilepath, destination, "HUD");
@@ -463,7 +471,7 @@ namespace NeoDefaults_Installer {
                 String sourceCfg = "";
                 String destCfg = "";
                 try {
-                    sourceCfg = Path.Combine(basePath, "resource", sourceCfgName);
+                    sourceCfg = Path.Combine(resourcePath, sourceCfgName);
                     destCfg = Path.Combine(configFolderPath, destCfgName);
 
                     if (File.Exists(destCfg)) {
@@ -503,7 +511,7 @@ namespace NeoDefaults_Installer {
 
                 // Create the custom file, if it does not already exist.
                 try {
-                    String sourceCustom = Path.Combine(basePath, "resource", customCfgName);
+                    String sourceCustom = Path.Combine(resourcePath, customCfgName);
                     String destCustom = Path.Combine(configFolderPath, customCfgName);
 
                     // If there's already a custom file on the machine, then the user already

@@ -24,7 +24,6 @@
         /// </summary>
         private void InitializeComponent() {
             this.quitButton = new System.Windows.Forms.Button();
-            this.ContinueButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.ErrorMessage = new System.Windows.Forms.Label();
             this.errorImage = new System.Windows.Forms.PictureBox();
@@ -42,38 +41,26 @@
             this.quitButton.UseVisualStyleBackColor = true;
             this.quitButton.Click += new System.EventHandler(this.QuitButton_Click);
             // 
-            // ContinueButton
-            // 
-            this.ContinueButton.Location = new System.Drawing.Point(531, 127);
-            this.ContinueButton.Name = "ContinueButton";
-            this.ContinueButton.Size = new System.Drawing.Size(75, 22);
-            this.ContinueButton.TabIndex = 1;
-            this.ContinueButton.Text = "Okay";
-            this.ContinueButton.UseVisualStyleBackColor = true;
-            this.ContinueButton.Click += new System.EventHandler(this.ContinueButton_Click);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(73, 27);
             this.label2.Margin = new System.Windows.Forms.Padding(3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.Size = new System.Drawing.Size(66, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Critical Error";
+            this.label2.Text = "Critical Error:";
             // 
-            // errorMessage
+            // ErrorMessage
             // 
             this.ErrorMessage.AutoSize = true;
             this.ErrorMessage.Location = new System.Drawing.Point(73, 46);
             this.ErrorMessage.Margin = new System.Windows.Forms.Padding(3);
-            this.ErrorMessage.Name = "errorMessage";
+            this.ErrorMessage.MaximumSize = new System.Drawing.Size(620, 0);
+            this.ErrorMessage.Name = "ErrorMessage";
             this.ErrorMessage.Size = new System.Drawing.Size(75, 13);
             this.ErrorMessage.TabIndex = 2;
             this.ErrorMessage.Text = "%MESSAGE%";
-            // Enable text wrapping for the message
-            this.ErrorMessage.MaximumSize = new System.Drawing.Size(620, 0);
-            this.ErrorMessage.AutoSize = true;
             // 
             // errorImage
             // 
@@ -103,7 +90,6 @@
             this.Controls.Add(this.ErrorMessage);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.CopyButton);
-            this.Controls.Add(this.ContinueButton);
             this.Controls.Add(this.quitButton);
             this.MaximizeBox = false;
             this.Name = "ErrorDialog";
@@ -120,7 +106,6 @@
 
         #endregion
         private System.Windows.Forms.Button quitButton;
-        private System.Windows.Forms.Button ContinueButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label ErrorMessage;
         private System.Windows.Forms.PictureBox errorImage;
