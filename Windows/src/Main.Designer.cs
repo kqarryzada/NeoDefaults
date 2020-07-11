@@ -285,9 +285,9 @@
             this.HUDBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.HUDBox.Location = new System.Drawing.Point(39, 178);
             this.HUDBox.Name = "HUDBox";
-            this.HUDBox.Size = new System.Drawing.Size(134, 17);
+            this.HUDBox.Size = new System.Drawing.Size(145, 17);
             this.HUDBox.TabIndex = 6;
-            this.HUDBox.Text = "Improved Default HUD";
+            this.HUDBox.Text = "Custom damage numbers";
             this.HUDBox.UseVisualStyleBackColor = true;
             this.HUDBox.CheckedChanged += new System.EventHandler(this.HUDBox_CheckedChanged);
             // 
@@ -317,14 +317,13 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(174, 175);
+            this.pictureBox2.Location = new System.Drawing.Point(184, 175);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(20, 20);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
-            this.toolTip.SetToolTip(this.pictureBox2, "A custom HUD that makes small improvements and fixes to the way the game normally" +
-        " looks.");
+            this.toolTip.SetToolTip(this.pictureBox2, "Increases the size of damage numbers to make them much easier to read.");
             // 
             // pictureBox1
             // 
@@ -335,8 +334,8 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
-            this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings that will be applied to TF2 have been specifically tuned fo" +
-        "r this sound file. ");
+            this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings in the config file have been specifically tuned for this so" +
+        "und file. ");
             // 
             // LabelOpt
             // 

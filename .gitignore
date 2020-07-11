@@ -4,6 +4,6 @@
 .vs/
 *.user
 
-# For now, don't include HUD in repo
-Windows/resource/idhud-master.zip
+# The zip is generated from the HUD/ directory
+resource/NeoDefaults-HUD.zip
 

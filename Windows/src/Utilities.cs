@@ -55,13 +55,17 @@ namespace NeoDefaults_Installer {
         private readonly String AutoexecFooter =
                                         "//--------------------------------------------------//";
 
+        // Names of the source zip files that ship with program
+        private readonly String srcHUDZip = "NeoDefaults-HUD.zip";
+        private readonly String srcHitsoundZip = "NeoDefaults-hitsound.zip";
+
+
         // Return codes for installations. These help report whether an install failed, 
         // succeeded, etc.
         public enum InstallStatus {
             FAIL,
             SUCCESS,
             OPT_OUT,
-            ALREADY_INSTALLED,
         };
 
         private Utilities() {
@@ -358,7 +362,7 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHitsound() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(resourcePath, "NeoDefaults-hitsound.zip");
+                    String zipFilepath = Path.Combine(resourcePath, srcHitsoundZip);
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
                     return InstallZip(zipFilepath, destination, "Hitsound");
@@ -372,14 +376,14 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Installs idHUD in the custom/ directory. This is executed on a background thread to avoid
-         * locking  the UI.
+         * Installs custom HUD files to the custom/ directory. This is executed on a background
+         * thread to avoid locking the UI.
          */
         public async Task<InstallStatus> InstallHUD() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(resourcePath, "idhud-master.zip");
-                    String destination = Path.Combine(tfPath, @"custom\idhud-master");
+                    String zipFilepath = Path.Combine(resourcePath, srcHUDZip);
+                    String destination = Path.Combine(tfPath, @"custom\NeoDefaults-HUD");
 
                     return InstallZip(zipFilepath, destination, "HUD");
                 }
@@ -387,63 +391,6 @@ namespace NeoDefaults_Installer {
                     log.WriteErr("An error occurred when trying to install the HUD:", e.ToString());
                     return InstallStatus.FAIL;
                 }
-            });
-        }
-
-
-        /**
-         * In order for idhud to work properly, some fonts need to be installed, which are provided
-         * in idhud's zip file. This method installs the fonts on the user's machine. If a font is
-         * already installed, the existing one is accepted. This is executed on a background thread
-         * to avoid locking  the UI.
-         */
-        public async Task<InstallStatus> InstallHUDFonts() {
-            return await Task.Run(() => {
-                String fontsPath = "";
-                String windowsFontsPath = "";
-                try {
-                    fontsPath = Path.Combine(tfPath, @"custom\idhud-master\resource\fonts");
-                    windowsFontsPath = Path.Combine(Environment.GetEnvironmentVariable("windir"), "Fonts");
-                }
-                catch (Exception e) {
-                    log.WriteErr("Failed to prepare the fonts for installation.", e.ToString());
-                    return InstallStatus.FAIL;
-                }
-
-                // Copy each file over to the windows fonts directory to install them.
-                string[] fontsToInstall;
-                try {
-                    fontsToInstall = Directory.GetFiles(fontsPath);
-                }
-                catch (Exception e) {
-                    log.WriteErr("Was unable to retrieve the fonts that need to be installed:",
-                                    e.ToString());
-                    return InstallStatus.FAIL;
-                }
-
-                int numSkippedFonts = 0;
-                try {
-                    foreach (string font in fontsToInstall) {
-                        String destFile = Path.Combine(windowsFontsPath, Path.GetFileName(font));
-                        if (File.Exists(destFile)) {
-                            log.Write("The font, " + destFile + ", is already installed. Skipping.");
-                            numSkippedFonts++;
-                        }
-                        else {
-                            log.Write("Installing '" + fontsPath + "' font to '" + destFile + "'.");
-                            CopyFile(font, destFile, false);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to install the fonts for the HUD.",
-                                    e.ToString());
-                    return InstallStatus.FAIL;
-                }
-
-                log.Write("Font installation complete.");
-                return (numSkippedFonts == fontsToInstall.Length) ?
-                            InstallStatus.ALREADY_INSTALLED : InstallStatus.SUCCESS;
             });
         }
 

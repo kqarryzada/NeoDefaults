@@ -16,7 +16,7 @@ namespace NeoDefaults_Installer {
         // The approximate number of components expected to be installed. This includes elements
         // like the autoexec file, the HUD, etc. This is used to determine what percentage of the
         // progress bar should be filled each time a component finishes installing.
-        private readonly int NUM_COMPONENTS = 4;
+        private readonly int NUM_COMPONENTS = 3;
 
         // A reference to the panel that is currently being displayed on the main screen.
         private Panel currentPanel;
@@ -180,7 +180,7 @@ namespace NeoDefaults_Installer {
             // Adjust number of components to be moved based on user choice. If they have opted out
             // of a component, that's one less component that will be installed.
             progressBar.Maximum = NUM_COMPONENTS;
-            progressBar.Maximum -= (installHUD) ? 0 : 2;
+            progressBar.Maximum -= (installHUD) ? 0 : 1;
             progressBar.Maximum -= (installHitsound) ? 0 : 1;
 
             progressBar.Visible = true;
@@ -210,9 +210,6 @@ namespace NeoDefaults_Installer {
                 case Utilities.InstallStatus.OPT_OUT:
                     message = "The " + shortName + " installation was skipped.";
                     break;
-                case Utilities.InstallStatus.ALREADY_INSTALLED:
-                    message = "All " + shortName + " files are already installed.";
-                    break;
                 default:
                     log.WriteErr("Received an unexpected return value when trying to install"
                                  + " the " + longName + ": " + status);
@@ -236,25 +233,12 @@ namespace NeoDefaults_Installer {
             InitializeProgressbar();
 
 
+            // --- HUD --- //
             if (installHUD) {
-                // --- HUD --- //
-                String HUDComponentName = "Improved Default HUD";
+                String HUDComponentName = "NeoDefaults HUD tweaks (damage numbers)";
                 promptInstall.Text = "Installing the " + HUDComponentName + "...";
                 var HUDStatus = await utilities.InstallHUD();
                 LogInstallStatus(HUDComponentName, "HUD", HUDStatus);
-                progressBar.PerformStep();
-
-
-                // --- Fonts --- //
-                if (HUDStatus == Utilities.InstallStatus.SUCCESS) {
-                    String fontComponentName = "HUD font files";
-                    promptInstall.Text = "Installing the " + fontComponentName + "...";
-                    var fontsStatus = await utilities.InstallHUDFonts();
-                    LogInstallStatus(fontComponentName, "font", fontsStatus);
-                }
-                else {
-                    log.Write("Font installation skipped.");
-                }
                 progressBar.PerformStep();
             }
             else {
