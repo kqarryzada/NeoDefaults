@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using InstallStatus = NeoDefaults_Installer.Utilities.InstallStatus;
+
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
         public static readonly String PRODUCT_VERSION = "1.0.0-SNAPSHOT";
@@ -195,19 +197,19 @@ namespace NeoDefaults_Installer {
          * shortName: The nickname of the installed component
          * status: The result code of the attempted install
          */
-        private void LogInstallStatus(String longName, String shortName, Utilities.InstallStatus status) {
+        private void LogInstallStatus(String longName, String shortName, InstallStatus status) {
             log.WriteLn("The " + shortName + " installation returned with status: " + status);
 
             String message = "";
             switch (status) {
-                case Utilities.InstallStatus.FAIL:
+                case InstallStatus.FAIL:
                     message = "Error: Failed to install the " + longName + ".";
                     failedComponents.Add(longName);
                     break;
-                case Utilities.InstallStatus.SUCCESS:
+                case InstallStatus.SUCCESS:
                     message = "Installed the " + longName + ".";
                     break;
-                case Utilities.InstallStatus.OPT_OUT:
+                case InstallStatus.OPT_OUT:
                     message = "The " + shortName + " installation was skipped.";
                     break;
                 default:
