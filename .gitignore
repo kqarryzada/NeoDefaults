@@ -5,5 +5,5 @@
 *.user
 
 # The zip is generated from the HUD/ directory
-resource/NeoDefaults-HUD.zip
+components/NeoDefaults-HUD.zip
 

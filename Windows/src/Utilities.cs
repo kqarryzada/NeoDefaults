@@ -12,9 +12,9 @@ namespace NeoDefaults_Installer {
      * This class stores helpful methods that are unrelated to UI elements.
      */
     public class Utilities {
-        // Stores the location of the resource/ directory, which contains the files that are to be
-        // installed (e.g., the source cfg file, the hitsound file, etc.).
-        private readonly String resourcePath;
+        // Stores the parent location of the files that are to be installed (e.g., the source cfg
+        // file, the hitsound file, etc.).
+        private readonly String componentsPath;
 
         // Stores the location of the "Team Fortress 2/tf/" folder on the user's machine. If 
         // unknown, this will be null.
@@ -69,18 +69,20 @@ namespace NeoDefaults_Installer {
         };
 
         private Utilities() {
-            String relativeResourcePath = (Main.DEVELOP_MODE) ? @"..\..\..\resource" : "resource";
+            // When packaged, the components are stored in the "resource/" directory alongside the
+            // program.
+            String relativePath = (Main.DEVELOP_MODE) ? @"..\..\..\components" : "resource";
             try {
-                resourcePath = Path.GetFullPath(
-                                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeResourcePath));
+                componentsPath = Path.GetFullPath(
+                                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath));
             }
             catch (Exception e) {
                 log.WriteErr("Failed to initialize the resource path.", e.ToString());
                 throw e;
             }
 
-            if (!Directory.Exists(resourcePath)) {
-                String msg = "Could not find the path to '" + resourcePath + "'. Was the folder deleted?";
+            if (!Directory.Exists(componentsPath)) {
+                String msg = "Could not find the path to '" + componentsPath + "'. Was the folder deleted?";
                 log.WriteErr(msg);
                 var dialog = new ErrorDialog();
                 dialog.DisplayAndExit(msg);
@@ -362,7 +364,7 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHitsound() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(resourcePath, srcHitsoundZip);
+                    String zipFilepath = Path.Combine(componentsPath, srcHitsoundZip);
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
 
                     return InstallZip(zipFilepath, destination, "Hitsound");
@@ -382,7 +384,7 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHUD() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(resourcePath, srcHUDZip);
+                    String zipFilepath = Path.Combine(componentsPath, srcHUDZip);
                     String destination = Path.Combine(tfPath, @"custom\NeoDefaults-HUD");
 
                     return InstallZip(zipFilepath, destination, "HUD");
@@ -418,7 +420,7 @@ namespace NeoDefaults_Installer {
                 String sourceCfg = "";
                 String destCfg = "";
                 try {
-                    sourceCfg = Path.Combine(resourcePath, sourceCfgName);
+                    sourceCfg = Path.Combine(componentsPath, sourceCfgName);
                     destCfg = Path.Combine(configFolderPath, destCfgName);
 
                     if (File.Exists(destCfg)) {
@@ -458,7 +460,7 @@ namespace NeoDefaults_Installer {
 
                 // Create the custom file, if it does not already exist.
                 try {
-                    String sourceCustom = Path.Combine(resourcePath, customCfgName);
+                    String sourceCustom = Path.Combine(componentsPath, customCfgName);
                     String destCustom = Path.Combine(configFolderPath, customCfgName);
 
                     // If there's already a custom file on the machine, then the user already
