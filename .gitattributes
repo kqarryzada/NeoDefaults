@@ -1,3 +1,10 @@
-* text=crlf
+* text=auto
+
+*.md text
 *.cfg text
+*.sh text
+
+*.png binary
+*.wav binary
+
 

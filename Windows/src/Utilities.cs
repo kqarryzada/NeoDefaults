@@ -55,9 +55,10 @@ namespace NeoDefaults_Installer {
         private readonly String AutoexecFooter =
                                         "//--------------------------------------------------//";
 
-        // Names of the source zip files that ship with program
-        private readonly String srcHUDZip = "NeoDefaults-HUD.zip";
-        private readonly String srcHitsoundZip = "NeoDefaults-hitsound.zip";
+        // Names of the VPK files to be installed
+        private readonly String HudVpkName = "neodefaults-hud-tweaks.vpk";
+        private readonly String HitVpkName = "neodefaults-quake-hitsound.vpk";
+
 
 
         // Return codes for installations. These help report whether an install failed, 
@@ -69,9 +70,9 @@ namespace NeoDefaults_Installer {
         };
 
         private Utilities() {
-            // When packaged, the components are stored in the "resource/" directory alongside the
+            // When released, the components are stored in the "resource/" directory alongside the
             // program.
-            String relativePath = (Main.DEVELOP_MODE) ? @"..\..\..\components" : "resource";
+            String relativePath = (Main.DEVELOP_MODE) ? @"..\..\..\build" : "resource";
             try {
                 componentsPath = Path.GetFullPath(
                                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativePath));
@@ -82,7 +83,13 @@ namespace NeoDefaults_Installer {
             }
 
             if (!Directory.Exists(componentsPath)) {
-                String msg = "Could not find the path to '" + componentsPath + "'. Was the folder deleted?";
+                String msg = "Could not find the path to '" + componentsPath + "'.";
+                if (Main.DEVELOP_MODE) {
+                    msg += " Have you run the build.sh script?";
+                }
+                else {
+                    msg += " Was the folder deleted?";
+                }
                 log.WriteErr(msg);
                 var dialog = new ErrorDialog();
                 dialog.DisplayAndExit(msg);
@@ -215,14 +222,15 @@ namespace NeoDefaults_Installer {
          * operation to be executed at once). This method will give a few attempts at copying the file
          * over before reporting an issue.
          * 
-         * sourceFile: The file to be copied.
-         * destFile: The resulting file after the copy is complete.
-         * overwrite: If true, overwrite the existing file. If not, simply skip the operation.
+         * sourceFile: The full path to the file that is to be copied.
+         * destFile:   The full path to the resulting file after the copy is complete.
+         * overwrite:  If true, and the file already exists, the existing file will be overwritten.
          *
          * Throws an Exception if an unexpected error occurs.
          */
         private void CopyFile(String sourceFile, String destFile, bool overwrite) {
             int numRetries = 3;
+            log.Write("Attempting an install of the file from '" + sourceFile + "' to '" + destFile + "'.");
 
             // To be certain that any IOException isn't related to an existing file, first check
             // that the resulting file doesn't already exist.
@@ -244,6 +252,8 @@ namespace NeoDefaults_Installer {
                     Thread.Sleep(500);
                 }
             }
+
+            log.Write("Installation of '" + destFile + "' successful.");
         }
 
 
@@ -309,70 +319,23 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Attempts to unzip a source file into a target directory. If the install files already
-         * exist on the user's machine, the user is asked whether we should overwrite the existing files
-         * or skip this component.
-         *
-         * source:          The location of the zip file that is to be installed.
-         * destination:     The path to the expected resulting folder. For example, if a component is
-         *                  being installed under 'custom', this would be 
-         *                  "<full-path-to-custom>\component-name".
-         * name:            The nickname for the component being installed.
-         *
-         * Throws an Exception if an unexpected error occurs.
-         */
-        private InstallStatus InstallZip(String source, String destination, String name) {
-            // First check if the zip file is already installed. If so, overwrite the existing files
-            // with the user's permission.
-            if (Directory.Exists(destination)) {
-                StringBuilder sb = new StringBuilder();
-                sb.Append("An install of the ");
-                sb.Append(name);
-                sb.Append(" was detected at '");
-                sb.Append(destination);
-                sb.Append("'. Would you like to continue and overwrite the existing files,");
-                sb.Append(" or skip the installation of this component?");
-
-                // Display the prompt and record the user's request.
-                var dialog = new WarningDialog();
-                var result = dialog.Display(sb.ToString());
-                if (result == DialogResult.OK) {
-                    log.Write("'" + destination + "' was found to already exist. Received permission"
-                              + " from the user to delete this.");
-                    Directory.Delete(destination, true);
-                }
-                else {
-                    log.Write(name + " was already installed, and the user opted out of re-installing.");
-                    return InstallStatus.OPT_OUT;
-                }
-            }
-            log.Write("Installing " + name + " from '" + source + "' to '" + destination + "'.");
-
-            // Specify the parent of the destination to avoid a nested folder, e.g.,
-            // '<path-to-parent>\component-name\component-name'.
-            var destinationParent = Path.Combine(destination, "..");
-            ZipFile.ExtractToDirectory(source, destinationParent);
-            log.Write(name + " installation complete.");
-            return InstallStatus.SUCCESS;
-        }
-
-
-        /**
          * Installs the custom hitsound. This is executed on a background thread to avoid locking 
          * the UI.
          */
         public async Task<InstallStatus> InstallHitsound() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(componentsPath, srcHitsoundZip);
-                    String destination = Path.Combine(tfPath, @"custom\NeoDefaults-hitsound");
+                    String srcHitPath = Path.Combine(componentsPath, HitVpkName);
+                    String destination = Path.Combine(tfPath, @"custom\" + HitVpkName);
 
-                    return InstallZip(zipFilepath, destination, "Hitsound");
+                    CopyFile(srcHitPath, destination, true);
                 }
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the hitsound:", e.ToString());
                     return InstallStatus.FAIL;
                 }
+
+                return InstallStatus.SUCCESS;
             });
         }
 
@@ -384,15 +347,17 @@ namespace NeoDefaults_Installer {
         public async Task<InstallStatus> InstallHUD() {
             return await Task.Run(() => {
                 try {
-                    String zipFilepath = Path.Combine(componentsPath, srcHUDZip);
-                    String destination = Path.Combine(tfPath, @"custom\NeoDefaults-HUD");
+                    String srcHUDPath = Path.Combine(componentsPath, HudVpkName);
+                    String destination = Path.Combine(tfPath, @"custom\" + HudVpkName);
 
-                    return InstallZip(zipFilepath, destination, "HUD");
+                    CopyFile(srcHUDPath, destination, true);
                 }
                 catch (Exception e) {
                     log.WriteErr("An error occurred when trying to install the HUD:", e.ToString());
                     return InstallStatus.FAIL;
                 }
+
+                return InstallStatus.SUCCESS;
             });
         }
 
@@ -426,7 +391,6 @@ namespace NeoDefaults_Installer {
                     if (File.Exists(destCfg)) {
                         File.SetAttributes(destCfg, FileAttributes.Normal);
                     }
-                    log.Write("Installing config file from '" + sourceCfg + "' to '" + destCfg + "'.");
                     CopyFile(sourceCfg, destCfg, true);
 
                     // Set file as read-only to encourage using the custom.cfg file instead.
