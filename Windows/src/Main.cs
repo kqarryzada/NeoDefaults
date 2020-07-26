@@ -518,7 +518,7 @@ namespace NeoDefaults_Installer {
         }
 
         /**
-         * Records the user's wish to opt into or out of installing idHUD.
+         * Records the user's wish to opt into or out of installing the HUD VPK.
          */
         private void HUDBox_CheckedChanged(object sender, EventArgs e) {
             CheckBox element = (CheckBox) sender;
