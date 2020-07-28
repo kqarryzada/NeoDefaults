@@ -21,8 +21,6 @@ namespace NeoDefaults_Installer {
 
         private readonly ComponentsManager ComponentsMgr = new ComponentsManager();
 
-        private bool installHitsound = true;
-
         // Specifies the installation type.
         private bool isBasicInstallEnabled = true;
 
