@@ -55,6 +55,7 @@ namespace NeoDefaults_Installer {
             catch (Exception e) {
                 Debug.Print("A failure occurred when trying to create the log file.");
                 Debug.Print(e.ToString());
+                return;
             }
 
             InitializeLogFile();
@@ -68,8 +69,8 @@ namespace NeoDefaults_Installer {
          *  Throws an ArgumentNullException if the logfile is null.
          */
         private void InitializeLogFile() {
-            if (logFile.Name == null) {
-                throw new ArgumentNullException();
+            if (logFile == null || logFile.Name == null) {
+                throw new ArgumentNullException("The logfile or logfile's name was null.");
             }
 
             StringBuilder sb = new StringBuilder();
