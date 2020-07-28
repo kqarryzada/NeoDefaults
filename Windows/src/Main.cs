@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -15,16 +16,11 @@ namespace NeoDefaults_Installer {
         // Defines the default size of the main screen.
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
 
-        // The approximate number of components expected to be installed. This includes elements
-        // like the autoexec file, the HUD, etc. This is used to determine what percentage of the
-        // progress bar should be filled each time a component finishes installing.
-        private readonly int NUM_COMPONENTS = 3;
-
         // A reference to the panel that is currently being displayed on the main screen.
         private Panel currentPanel;
 
-        // Specifies whether the user requested additional customizations.
-        private bool installHUD = true;
+        private readonly ComponentsManager ComponentsMgr = new ComponentsManager();
+
         private bool installHitsound = true;
 
         // Specifies the installation type.
@@ -157,14 +153,15 @@ namespace NeoDefaults_Installer {
         /**
          * Writes information about the program state to the log file.
          */
-        private void LogStatus() {
+        private void ReportCurrentStatus() {
             List<String> msg = new List<String>();
             msg.Add("");
             msg.Add("Status of the program:");
             msg.Add("Develop mode is: " + DEVELOP_MODE);
             msg.Add("Basic install flag is: " + isBasicInstallEnabled);
-            msg.Add("HUD install is: " + installHUD);
-            msg.Add("Hitsound install is: " + installHitsound);
+            msg.Add("HUD install is: " + ComponentsMgr.HUDInstallEnabled());
+            msg.Add("Hitsound install is: " + ComponentsMgr.HitsoundInstallEnabled());
+            msg.Add("Config install is: " + ComponentsMgr.ConfigInstallEnabled());
             msg.Add("The TF Path is: " + utilities.tfPath);
             msg.Add("");
 
@@ -176,15 +173,9 @@ namespace NeoDefaults_Installer {
          */
         private void InitializeProgressbar() {
             progressBar.Minimum = 0;
+            progressBar.Maximum = ComponentsMgr.NumberOfEnabledComponents();
             progressBar.Value = 0;
             progressBar.Step = 1;
-
-            // Adjust number of components to be moved based on user choice. If they have opted out
-            // of a component, that's one less component that will be installed.
-            progressBar.Maximum = NUM_COMPONENTS;
-            progressBar.Maximum -= (installHUD) ? 0 : 1;
-            progressBar.Maximum -= (installHitsound) ? 0 : 1;
-
             progressBar.Visible = true;
         }
 
@@ -229,14 +220,28 @@ namespace NeoDefaults_Installer {
          */
         private async void InstallFiles() {
             // Report the state of program to the log file before the install begins.
-            LogStatus();
+            ReportCurrentStatus();
 
             // Initialize before starting the installation
             InitializeProgressbar();
 
 
+            // --- Config files --- //
+            if (ComponentsMgr.ConfigInstallEnabled()) {
+                String configComponentName = "NeoDefaults config files";
+                promptInstall.Text = "Installing " + configComponentName + "...";
+                var configStatus = await utilities.InstallConfig();
+                LogInstallStatus(configComponentName, "config", configStatus);
+                progressBar.PerformStep();
+            }
+            else {
+                progressBox.AppendText("Opted out of the installation for the config files. Skipping."
+                                       + Environment.NewLine);
+            }
+
+
             // --- HUD --- //
-            if (installHUD) {
+            if (ComponentsMgr.HUDInstallEnabled()) {
                 String HUDComponentName = "NeoDefaults HUD tweaks (damage numbers)";
                 promptInstall.Text = "Installing the " + HUDComponentName + "...";
                 var HUDStatus = await utilities.InstallHUD();
@@ -250,7 +255,7 @@ namespace NeoDefaults_Installer {
 
 
             // --- Hitsound --- //
-            if (installHitsound) {
+            if (ComponentsMgr.HitsoundInstallEnabled()) {
                 String hitsoundComponentName = "hitsound files";
                 promptInstall.Text = "Installing the " + hitsoundComponentName + "...";
                 var hitStatus = await utilities.InstallHitsound();
@@ -261,15 +266,6 @@ namespace NeoDefaults_Installer {
                 progressBox.AppendText("Opted out of the hitsound installation. Skipping."
                                        + Environment.NewLine);
             }
-
-
-            // --- Config files --- //
-            String configComponentName = "NeoDefaults config files";
-            promptInstall.Text = "Installing " + configComponentName + "...";
-            var configStatus = await utilities.InstallConfig();
-            LogInstallStatus(configComponentName, "config", configStatus);
-            progressBar.PerformStep();
-
 
             String completeMessage = "Installation complete.";
             if (failedComponents.Any())
@@ -514,7 +510,8 @@ namespace NeoDefaults_Installer {
          */
         private void HitsoundBox_CheckedChanged(object sender, EventArgs e) {
             CheckBox element = (CheckBox) sender;
-            installHitsound = element.Checked;
+            ComponentsMgr.SetHitsound(element.Checked);
+            CheckInstallAllowed();
         }
 
         /**
@@ -522,7 +519,26 @@ namespace NeoDefaults_Installer {
          */
         private void HUDBox_CheckedChanged(object sender, EventArgs e) {
             CheckBox element = (CheckBox) sender;
-            installHUD = element.Checked;
+            ComponentsMgr.SetHUD(element.Checked);
+            CheckInstallAllowed();
+        }
+
+        /**
+         * Records the user's wish to opt into or out of installing the config.
+         */
+        private void CfgBox_CheckedChanged(object sender, EventArgs e) {
+            CheckBox element = (CheckBox) sender;
+            ComponentsMgr.SetConfig(element.Checked);
+            CheckInstallAllowed();
+        }
+
+        /**
+         * This method is called every time a component is selected or de-selected on the Advanced
+         * Installation menu. If all components are de-selected, then the installation should
+         * refuse to run.
+         */
+        private void CheckInstallAllowed() {
+            NextOpt.Enabled = !(ComponentsMgr.NumberOfEnabledComponents() == 0);
         }
     }
 }

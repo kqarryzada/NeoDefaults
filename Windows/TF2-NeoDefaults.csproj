@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\ComponentsManager.cs" />
     <Compile Include="src\error-dialog\ErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>

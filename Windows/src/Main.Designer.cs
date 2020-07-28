@@ -49,6 +49,7 @@
             this.HUDBox = new System.Windows.Forms.CheckBox();
             this.HitsoundBox = new System.Windows.Forms.CheckBox();
             this.NextOpt = new System.Windows.Forms.Button();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.LabelOpt = new System.Windows.Forms.Label();
@@ -66,6 +67,7 @@
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel5.SuspendLayout();
@@ -256,6 +258,7 @@
             this.panel3.Controls.Add(this.HUDBox);
             this.panel3.Controls.Add(this.HitsoundBox);
             this.panel3.Controls.Add(this.NextOpt);
+            this.panel3.Controls.Add(this.pictureBox3);
             this.panel3.Controls.Add(this.pictureBox2);
             this.panel3.Controls.Add(this.pictureBox1);
             this.panel3.Controls.Add(this.LabelOpt);
@@ -270,13 +273,13 @@
             this.CfgBox.AutoSize = true;
             this.CfgBox.Checked = true;
             this.CfgBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CfgBox.Enabled = false;
-            this.CfgBox.Location = new System.Drawing.Point(39, 204);
+            this.CfgBox.Location = new System.Drawing.Point(39, 152);
             this.CfgBox.Name = "CfgBox";
-            this.CfgBox.Size = new System.Drawing.Size(215, 17);
+            this.CfgBox.Size = new System.Drawing.Size(117, 17);
             this.CfgBox.TabIndex = 6;
-            this.CfgBox.Text = "NeoDefaults config file (always installed)";
+            this.CfgBox.Text = "NeoDefaults config";
             this.CfgBox.UseVisualStyleBackColor = true;
+            this.CfgBox.CheckedChanged += new System.EventHandler(this.CfgBox_CheckedChanged);
             // 
             // HUDBox
             // 
@@ -296,7 +299,7 @@
             this.HitsoundBox.AutoSize = true;
             this.HitsoundBox.Checked = true;
             this.HitsoundBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.HitsoundBox.Location = new System.Drawing.Point(39, 152);
+            this.HitsoundBox.Location = new System.Drawing.Point(39, 204);
             this.HitsoundBox.Name = "HitsoundBox";
             this.HitsoundBox.Size = new System.Drawing.Size(120, 17);
             this.HitsoundBox.TabIndex = 6;
@@ -314,6 +317,17 @@
             this.NextOpt.UseVisualStyleBackColor = true;
             this.NextOpt.Click += new System.EventHandler(this.Next_Click);
             // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(156, 149);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(20, 20);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 5;
+            this.pictureBox3.TabStop = false;
+            this.toolTip.SetToolTip(this.pictureBox3, "These config files are responsible for changing in-game settings like FOV.");
+            // 
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
@@ -328,14 +342,14 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(159, 149);
+            this.pictureBox1.Location = new System.Drawing.Point(159, 201);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(20, 20);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
-            this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings in the config file have been specifically tuned for this so" +
-        "und file. ");
+            this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings in the NeoDefaults config have been specifically tuned for " +
+        "this sound file. ");
             // 
             // LabelOpt
             // 
@@ -469,6 +483,7 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel5.ResumeLayout(false);
@@ -520,6 +535,7 @@
         private System.Windows.Forms.CheckBox HUDBox;
         private System.Windows.Forms.CheckBox HitsoundBox;
         private System.Windows.Forms.CheckBox CfgBox;
+        private System.Windows.Forms.PictureBox pictureBox3;
     }
 }
 
