@@ -113,10 +113,6 @@ tf_dingaling_volume 0.6
 tf_dingaling_pitchmindmg 140
 tf_dingaling_pitchmaxdmg 5
 
-// These values affect the killsound, i.e., the sound file that is played when you get a kill.
-// NeoDefaults disables this, and just plays a hitsound like normal.
-tf_dingalingaling_lasthit 0
-
 
 //---------------
 // Miscellaneous
