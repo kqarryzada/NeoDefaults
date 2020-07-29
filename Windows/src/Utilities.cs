@@ -388,13 +388,13 @@ namespace NeoDefaults_Installer {
                     sourceCfg = Path.Combine(componentsPath, sourceCfgName);
                     destCfg = Path.Combine(configFolderPath, destCfgName);
 
+                    // If the config file already exists, remove the read-only attribute to allow
+                    // overwriting the file.
                     if (File.Exists(destCfg)) {
                         File.SetAttributes(destCfg, FileAttributes.Normal);
                     }
                     CopyFile(sourceCfg, destCfg, true);
 
-                    // Set file as read-only to encourage using the custom.cfg file instead.
-                    File.SetAttributes(destCfg, FileAttributes.ReadOnly);
                 }
                 catch (Exception e) {
                     var logMsg = "An error occurred when trying to create '" + destCfg + "' from '"

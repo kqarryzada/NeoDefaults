@@ -17,9 +17,19 @@ types of systems.\n"
 
 
 COMPONENTS_DIR="components"
-CFG_DIR="${COMPONENTS_DIR}/cfg"
+
+# The location where the source cfg files are stored.
+SRC_CFG_DIR="${COMPONENTS_DIR}/cfg"
+
 HUD_OUTPUT_FILE="build/neodefaults-hud-tweaks.vpk"
 HIT_OUTPUT_DIR="build/neodefaults-quake-hitsound"
+
+# The location of the main output cfg file.
+NEODEFAULTS_CFG_NAME="build/NeoDefaults-${VERSION_NUM}.cfg"
+
+# The header that is inserted at the top of the output cfg file.
+CFG_HEADER="// NeoDefaults config ${VERSION_NUM}
+"
 
 
 # Prints the provided text in red to STDERR.
@@ -66,6 +76,12 @@ function check_prerequisites() {
         >&2 echo "Tried to run the vpk.exe file at: '${VPK}', but failed. Check your path."
         exit 1
     fi
+
+    # Check for 'dos2unix' binary
+    if ! dos2unix --version &> /dev/null; then
+        >&2 echo "'dos2unix' failed to run. Make sure this is installed."
+        exit 1
+    fi
 }
 
 
@@ -110,6 +126,7 @@ function build() {
         err="True"
     }
 
+
     # Build hitsound
     {
         # Ordinarily, the hitsound file must be placed under <folder name>/sound/ui/hitsound.wav.
@@ -130,16 +147,32 @@ function build() {
     warn_msg="$warn_msg deleted manually."
     rm -r "${HIT_OUTPUT_DIR}" || echo "${warn_msg}"
 
+
     # Build cfg
     {
         print_green "Building cfg files..."
 
-        cp ${CFG_DIR}/*.cfg build/ && \
-        mv build/main.cfg "build/NeoDefaults-${VERSION_NUM}.cfg"
+        # Copy all existing cfg files to the build directory
+        cp ${SRC_CFG_DIR}/*.cfg build && \
+
+        # Create the main output file and add the header
+        echo "${CFG_HEADER}" > "${NEODEFAULTS_CFG_NAME}" && \
+
+        # Append the contents of the source to the output file
+        cat "${SRC_CFG_DIR}/main-cfg.txt" >> "${NEODEFAULTS_CFG_NAME}" && \
+
+        # Ensure all cfg files have Unix-style line endings
+        for i in build/*.cfg; do
+            dos2unix "$i"
+        done && \
+
+        # Make the output file read-only
+        chmod -wx "${NEODEFAULTS_CFG_NAME}"
     } || {
         print_error "Failed to build the cfg files."
         err="True"
     }
+
 
     # If any errors occurred (i.e., $err is not empty), return error code 1.
     [ -z "${err}" ] || return 1
