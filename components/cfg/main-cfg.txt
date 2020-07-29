@@ -1,13 +1,11 @@
-// NeoDefaults config, alpha version
-
 // WARNING: This file is read-only. The NeoDefaults installer will always overwrite this file when
-// installing the configuration, so that future versions may update this file.
+// installing the config files, so that future versions may update this file.
 
 // If you make modifications to this file, those will be lost the next time you run the installer.
 // To prevent this, use the custom.cfg file to add any settings that you'd like to change, and those
-// values will always be respected by all future versions of NeoDefaults. custom.cfg will always be
-// executed after this file, so it will override anything set here. For example, if you wanted to
-// disable autoreload, you would add 'cl_autoreload 0' to custom.cfg.
+// values will always be respected by all future versions of NeoDefaults. When TF2 is run,
+// custom.cfg will always be executed after this file, so it will override anything set here. For
+// example, if you wanted to enable auto-rezoom, you would add 'cl_autorezoom 1' to custom.cfg.
 
 
 
@@ -38,12 +36,8 @@ m_mouseaccel2 0
 // Defines client-side interpolation.
 //
 // Interpolation adds artifical latency to the client (i.e., your TF2 game) to make the game feel
-// smooth even if there are network issues like packet loss.
-//
-// 0.0303 is a value that favors hitscan weapons, whereas projectile-based weapons can benefit more
-// from setting this to 0. For new players, lowering this to at least 0.0303 (from 0.1) is good
-// enough. In any case, this is something that should be set once and left alone. For more
-// information on this, visit the FAQ on GitHub.
+// smooth even if there are network issues like packet loss. For more information on this, visit the
+// FAQ on GitHub.
 cl_interp 0.0303
 cl_interp_ratio 2
 
@@ -61,14 +55,14 @@ cl_pred_optimize 2
 //---------------
 // Class-specific settings
 //---------------
-// Disable automatic re-zoom upon firing a scoped shot
+// Disable automatic re-zoom of the sniper rifle when firing a scoped shot.
 cl_autorezoom 0
 
 // TF2 was made for 4:3 screens, so by default, most players notice that moving the mouse while
 // scoped feels sluggish. This scales the scoped sensitivity to feel more normal for 16:9 screens.
 zoom_sensitivity_ratio 0.833333
 
-// Play a sound when a shot is fully charged
+// Play a sound when a shot is fully charged on the sniper rifle.
 tf_sniper_fullcharge_bell 1
 
 // When disabled, a player must hold left-click down to continue healing.
