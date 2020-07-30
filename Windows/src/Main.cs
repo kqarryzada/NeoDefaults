@@ -339,7 +339,9 @@ namespace NeoDefaults_Installer {
          */
         private void PreviousPanel() {
             try {
-                UpdateScreen(stack.Pop());
+                var previousPanel = stack.Pop();
+                UpdateScreen(previousPanel);
+                log.Write("<--- Navigated back to '" + previousPanel?.Name + "'.");
             }
             catch (InvalidOperationException ioe) {
                 log.WriteErr("An error occurred when trying to pop the panel stack:",
@@ -391,7 +393,8 @@ namespace NeoDefaults_Installer {
                 return;
             }
             UpdateScreen(nextPanel);
-            
+            log.Write("---> Navigated forward to '" + nextPanel?.Name + "'.");
+
             // Certain panels need to execute tasks immediately upon switching to the next page.
             if (currentPanel == panel5) {
                 InstallFiles();
