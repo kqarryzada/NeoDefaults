@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using NeoDefaults_Installer.warning_dialog;
 
 namespace NeoDefaults_Installer {
@@ -117,7 +115,31 @@ namespace NeoDefaults_Installer {
          * install was automatically found.
          */
         private async void SearchForTF2Install() {
-            // Obtain the list of drive names on the system.
+            log.PrintDivider();
+            log.Write("Beginning automatic filepath check...");
+
+            // Before initiating an expensive search, make use of the SpecialFolder enum to look in
+            // the default installation path. This will find the correct drive letter (e.g., 'C:\')
+            // for us.
+            try {
+                var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                var defaultPath = Path.Combine(progFiles + @"\Steam\SteamApps\common\Team Fortress 2\tf");
+                if (Directory.Exists(defaultPath)) {
+                    log.Write("Found the path in the default location, '" + defaultPath + "'.");
+                    log.PrintDivider();
+                    tfPath = defaultPath;
+                    return;
+                }
+            }
+            catch (Exception e) {
+                log.WriteErr("Failed to perform the check on the default path.",
+                                e.ToString());
+            }
+
+
+            log.WriteLn("The install was not found in the default location. Preparing to perform"
+                        + " a search of the drives.");
+            // Obtain the list of all drive names on the system.
             DriveInfo[] systemDrives = null;
             await Task.Run(() => {
                 try {
@@ -142,9 +164,8 @@ namespace NeoDefaults_Installer {
             // Search each common installation path for files under all drives on the system.
             await Task.Run(() => {
                 try {
-                    log.PrintDivider();
-                    log.WriteLn("Beginning automatic filepath check...");
                     foreach (DriveInfo drive in systemDrives) {
+                        // If a drive is too small to hold TF2, don't bother searching it.
                         long size = drive.TotalSize;
                         if (size <= MIN_DRIVE_SIZE) {
                             log.WriteLn("Skipping over the " + drive.Name + " drive since it has size '"
