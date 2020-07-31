@@ -302,6 +302,8 @@ namespace NeoDefaults_Installer {
             bool mastercomfigEnabled = filePaths.Length != 0;
             autoexec = (mastercomfigEnabled) ? mastercomfigLocation : defaultLocation;
             bool alreadyExists = File.Exists(autoexec);
+            log.Write("Checking if mastercomfig was detected: " + mastercomfigEnabled);
+            log.Write("Checking if autoexec.cfg already exists: " + alreadyExists);
 
 
             if (alreadyExists) {
@@ -311,8 +313,7 @@ namespace NeoDefaults_Installer {
                     String line;
                     while ((line = reader.ReadLine()) != null) {
                         if (line.Equals(AutoexecHeader)) {
-                            // The "exec" statement is already there, so there's no need to
-                            // modify anything.
+                            log.Write("The NeoDefaults header already existed in the autoexec file.");
                             return;
                         }
                     }
@@ -335,7 +336,9 @@ namespace NeoDefaults_Installer {
             sb.AppendLine(Path.GetFileNameWithoutExtension(neodefaultsPath));
             sb.AppendLine(AutoexecFooter);
 
+            log.Write("Preparing to append 'exec' statement to the autoexec file.");
             File.AppendAllText(autoexec, sb.ToString());
+            log.Write("Append complete.");
         }
 
 
