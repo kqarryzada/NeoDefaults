@@ -216,6 +216,12 @@ namespace NeoDefaults_Installer {
          * Returns the canonicalized filepath for 'path', or 'null' if there was a problem.
          */
         public String CanonicalizePath(String path) {
+            // If the proposed path is already equivalent to 'tfPath', there's no point in
+            // proceeding.
+            if (tfPath != null && Path.Equals(tfPath, path)) {
+                return tfPath;
+            }
+
             log.Write("Attempting to canonicalize the path of: " + path);
             if (path == null) {
                 return null;
