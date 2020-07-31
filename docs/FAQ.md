@@ -69,3 +69,35 @@ value is still ideal for players with stable connections that heavily use hitsca
 includes what is considered essential. If you think there's a critical setting missing, open [an
 issue](https://github.com/kqarryzada/TF2-NeoDefaults/issues) on GitHub so that it may be considered
 in a future release of the installer.
+
+&nbsp;
+
+**Q:** I got a warning that said "Tried to modify autoexec.cfg and failed". What happened?
+
+**A:** The autoexec.cfg file is checked by TF2 every time the game starts up. In order for
+NeoDefaults to run on startup, this file must indicate that we want the `neodefaults.cfg` file to
+run. This error is not expected to happen, but in case it did, here are some steps you can take to
+fix this:
+
+1. Open the cfg folder located at `<your TF2 install path>/tf/cfg`.
+1. If you use mastercomfig, open the "user" folder. If you don't know what this is, you likely don't
+have it installed, so ignore this step.
+1. Find the "autoexec.cfg" file, and open it using a text editor like Notepad.
+1. Add the following lines to the bottom of the file:
+    ```
+    //--------Added by the NeoDefaults Installer--------//
+    exec NeoDefaults/neodefaults
+    //--------------------------------------------------//
+    ```
+    This tells `autoexec.cfg` to run the `neodefaults.cfg` file located in `cfg/NeoDefaults`.
+1. Save the file, and launch TF2. When TF2 has launched, hit the `~` character to open the
+console.
+1. There will be a bunch of text written there, but among all of it, you should see the following
+    message:
+    ```
+    -------------------------------------------------------------------------
+    ------------------ NEODEFAULTS (version number) LOADED ------------------
+    -------------------------------------------------------------------------
+    ```
+    If you see this message, then you've fixed the autoexec file successfully. If not, something
+    went wrong. Consider opening an issue on GitHub for additional help.

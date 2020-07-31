@@ -425,24 +425,6 @@ namespace NeoDefaults_Installer {
                 }
 
 
-                // Modify autoexec.cfg so that the newly installed config will execute when TF2
-                // is launched.
-                try {
-                    AppendLinesToAutoExec(destCfg);
-                }
-                catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to append to autoexec.cfg.",
-                                    e.ToString());
-
-                    // Notify the user that they should modify this manually
-                    String message = "Tried to modify 'autoexec.cfg' and failed. To fix this,"
-                                     + " try re-running the installation. If the problem"
-                                     + " persists, check the FAQ for advice on dealing with errors.";
-                    var dialog = new WarningDialog();
-                    dialog.Display(message);
-                }
-
-
                 // Create the custom file, if it does not already exist.
                 try {
                     String sourceCustom = Path.Combine(componentsPath, customCfgName);
@@ -457,6 +439,25 @@ namespace NeoDefaults_Installer {
                 }
                 catch (Exception e) {
                     log.WriteErr("Failed to create the " + customCfgName + " file.", e.ToString());
+                    return InstallStatus.FAIL;
+                }
+
+
+                // Modify autoexec.cfg so that the newly installed config will execute when TF2
+                // is launched.
+                try {
+                    AppendLinesToAutoExec(destCfg);
+                }
+                catch (Exception e) {
+                    log.WriteErr("An error occurred when trying to append to autoexec.cfg.",
+                                    e.ToString());
+
+                    // Notify the user that they should modify this manually
+                    String message = "Tried to modify 'autoexec.cfg' and failed. To fix this, try"
+                                     + " re-running the installation. If the problem persists,"
+                                     + " check the FAQ for how steps on how to do this manually.";
+                    var dialog = new WarningDialog();
+                    dialog.Display(message);
                     return InstallStatus.FAIL;
                 }
 

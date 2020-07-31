@@ -26,10 +26,5 @@ namespace NeoDefaults_Installer.warning_dialog {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
-        private void SkipButton_Click(object sender, EventArgs e) {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
     }
 }
