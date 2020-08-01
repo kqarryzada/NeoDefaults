@@ -109,7 +109,7 @@
             this.buttonPath.TabIndex = 1;
             this.buttonPath.Text = "Select Folder...";
             this.buttonPath.UseVisualStyleBackColor = true;
-            this.buttonPath.Click += new System.EventHandler(this.buttonPath_Click);
+            this.buttonPath.Click += new System.EventHandler(this.ButtonPath_Click);
             // 
             // promptPath
             // 
@@ -163,7 +163,6 @@
             this.buttonPathMessage.Size = new System.Drawing.Size(75, 13);
             this.buttonPathMessage.TabIndex = 2;
             this.buttonPathMessage.Text = "%MESSAGE%";
-            this.buttonPathMessage.Visible = false;
             // 
             // panel1
             // 

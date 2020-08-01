@@ -74,16 +74,25 @@ namespace NeoDefaults_Installer {
         /**
          * Launches a dialog box and asks the user to provide the path to their TF2 install.
          *
-         * This is triggered when the "Select Folder" button is clicked. Currently, this makes use
-         * of a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
+         * This method should be called when the "Select Folder" button is clicked. It makes use of
+         * a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
          * folder.
          *
-         * Returns a String representing the path to the "Team Fortress 2/tf" folder. If the
-         * operation was cancelled or invalid, the String will be null.
+         * If the user provided an invalid filepath, a null String will be returned.
+         * If the user cancelled the operation after opening the dialog box, the String "cancel"
+         * will be returned.
+         * Otherwise, the String will represent the path to the "Team Fortress 2/tf" folder.
          */
         private String RequestFilepath() {
             String hl2Path = "";
             bool valid = false;
+            String defaultDirectory = @"C:\";
+            try {
+                defaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            }
+            catch (Exception) {
+                log.Write("Failed to obtain the path to ProgramFiles(x86) for folder navigation.");
+            }
 
             // The .exe is requested despite the fact that a folder is what's really desired. This
             // is because the old-school tree-based folder navigation menu is quite ugly, and it's
@@ -92,13 +101,13 @@ namespace NeoDefaults_Installer {
             // in the nicer mavigation menu, and the path will be modified to record the
             // "Team Fortress 2/tf" folder.
             using (var fileDialog = new OpenFileDialog()) {
-                fileDialog.InitialDirectory = @"C:\";
+                fileDialog.InitialDirectory = defaultDirectory;
                 fileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
                 fileDialog.FilterIndex = 1;
 
                 if (fileDialog.ShowDialog() != DialogResult.OK) {
                     // The operation was cancelled
-                    return null;
+                    return "cancel";
                 }
 
                 // Get the path of specified file
@@ -108,22 +117,11 @@ namespace NeoDefaults_Installer {
                 // Validate the provided filepath
                 String fpCheck = hl2Path.ToLower();
                 if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
-                    // Clear any previously-displayed message
-                    buttonPathMessage.ForeColor = Color.DimGray;
-                    buttonPathMessage.Text = "";
-                    buttonPathMessage.Visible = false;
-
                     valid = true;
-                }
-                else {
-                    buttonPathMessage.ForeColor = Color.Red;
-                    buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file.";
-                    buttonPathMessage.Visible = true;
                 }
             }
 
             String retval = null;
-            String description = INSTALL_NOT_FOUND;
             if (valid) {
                 log.WriteLn("The path was considered valid.");
                 try {
@@ -136,14 +134,14 @@ namespace NeoDefaults_Installer {
                                     e.ToString());
                 }
 
-                description = "The TF2 install path was recognized. Proceed to the next page.";
+                // The returned path was manually selected from the user, so keep track of this as
+                // it will affect messages that we display.
                 folderManuallySelected = true;
             }
             else {
                 log.WriteLn("The path was considered invalid.");
             }
 
-            promptPath.Text = description;
             return retval;
         }
 
@@ -276,26 +274,17 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Saves the location of the user's TF2 install. The full canonical path of 'path' is
-         * computed by this method.
+         * Saves the location of the user's TF2 install.
          *
          * Returns a boolean indicating whether or not the attempt was successful.
          */
         public bool SetTFPath(String path) {
             path = utilities.CanonicalizePath(path);
-            if (path == null) {
-                return false;
+            if (path != null) {
+                utilities.tfPath = path;
+                return true;
             }
-
-            // Update button info to indicate where the install files were found
-            buttonPathMessage.Text = path;
-            buttonPathMessage.Visible = true;
-
-            utilities.tfPath = path;
-
-            // Allow user to proceed to next page
-            nextPath.Enabled = true;
-            return true;
+            return false;
         }
 
 
@@ -424,28 +413,26 @@ namespace NeoDefaults_Installer {
             nextPath.Text = (isBasicInstallEnabled) ? "Install" : "Next";
 
             String displayMessage;
-            String currSavedPath = utilities.tfPath;
-            if (currSavedPath != null) {
-                SetTFPath(currSavedPath);
-                if (folderManuallySelected) {
-                    displayMessage = "The following TF2 install path was recognized. Proceed to the"
-                                     + " next page.";
-                }
-                else {
-                    // If there has never been a successful user selection of the tfPath, then
-                    // tfPath was found by Utilities.SearchForTF2Install. Make a mention of
-                    // "automatically found" to clarify that the program found this on its own.
-                    displayMessage = "The TF2 install path was automatically found. Proceed to the"
-                                     + " next page.";
-                }
+            if (utilities.tfPath != null) {
+                buttonPathMessage.Text = utilities.tfPath;
+                nextPath.Enabled = true;
+
+                // The success message depends on whether the user provided the path manually, or if
+                // it was found by Utilities.SearchForTF2Install.
+                if (folderManuallySelected)
+                    displayMessage = "The TF2 install path was recognized. Proceed to the next page.";
+                else
+                    displayMessage = "The TF2 install path was automatically found. Proceed to the next page.";
             }
             else {
                 // Clear any previously-displayed error messages upon arriving at this panel.
                 buttonPathMessage.Text = "";
-
+                nextPath.Enabled = false;
                 displayMessage = INSTALL_NOT_FOUND;
             }
             promptPath.Text = displayMessage;
+
+            // Reset the color, in case an error was previously shown
             buttonPathMessage.ForeColor = Color.DimGray;
         }
 
@@ -494,16 +481,33 @@ namespace NeoDefaults_Installer {
          * This event is triggered when the user clicks "Select Folder" to provide the path to their
          * TF2 installation.
          */
-        private void buttonPath_Click(object sender, EventArgs e) {
+        private void ButtonPath_Click(object sender, EventArgs e) {
             String filepath = RequestFilepath();
+            if (filepath == "cancel") {
+                // If the operation was cancelled, leave immediately without changing the state of
+                // the program.
+                return;
+            }
+
             bool success = false;
             if (filepath != null) {
                 log.Write("Attempting to set the filepath to: " + filepath);
                 success = SetTFPath(filepath);
             }
 
-            if (!success)
+            if (success) {
+                nextPath.Enabled = true;
+                buttonPathMessage.ForeColor = Color.DimGray;
+                buttonPathMessage.Text = utilities.tfPath;
+                promptPath.Text = "The TF2 install path was recognized. Proceed to the next page.";
+            }
+            else {
                 nextPath.Enabled = false;
+                buttonPathMessage.ForeColor = Color.Red;
+                buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2.exe' file";
+                promptPath.Text = INSTALL_NOT_FOUND;
+            }
+            buttonPathMessage.Visible = true;
         }
 
         /**
