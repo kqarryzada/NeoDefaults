@@ -9,11 +9,6 @@
 
 
 
-// Some commands in this file that require cheats to be enabled, for whatever reason. They are
-// turned off at the end of the file.
-sv_cheats 1
-
-
 //---------------
 // Mouse settings
 //---------------
@@ -45,11 +40,6 @@ cl_interp_ratio 2
 // been increased from the default of 20 and 30, respectively, to make the game more responsive.
 cl_updaterate 67
 cl_cmdrate 67
-
-// Do not ever change these values. They are set by default, but it doesn't hurt to double-check and
-// enable them here just in case.
-cl_lagcompensation 1
-cl_pred_optimize 2
 
 
 //---------------
@@ -135,7 +125,6 @@ bind SHIFT "+duck"
 unbind CTRL
 
 
-
 // Execute the custom file to override any unwanted settings defined in this file.
 exec NeoDefaults/custom
 
@@ -145,4 +134,3 @@ echo "-------------------------------------------------------------------------"
 echo "----------------------- NEODEFAULTS v1.0.0 LOADED -----------------------"
 echo "-------------------------------------------------------------------------"
 echo ""
-sv_cheats 0
