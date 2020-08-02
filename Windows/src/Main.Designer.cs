@@ -422,6 +422,7 @@
             // 
             this.promptLast.AutoSize = true;
             this.promptLast.Location = new System.Drawing.Point(89, 87);
+            this.promptLast.MaximumSize = new System.Drawing.Size(450, 0);
             this.promptLast.Name = "promptLast";
             this.promptLast.Size = new System.Drawing.Size(105, 13);
             this.promptLast.TabIndex = 2;

@@ -300,7 +300,8 @@ namespace NeoDefaults_Installer {
                 image = SystemIcons.Error.ToBitmap();
 
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("The following components failed to install:");
+                sb.Append("The following components failed to install.");
+                sb.AppendLine(" Visit the \"More Info\" page on GitHub for advice on troubleshooting.");
                 sb.AppendLine();
                 foreach (String component in failedComponents) {
                     String capitalized = component.First().ToString().ToUpper() + component.Substring(1);
