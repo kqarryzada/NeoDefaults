@@ -37,6 +37,8 @@ placed in the `neodefaults-hud-tweaks.vpk ` file, which is stored in the `tf/cus
 Currently, the only change made is to increase the size of damage numbers to make them more
 readable, as discussed in the [README](/README.md#what-gets-changed).
 
+This VPK file is only intended for use with the default HUD, and may not work if you are using a custom HUD.
+
 ## Customizing NeoDefaults
 If NeoDefaults changes a game setting that you don't like, you can fix it by overriding that
 setting in the `custom.cfg` file that NeoDefaults creates for you.

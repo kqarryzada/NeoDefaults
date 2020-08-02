@@ -336,7 +336,8 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
-            this.toolTip.SetToolTip(this.pictureBox2, "Increases the size of damage numbers to make them much easier to read.");
+            this.toolTip.SetToolTip(this.pictureBox2, "Increases the size of damage numbers to make them much easier to read.  This plug" +
+        "in may not work if you have a custom HUD installed.");
             // 
             // pictureBox1
             // 
