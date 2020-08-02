@@ -196,9 +196,6 @@ namespace NeoDefaults_Installer {
                 case InstallStatus.SUCCESS:
                     message = "Installed the " + longName + ".";
                     break;
-                case InstallStatus.OPT_OUT:
-                    message = "The " + shortName + " installation was skipped.";
-                    break;
                 default:
                     log.WriteErr("Received an unexpected return value when trying to install"
                                  + " the " + longName + ": " + status);

@@ -64,7 +64,6 @@ namespace NeoDefaults_Installer {
         public enum InstallStatus {
             FAIL,
             SUCCESS,
-            OPT_OUT,
         };
 
         private Utilities() {
