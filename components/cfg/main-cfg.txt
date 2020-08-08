@@ -1,11 +1,6 @@
-// WARNING: This file is read-only. The NeoDefaults installer will always overwrite this file when
-// installing the config files, so that future versions may update this file.
-
-// If you make modifications to this file, those will be lost the next time you run the installer.
-// To prevent this, use the custom.cfg file to add any settings that you'd like to change, and those
-// values will always be respected by all future versions of NeoDefaults. When TF2 is run,
-// custom.cfg will always be executed after this file, so it will override anything set here. For
-// example, if you wanted to enable auto-rezoom, you would add 'cl_autorezoom 1' to custom.cfg.
+// WARNING: This file is read-only. If you make modifications to this file, those will be lost the
+// next time you run the installer. To prevent this, place your settings in the custom.cfg file
+// instead. For more information, see the FAQ on GitHub.
 
 
 
@@ -128,7 +123,7 @@ bind SHIFT "+duck"
 unbind CTRL
 
 
-// Execute the custom file to override any unwanted settings defined in this file.
+// Execute 'custom.cfg' to override any unwanted settings defined by us in this file.
 exec NeoDefaults/custom
 
 echo ""
