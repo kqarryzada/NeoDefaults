@@ -161,7 +161,7 @@ function build() {
         # Append the contents of the source to the output file
         cat "${SRC_CFG_DIR}/main-cfg.txt" >> "${NEODEFAULTS_CFG_NAME}" && \
 
-        # Ensure all cfg files have Unix-style line endings
+        # Ensure all cfg files have Windows-style line endings
         for i in build/*.cfg; do
             unix2dos "$i"
         done && \
