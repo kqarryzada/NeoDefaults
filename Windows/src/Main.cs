@@ -38,8 +38,9 @@ namespace NeoDefaults_Installer {
         Logger log;
 
         private static readonly String INSTALL_NOT_FOUND =
-                                "Select the location where you installed your game, and find the"
-                                + " 'hl2' exe file. This is usually in a folder that looks like:"
+                                "Open the location where you installed your game, and select the"
+                                + " file named \"hl2\" or \"hl2.exe\". This is usually in a folder"
+                                + " that looks like:"
                                 + Environment.NewLine
                                 + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\";
 
@@ -503,7 +504,7 @@ namespace NeoDefaults_Installer {
             else {
                 nextPath.Enabled = false;
                 buttonPathMessage.ForeColor = Color.Red;
-                buttonPathMessage.Text = "Invalid file provided. Please select your 'hl2' file.";
+                buttonPathMessage.Text = "Invalid file provided. Please select your \"hl2\" file.";
                 promptPath.Text = INSTALL_NOT_FOUND;
             }
             buttonPathMessage.Visible = true;

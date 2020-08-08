@@ -117,7 +117,7 @@ namespace NeoDefaults_Installer{
             // 
             this.promptPath.AutoSize = true;
             this.promptPath.Location = new System.Drawing.Point(39, 87);
-            this.promptPath.MaximumSize = new System.Drawing.Size(580, 0);
+            this.promptPath.MaximumSize = new System.Drawing.Size(540, 0);
             this.promptPath.Name = "promptPath";
             this.promptPath.Size = new System.Drawing.Size(235, 13);
             this.promptPath.TabIndex = 2;
@@ -351,7 +351,8 @@ namespace NeoDefaults_Installer{
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings in the NeoDefaults config have been specifically tuned for " +
-        "this sound file. " + Environment.NewLine + "If the config is not installed, you will need to enable hitsounds manually.");
+        "this sound file. \r\nIf the config is not installed, you will need to enable hitso" +
+        "unds manually.");
             // 
             // LabelOpt
             // 
