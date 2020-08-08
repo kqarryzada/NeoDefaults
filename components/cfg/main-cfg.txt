@@ -19,6 +19,9 @@
 // move the mouse between those two points. This makes building muscle memory much easier, and your
 // aim will improve much faster than if acceleration was enabled.
 m_rawinput 1
+m_mousespeed 0
+
+// These values are already set by default, but are still placed here just in case.
 m_filter 0
 m_customaccel 0
 m_mouseaccel1 0
