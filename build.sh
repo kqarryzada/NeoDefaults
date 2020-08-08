@@ -77,9 +77,9 @@ function check_prerequisites() {
         exit 1
     fi
 
-    # Check for 'dos2unix' binary
-    if ! dos2unix --version &> /dev/null; then
-        >&2 echo "'dos2unix' failed to run. Make sure this is installed."
+    # Check for 'unix2dos' binary
+    if ! unix2dos --version &> /dev/null; then
+        >&2 echo "'unix2dos' failed to run. Make sure this is installed."
         exit 1
     fi
 }
@@ -163,7 +163,7 @@ function build() {
 
         # Ensure all cfg files have Unix-style line endings
         for i in build/*.cfg; do
-            dos2unix "$i"
+            unix2dos "$i"
         done && \
 
         # Make the output file read-only
