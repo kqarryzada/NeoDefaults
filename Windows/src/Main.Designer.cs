@@ -1,4 +1,6 @@
-﻿namespace NeoDefaults_Installer{
+﻿using System;
+
+namespace NeoDefaults_Installer{
     partial class Main {
         /// <summary>
         ///  Required designer variable.
@@ -349,7 +351,7 @@
             this.pictureBox1.TabIndex = 5;
             this.pictureBox1.TabStop = false;
             this.toolTip.SetToolTip(this.pictureBox1, "The hitsound settings in the NeoDefaults config have been specifically tuned for " +
-        "this sound file. ");
+        "this sound file. " + Environment.NewLine + "If the config is not installed, you will need to enable hitsounds manually.");
             // 
             // LabelOpt
             // 

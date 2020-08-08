@@ -101,3 +101,12 @@ console.
     ```
     If you see this message, then you've fixed the autoexec file successfully. If not, something
     went wrong. Consider opening an issue on GitHub for additional help.
+
+
+&nbsp;
+
+**Q:** I installed the hitsound through the Advanced Install, but I don't hear it in-game.
+
+**A:** There's an in-game setting that turns hitsounds on and off, and it is off by default.
+`neodefaults.cfg` enables this for you, but it's likely that you opted out of the config install.
+To fix this, open the Advanced Options menu in TF2 and enable the "Play a hit sound" setting.
