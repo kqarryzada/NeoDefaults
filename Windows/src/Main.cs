@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using NeoDefaults_Installer.warning_dialog;
 using InstallStatus = NeoDefaults_Installer.Utilities.InstallStatus;
 
 namespace NeoDefaults_Installer {
@@ -44,7 +44,7 @@ namespace NeoDefaults_Installer {
                                 + Environment.NewLine
                                 + @"C:\Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\";
 
-        // Tracks whether the user has ever successfully provided the path to the TF2 install.
+        // Tracks whether the user has ever successfully provided the path to the TF2 install themselves.
         private bool folderManuallySelected = false;
 
 
@@ -74,20 +74,21 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Launches a dialog box and asks the user to provide the path to their TF2 install.
+         * Launches a dialog box and asks the user to provide the path to the 'hl2.exe' file inside
+         * their TF2 installation.
          *
          * This method should be called when the "Select Folder" button is clicked. It makes use of
-         * a file-based search and asks the user to provide the 'hl2.exe' file, despite needing a
-         * folder.
+         * a file-based search and asks the user to provide 'hl2.exe' in the TF2 install folder.
+         * This method does not perform validation on the filepath that is returned, aside from
+         * checking that the file has the correct name.
          *
-         * If the user provided an invalid filepath, a null String will be returned.
-         * If the user cancelled the operation after opening the dialog box, the String "cancel"
+         * If the user provided a file that is not named 'hl2.exe', a null String will be returned.
+         * If the user cancelled the operation and did not provide a file, the String "cancel"
          * will be returned.
-         * Otherwise, the String will represent the path to the "Team Fortress 2/tf" folder.
+         * Otherwise, the return String will represent a path to a 'tf' directory that will need to
+         * be validated.
          */
-        private String RequestFilepath() {
-            String hl2Path = "";
-            bool valid = false;
+        private String RequestTF2Filepath() {
             String defaultDirectory = @"C:\";
             try {
                 defaultDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -102,6 +103,7 @@ namespace NeoDefaults_Installer {
             // (at least, it seemed that way to me). Hence, the program asks for the 'hl2.exe' file
             // in the nicer mavigation menu, and the path will be modified to record the
             // "Team Fortress 2/tf" folder.
+            String hl2Path;
             using (var fileDialog = new OpenFileDialog()) {
                 fileDialog.InitialDirectory = defaultDirectory;
                 fileDialog.Filter = "Program files (*.exe)|*.exe|All files (*.*)|*.*";
@@ -112,36 +114,26 @@ namespace NeoDefaults_Installer {
                     return "cancel";
                 }
 
-                // Get the path of specified file
                 hl2Path = fileDialog.FileName;
-                log.Write("Attempting to set the user-given path: " + hl2Path);
-
-                // Validate the provided filepath
-                String fpCheck = hl2Path.ToLower();
-                if (fpCheck.Contains("hl2.exe") && fpCheck.Contains("team fortress 2")) {
-                    valid = true;
-                }
             }
+
+            log.Write("Considering the user-given path: " + hl2Path);
+            if (!Utilities.ValidateHL2Exe(hl2Path)) {
+                log.Write("The name of the file was invalid.");
+                return null;
+            }
+            log.WriteLn("The path contains a valid .exe file.");
+
 
             String retval = null;
-            if (valid) {
-                log.WriteLn("The path was considered valid.");
-                try {
-                    // Modify the path to return the tf/ folder.
-                    String parent = Path.GetDirectoryName(hl2Path);
-                    retval = Path.Combine(parent, "tf");
-                }
-                catch (Exception e) {
-                    log.WriteErr("Failed to obtain the path to tf/ from: " + hl2Path,
-                                    e.ToString());
-                }
-
-                // The returned path was manually selected from the user, so keep track of this as
-                // it will affect messages that we display.
-                folderManuallySelected = true;
+            try {
+                // Modify the path to return the tf/ folder.
+                String parent = Path.GetDirectoryName(hl2Path);
+                retval = Path.Combine(parent, "tf");
             }
-            else {
-                log.WriteLn("The path was considered invalid.");
+            catch (Exception e) {
+                log.WriteErr("Failed to obtain the path to tf/ from: " + hl2Path,
+                                e.ToString());
             }
 
             return retval;
@@ -269,21 +261,6 @@ namespace NeoDefaults_Installer {
             promptInstall.Text = completeMessage;
             // Allow user to continue to the next page
             nextInstall.Enabled = true;
-        }
-
-
-        /**
-         * Saves the location of the user's TF2 install.
-         *
-         * Returns a boolean indicating whether or not the attempt was successful.
-         */
-        public bool SetTFPath(String path) {
-            path = utilities.CanonicalizePath(path);
-            if (path != null) {
-                utilities.tfPath = path;
-                return true;
-            }
-            return false;
         }
 
 
@@ -482,20 +459,28 @@ namespace NeoDefaults_Installer {
          * TF2 installation.
          */
         private void ButtonPath_Click(object sender, EventArgs e) {
-            String filepath = RequestFilepath();
-            if (filepath == "cancel") {
+            String filepath = RequestTF2Filepath();
+            if (filepath != null && filepath.Equals("cancel")) {
                 // If the operation was cancelled, leave immediately without changing the state of
                 // the program.
                 return;
             }
 
             bool success = false;
-            if (filepath != null) {
-                log.Write("Attempting to set the filepath to: " + filepath);
-                success = SetTFPath(filepath);
+            try {
+                success = utilities.SetTFPath(filepath);
             }
-
+            catch (Exception ex) {
+                var dialog = new WarningDialog();
+                dialog.Display("A problem occurred while trying to check that the file was valid."
+                                + "The error message was: "
+                                + Environment.NewLine
+                                + Environment.NewLine
+                                + ex.ToString());
+            }
             if (success) {
+                folderManuallySelected = true;
+
                 nextPath.Enabled = true;
                 buttonPathMessage.ForeColor = Color.DimGray;
                 buttonPathMessage.Text = utilities.tfPath;

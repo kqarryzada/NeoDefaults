@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using NeoDefaults_Installer.warning_dialog;
 
 namespace NeoDefaults_Installer {
@@ -102,16 +103,9 @@ namespace NeoDefaults_Installer {
 
 
         /**
-         * Searches for a TF2 installation in the most common locations on the machine.
+         * Searches for a TF2 installation in likely locations on the machine.
          *
-         * This method obtains all the drives available on the system, then searches for a TF2 path
-         * under each drive until either a valid install is found, or until all possibilities have
-         * been exhausted.
-         *
-         * If a potential install is found, it will be stored in the 'tfPath' private member
-         * variable, but will not officially be recognized until it is handled in Main (specifically
-         * in Main.PreparePathPanel()) since there are UI elements that depend on whether or not the
-         * install was automatically found.
+         * If a potential install is found, it will be stored in the 'tfPath' member variable.
          */
         private async void SearchForTF2Install() {
             log.PrintDivider();
@@ -157,11 +151,10 @@ namespace NeoDefaults_Installer {
             // Will hold the location to a TF2 install, if not null.
             String installPath = null;
 
-            // Placeholder for paths being checked. Allocated here for use by debug messages.
-            String path = null;
-
             // Search each common installation path for files under all drives on the system.
             await Task.Run(() => {
+                String path = null;
+
                 try {
                     foreach (DriveInfo drive in systemDrives) {
                         // If a drive is too small to hold TF2, don't bother searching it.
@@ -193,52 +186,127 @@ namespace NeoDefaults_Installer {
                     log.Write();
                 }
                 catch (Exception e) {
-                    log.WriteErr("An error occurred when trying to search the system for a TF2 install:",
-                                    e.ToString());
+                    log.WriteErr("An error occurred when trying to search the system for a TF2 install."
+                                 + "The last recorded path was: " + path,
+                                 e.ToString());
                 }
             });
+            if (installPath == null) {
+                return;
+            }
 
-            if (installPath != null) {
-                try {
-                    String parent = Path.GetDirectoryName(installPath);
-                    tfPath = Path.Combine(parent, "tf");
+
+            try {
+                if (!VerifyTFSubdirectories(installPath)) {
+                    log.Write("Failed to verify the existence of the subdirectories during the"
+                              + " automatic filepath check.");
+                    return;
                 }
-                catch (Exception e) {
-                    log.WriteErr("Failed to set the TF2 install path from '" + installPath + "'.",
-                                    e.ToString());
-                }
+                String parent = Path.GetDirectoryName(installPath);
+                tfPath = Path.Combine(parent, "tf");
+            }
+            catch (Exception e) {
+                log.WriteErr("Failed to set the TF2 install path from '" + installPath + "'.",
+                                e.ToString());
             }
         }
 
 
         /**
-         * Returns the canonicalized filepath for 'path', or 'null' if there was a problem.
+         * Validates the user-provided file as an appropriate TF2 installation file.
          */
-        public String CanonicalizePath(String path) {
+        public static bool ValidateHL2Exe(String path) {
+            path = path.ToLower();
+            return path.EndsWith(Path.DirectorySeparatorChar + "hl2.exe");
+        }
+
+
+        /**
+         * Ensures that the "cfg" and "custom" folders exist under the "tf" directory. If not, they
+         * will be silently created. If an attempted creation fails, the user will be alerted with
+         * a dialog box.
+         *
+         * path: The path to the "tf" folder.
+         *
+         * Returns false if an attempt to create the appropriate subdirectories fails.
+         * Throws an Exception if an unexpected error occurs.
+         */
+        private static bool VerifyTFSubdirectories(String path) {
+            String cfg = Path.Combine(path, "cfg");
+            String custom = Path.Combine(path, "custom");
+
+            // Despite being idempotent, only attempt the creation of the subdirectories if they are
+            // confirmed to be missing. This is to reduce the chances of running into an exception.
+            if (!Directory.Exists(cfg) || !Directory.Exists(custom)) {
+                try {
+                    Directory.CreateDirectory(cfg);
+                    Directory.CreateDirectory(custom);
+                }
+                catch (Exception) {
+                    var dialog = new WarningDialog();
+                    dialog.Display("The TF2 install path is missing the 'cfg' or 'custom' folder."
+                                   + " The installer attempted to create this for you, but was"
+                                   + " unable. Please open your 'Team Fortress 2\\tf' directory and"
+                                   + " create these two folders, then re-run the installer.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        /**
+         * Performs validation on a potential TF2 install path.
+         *
+         * Returns the validity of the provided path.
+         * Throws an Exception if an unexpected error occurs.
+         */
+        private static bool ValidateTFPath(String currentTFPath, String path) {
+            if (path == null || !Directory.Exists(path))
+                return false;
+
             // If the proposed path is already equivalent to 'tfPath', there's no point in
             // proceeding.
-            if (tfPath != null && Path.Equals(tfPath, path)) {
-                return tfPath;
+            if (currentTFPath != null && Path.Equals(currentTFPath, path))
+                return true;
+
+            String check = path.ToLower();
+            if (!check.EndsWith("team fortress 2" + Path.DirectorySeparatorChar + "tf")) {
+                return false;
             }
 
-            log.Write("Attempting to canonicalize the path of: " + path);
-            if (path == null) {
-                return null;
-            }
+            // As the final step, verify the appropriate subdirectories are in place.
+            return VerifyTFSubdirectories(path);
+        }
 
-            String testPath = null;
+
+        /**
+         * Saves the location of the user's TF2 install for later use.
+         *
+         * Returns a boolean indicating whether or not the attempt was successful.
+         * Throws an Exception if the path could not be validated.
+         */
+        public bool SetTFPath(String path) {
+            log.Write("Attempting to set the user-given path: " + path);
+            bool success;
             try {
-                testPath = Path.GetFullPath(path);
+                success = ValidateTFPath(tfPath, path);
             }
             catch (Exception e) {
-                log.WriteErr("Could not obtain the canonical path of '" + path + "'. Aborting.",
-                            e.ToString());
+                log.WriteErr("Could not validate the provided path. Aborting.",
+                                e.ToString());
+                throw e;
             }
 
-            if (testPath != null) {
-                log.WriteLn("The path was found to be: " + testPath);
+            if (success) {
+                tfPath = path;
+                log.Write("Successfully set the TF2 install path.");
             }
-            return testPath;
+            else {
+                log.Write("The provided path was invalid.");
+            }
+            return success;
         }
 
 
