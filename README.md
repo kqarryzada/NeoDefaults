@@ -1,9 +1,4 @@
 # The NeoDefaults Installer
-
-NOTICE: This project is still in development and has not yet been released.
-
-&nbsp;
-
 A no-nonsense config installer geared towards new players of Team Fortress 2. It is designed to be
 fast, seamless, and as easy to use as possible. It can be used as a quick "set and forget" for those
 who don't want to bother customizing their game manually, but still want the essentials.
