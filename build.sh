@@ -167,7 +167,7 @@ function build() {
         done && \
 
         # Make the output file read-only
-        chmod -wx "${NEODEFAULTS_CFG_NAME}"
+        chmod 444 "${NEODEFAULTS_CFG_NAME}"
     } || {
         print_error "Failed to build the cfg files."
         err="True"
