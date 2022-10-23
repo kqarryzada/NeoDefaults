@@ -62,7 +62,7 @@ tf_simple_disguise_menu 1
 
 
 //---------------
-// FOV/Viewmodel settings
+// FOV (Field of View)/Viewmodel settings
 //---------------
 // Increase the FOV, allowing the player to see more of what's happening around them.
 fov_desired 90
@@ -84,8 +84,8 @@ hud_combattext_red 255
 hud_combattext_green 255
 hud_combattext_blue 77
 
-// Display damage numbers above the heads of enemies. Batching is enabled so that TF2 automatically
-// adds up these numbers for you.
+// Display damage numbers above the heads of enemies. "Batching" is enabled so that TF2
+// automatically adds up these numbers for you if you hit an opponent more than once.
 hud_combattext 1
 hud_combattext_batching 1
 hud_combattext_batching_window 2
@@ -106,24 +106,34 @@ tf_dingaling_pitchmaxdmg 5
 // Miscellaneous
 //---------------
 // Enable fast weapon switch. If disabled, a player will need to perform an additional left-click to
-// confirm every time they switch weapons, which is unnecessary.
+// confirm every time they switch weapons, which is clunky and unnecessary.
 hud_fastswitch 1
 
-// Enable the developer console. This can be opened in-game with the "~" key and allows for any
-// commands, such as the ones in this file, to be typed in and executed.
+// Enable the developer console. This can be opened in-game with the "`" key. This key is above the
+// TAB character, and allows for any commands, such as the ones in this file, to be typed in and
+// executed.
 con_enable 1
 
-// Health values of other players are displayed next to their username, since this is easier to read
-// than numbers floating above each player's head. This will prevent you from seeing the health of
-// large bots in Mann vs. Machine, however.
+// Display health values of teammates next to their username. This is generally easier to read than
+// the default setting, where health numbers instead float above each player's head.
+//
+// Note that this will prevent you from seeing the health of large bots in Mann vs. Machine,
+// however. Type 'mvm' and 'mvmOff' in the console to swap this setting while in-game.
 tf_hud_target_id_disable_floating_health 1
+alias mvm "tf_hud_target_id_disable_floating_health 0; echo; echo Floating health enabled for MvM. Type 'mvmOff' to disable."
+alias mvmOff "tf_hud_target_id_disable_floating_health 1; echo; echo Floating health for MvM has been disabled."
 
-// Re-bind crouch to SHIFT
+// Set SHIFT to be the "crouch" key. Crouching with the CTRL key is much harder, especially when
+// rocket jumping.
 bind SHIFT "+duck"
 unbind CTRL
 
 
-// Execute 'custom.cfg' to override any unwanted settings defined by us in this file.
+//---------------
+// Custom player settings
+//---------------
+// Execute 'custom.cfg' to run all customized settings. This is done as the last step so that any
+// undesired changes that are set in this file can be overridden.
 exec NeoDefaults/custom
 
 echo ""
