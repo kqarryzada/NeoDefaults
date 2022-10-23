@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION_NUM="v1.0.0-SNAPSHOT"
+VERSION_NUM="v1.0.1-SNAPSHOT"
 
 HELP_TEXT="
 This shell script takes source components (e.g., the HUD) in the components/ directory and packages

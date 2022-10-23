@@ -11,7 +11,7 @@ using InstallStatus = NeoDefaults_Installer.Utilities.InstallStatus;
 
 namespace NeoDefaults_Installer {
     public partial class Main : Form {
-        public static readonly String PRODUCT_VERSION = "1.0.0-SNAPSHOT";
+        public static readonly String PRODUCT_VERSION = "1.0.1-SNAPSHOT";
 
         // Defines the default size of the main screen.
         private readonly Size DEFAULT_WINDOW_SIZE = new Size(640, 480);
