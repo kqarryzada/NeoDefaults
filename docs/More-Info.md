@@ -1,3 +1,19 @@
+# More Info
+This file contains more verbose information about the project.
+
+## How It Works
+Every game option in TF2 has an associated console command. For example, the "turn on autoheal"
+setting in the Advanced Options is called `tf_medigun_autoheal`. If you're familiar with the
+developer console, you can open it and type `tf_medigun_autoheal 1` to enable this, or
+`tf_medigun_autoheal 0` to disable it.
+
+If you write a bunch of these commands into a single file, you can have TF2 open this file and apply
+all of the settings inside it. These script files always end in `.cfg`.
+
+NeoDefaults has a file called `neodefaults.cfg`, which contains a list of commands that it considers
+ideal. When you run the installer, it creates the `neodefaults.cfg` file on your computer. Then, it
+tells TF2 to always run this file when you start your game.
+
 ## More information on what is installed
 There are three main components that are installed:
 * A set of config files
@@ -94,6 +110,15 @@ stacktraces printed here.
 
 The log file is rotated to keep the two most recent runs (if the installer is run multiple times),
 which are named `log.txt` and `log_prev.txt`. All older logs will be deleted.
+
+## mastercomfig Support
+TF2 installs that use [mastercomfig](https://mastercomfig.com/) are supported by NeoDefaults. This
+means that the NeoDefaults installer will always check for mastercomfig before installing its own
+config files (as mastercomfig expects that `autoexec.cfg` is placed under `cfg/user/` instead of
+`cfg/`).
+
+Using mastercomfig with TF2 is highly encouraged, as it is by far the best FPS config for the game.
+If you are planning to install mastercomfig, make sure to do that before running this installer.
 
 ## Reporting a problem or bug
 If you run into problems, first check the [FAQ](FAQ.md/#faq) to make sure your question hasn't

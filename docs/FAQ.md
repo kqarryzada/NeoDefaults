@@ -11,29 +11,10 @@ the configuration.
 **Q:** I change a setting in the game, but it always goes away the next time I launch TF2. Why?
 
 **A:** `neodefaults.cfg` is run every time TF2 starts up. Therefore, if you change something that
-`neodefaults.cfg` modifies, it just will be set again the next time you launch TF2. See 
-[Customizing NeoDefaults](More-Info.md/#customizing-neodefaults) for an explanation on how to make
-sure your setting is not overridden.
-
-&nbsp;
-
-**Q:** Why is there a `custom.cfg`? Can't I edit the `neodefaults.cfg` config file directly?
-
-**A:** The short answer is no. The `neodefaults.cfg` file is a read-only file.
-
-The much longer answer is that this was done on purpose with future releases in mind. If there are
-new versions of NeoDefaults in the future, and someone runs the program again, the newer NeoDefaults
-will need a way to easily replace an old `neodefaults.cfg` file. In most practical situations,
-NeoDefaults would just be able to delete the old `neodefaults.cfg` and replace it with a new one.
-
-However, if a user manually changed parts of `neodefaults.cfg` to their own tastes, this complicates
-things. It won't be easy to figure out which settings were added by the user and which ones should
-be replaced. And if custom settings have been added, they should never be overwritten.
-
-To solve this problem, a `custom.cfg` file is provided, where custom settings may be stored. This
-guarantees that `neodefaults.cfg` will only ever contain changes made by NeoDefaults, so NeoDefaults
-can safely delete the old file and replace it with an updated version. The file is set to read-only
-to make it obvious that it should remain unmodified.
+`neodefaults.cfg` modifies, it just will be set again the next time you launch TF2. To avoid this,
+you will need to override that setting in `custom.cfg`. See 
+[Customizing NeoDefaults](More-Info.md/#customizing-neodefaults) for an explanation on how to do
+this.
 
 &nbsp;
 
@@ -50,8 +31,8 @@ you might want.
 **A:** TF2 sets the default value for `cl_interp` (AKA "lerp"), at 0.1, or 100 ms. According to the
 the [Valve Developer Wiki](https://developer.valvesoftware.com/wiki/Interpolation), this value was
 tuned for the Source engine during the era of dial-up modems (!), so it should absolutely be
-lowered. It's insane that the default value for this variable hasn't been changed by the TF2 dev
-team in over a decade.
+lowered. It's insane that the default value for this variable hasn't been changed by the TF2
+development team in over 15 years.
 
 Many players set their `cl_interp` to 0, and this is even recommended by wiki. However, since this
 project is geared towards newer players, it's often the case that such players won't have the most
@@ -60,6 +41,17 @@ sets this value to 0.0303 in order to strike a balance between lowering it and m
 slightly more playable for those with unideal network connections. It's worth mentioning that this
 value is still ideal for players with stable connections that heavily use hitscan weapons, so using
 0.0303 should not be considered a detriment.
+
+&nbsp;
+
+**Q:** Can NeoDefaults install [mastercomfig](https://mastercomfig.com/) in the future?
+
+**A:** mastercomfig is an excellent plugin that we strongly recommend for anyone who plays TF2
+regularly. However, it is not included with NeoDefaults because different players would want
+different graphics settings. There are also technical reasons for avoiding this. For example, if
+mastercomfig was bundled into NeoDefaults, NeoDefaults would probably have to release a new version
+every time that mastercomfig did (so that people are always installing the latest version). This
+is undesirable, so it is not included with NeoDefaults.
 
 &nbsp;
 
@@ -100,7 +92,8 @@ console.
     -------------------------------------------------------------------------
     ```
     If you see this message, then you've fixed the autoexec file successfully. If not, something
-    went wrong. Consider opening an issue on GitHub for additional help.
+    went wrong. Consider opening an [issue](https://github.com/kqarryzada/TF2-NeoDefaults/issues)
+     on GitHub for additional help.
 
 
 &nbsp;
