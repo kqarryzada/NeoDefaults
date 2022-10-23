@@ -22,6 +22,7 @@ namespace NeoDefaults_Installer {
         // TF-path related parameters. You must use String.Format() and specify a drive name to use these.
         private readonly String[] defaultInstallLocations = {
             @"{0}Program Files (x86)\Steam\SteamApps\common\Team Fortress 2\tf",
+            @"{0}Program Files\Steam\SteamApps\common\Team Fortress 2\tf",
             @"{0}Steam\SteamApps\common\Team Fortress 2\tf",
             @"{0}SteamLibrary\SteamApps\common\Team Fortress 2\tf",
         };
