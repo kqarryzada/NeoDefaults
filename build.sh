@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+HELP_ARG="${1}"
 
 VERSION_NUM="v1.0.0-SNAPSHOT"
 
@@ -29,6 +30,7 @@ NEODEFAULTS_CFG_NAME="build/NeoDefaults-${VERSION_NUM}.cfg"
 
 # The header that is inserted at the top of the output cfg file.
 CFG_HEADER="// NeoDefaults config ${VERSION_NUM}
+//
 "
 
 
@@ -48,19 +50,28 @@ function print_green() {
 }
 
 
-function check_prerequisites() {
-    if [ -n "${1}" ]; then
-        if [ "${1}" == "--help" ]; then
-            printf "${HELP_TEXT}"
-            retval=0
-        else
-            >&2 echo "Invalid input detected: '${1}'"
-            retval=1
-        fi
-
-        exit "${retval}"
+function check_helptext() {
+    if [[ -z ${HELP_ARG} ]]; then
+        return
     fi
 
+    if [[ ${HELP_ARG} == "--help" || ${HELP_ARG} == "-?" || ${HELP_ARG} == "help" ]]; then
+        printf "${HELP_TEXT}"
+        retval=0
+    else
+        >&2 echo "Invalid input detected: '${HELP_ARG}'"
+        retval=1
+    fi
+
+    exit "${retval}"
+}
+
+
+#
+# This function ensures that script dependencies are all installed and
+# available.
+#
+function init() {
     # Environment variable for TF2 path
     if [ -z "${TF2_PATH}" ]; then
         >&2 echo "The 'TF2_PATH' environment variable is not defined. See the help text for more info."
@@ -78,7 +89,7 @@ function check_prerequisites() {
     fi
 
     # Check for 'unix2dos' binary
-    if ! unix2dos --version &> /dev/null; then
+    if ! command -v unix2dos > /dev/null; then
         >&2 echo "'unix2dos' failed to run. Make sure this is installed."
         exit 1
     fi
@@ -91,6 +102,11 @@ function check_vpk() {
 }
 
 
+#
+# Bundles a folder into a .vpk file. VPK files are are used by Source engine
+# games to store game assets. More information is available here:
+# https://developer.valvesoftware.com/wiki/VPK_File_Format
+#
 function package_vpk() {
     if [ "$#" -eq 1 ]; then
         print_green "Packaging ${1}..."
@@ -167,7 +183,7 @@ function build() {
         done && \
 
         # Make the output file read-only
-        chmod -wx "${NEODEFAULTS_CFG_NAME}"
+        chmod 444 "${NEODEFAULTS_CFG_NAME}"
     } || {
         print_error "Failed to build the cfg files."
         err="True"
@@ -179,21 +195,23 @@ function build() {
 }
 
 
-#--------------------#
-#        Main        #
-#--------------------#
-check_prerequisites "$1"
+function main() {
+    # Change the current directory to the script location before beginning execution. This will allow
+    # the script to run correctly without having to be launched from the root folder.
+    cd $(dirname "$0")
 
-# Change the current directory to the script location before beginning execution. This will allow
-# the script to run correctly without having to be in the root folder.
-cd $(dirname "$0")
+    clean
+    build
+    return_code="$?"
+    if [ "${return_code}" -eq 0 ]; then
+        echo "Build complete."
+    else
+        >&2 echo "Error: A failure occurred during the build process."
+    fi
+    exit "${return_code}"
+}
 
-clean
-build
-return_code="$?"
-if [ "${return_code}" -eq 0 ]; then
-    echo "Build complete."
-else
-    >&2 echo "Error: A failure occurred during the build process."
-fi
-exit "${return_code}"
+
+check_helptext
+init
+main
