@@ -29,9 +29,13 @@ HIT_OUTPUT_DIR="build/neodefaults-quake-hitsound"
 NEODEFAULTS_CFG_NAME="build/NeoDefaults-${VERSION_NUM}.cfg"
 
 # The header that is inserted at the top of the output cfg file.
-CFG_HEADER="// NeoDefaults config ${VERSION_NUM}
-//
-"
+CFG_HEADER=\
+"// NeoDefaults config ${VERSION_NUM}
+//"
+
+# The footer that is inserted at the end of the output cfg file. This value is
+# set in the set_footer() function.
+CFG_FOOTER=""
 
 
 # Prints the provided text in red to STDERR.
@@ -119,6 +123,70 @@ function package_vpk() {
 }
 
 
+#
+# Sets the value of 'CFG_FOOTER', which corresponds to the footer string in the
+# core Neodefaults-[VERSION].cfg file. This will eventually print a message in
+# the TF2 console that looks like:
+#
+# -------------------------------------------------------------------------
+# ----------------------- NEODEFAULTS v1.0.0 LOADED -----------------------
+# -------------------------------------------------------------------------
+#
+function set_footer() {
+    # A string of dashes that will be printed in the TF2 console.
+    local divider="-------------------------------------------------------------------------"
+    local version_text="NEODEFAULTS ${VERSION_NUM} LOADED"
+
+    # We want the NeoDefaults version to be displayed on a line in the middle of
+    # a divider, with appropriate spacing. This can vary based on the version
+    # number, e.g., '1.0.0' is a different length than '2.14.11'. Dynamically
+    # determine how many dashes are needed.
+    local max_chars=${#divider}
+    local num_chars_in_version=${#version_text}
+    local num_total_dashes=$((max_chars - num_chars_in_version))
+
+    # The longest allowed case would be a header like:
+    # '-- NEODEFAULTS VeryLongVersionNumber LOADED --'. Thus, there has to be
+    # room for at least 3 additional characters on each side, including the
+    # space character.
+    if [[ ${num_total_dashes} -lt 6 ]]; then
+        print_error "Invalid version number: ${VERSION_NUM}"
+        print_error "The full version string would be longer than the footer: '${version_text}'."
+        exit 1
+    fi
+
+
+    # Get the number of dashes that should be printed on each side. Subtract the
+    # two additional spaces.
+    local num_side_dashes=$(( (num_total_dashes - 2) / 2))
+    local side_dashes="${divider:0:num_side_dashes}"
+
+    # Assemble the resulting output version, surrounded by dash characters.
+    local output_version="${side_dashes} ${version_text} ${side_dashes}"
+
+    # If 'num_total_dashes' is odd, then we will need an additional dash at the
+    # end (due to integer division).
+    if [[ $((${num_total_dashes} % 2)) == 1 ]]; then
+        output_version="${output_version}-"
+    fi
+
+
+    # Now that 'output_version' has been assembled, prepare the footer. Note
+    # that the raw "echo" lines are printed in NeoDefaults-[VERSION].cfg, since
+    # echo is also a Source Engine command. These echo statements will not be
+    # executed by this script or any bash script.
+    local footer="\n\n"
+    footer+="echo \"\"\n"
+    footer+="echo \"\"\n"
+    footer+="echo \"${divider}\"\n"
+    footer+="echo \"${output_version}\"\n"
+    footer+="echo \"${divider}\"\n"
+    footer+="echo \"\"\n"
+
+    CFG_FOOTER="${footer}"
+}
+
+
 function clean() {
     # If a previous run ended abruptly, it could leave dirty references in components/.
     rm ${COMPONENTS_DIR}/*.vpk &> /dev/null
@@ -177,6 +245,10 @@ function build() {
         # Append the contents of the source to the output file
         cat "${SRC_CFG_DIR}/main-cfg.txt" >> "${NEODEFAULTS_CFG_NAME}" && \
 
+        # Add the footer at the end of the output file. Use printf to expand the
+        # newline characters.
+        printf "${CFG_FOOTER}" >> "${NEODEFAULTS_CFG_NAME}" && \
+
         # Ensure all cfg files have Windows-style line endings
         for i in build/*.cfg; do
             unix2dos "$i"
@@ -214,4 +286,5 @@ function main() {
 
 check_helptext
 init
+set_footer
 main

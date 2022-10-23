@@ -125,10 +125,3 @@ unbind CTRL
 
 // Execute 'custom.cfg' to override any unwanted settings defined by us in this file.
 exec NeoDefaults/custom
-
-echo ""
-echo ""
-echo "-------------------------------------------------------------------------"
-echo "----------------------- NEODEFAULTS v1.0.0 LOADED -----------------------"
-echo "-------------------------------------------------------------------------"
-echo ""
