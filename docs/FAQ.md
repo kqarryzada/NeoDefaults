@@ -18,6 +18,15 @@ this.
 
 &nbsp;
 
+**Q:** My custom HUD looks a bit different after installing NeoDefaults. How do I change it back?
+
+**A:** NeoDefaults makes some minor HUD adjustments that are designed for use with the stock HUD.
+If you installed everything NeoDefaults recommends, these HUD modifications may not play nicely with
+your HUD. You can resolve this by deleting the `neodefaults-hud-tweaks.vpk ` file in the
+`tf/custom` directory.
+
+&nbsp;
+
 **Q:** Where can I learn more about customizing TF2 with scripts/config files?
 
 **A:** woolen has [a great video](https://youtu.be/cRGW4a1K_Io) where he explains his personal

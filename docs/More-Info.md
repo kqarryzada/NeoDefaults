@@ -1,11 +1,11 @@
 # More Info
-This file contains more verbose information about the project.
+This file contains additional information about the project that wouldn't fit in the main README.
 
 ## How It Works
 Every game option in TF2 has an associated console command. For example, the "turn on autoheal"
 setting in the Advanced Options is called `tf_medigun_autoheal`. If you're familiar with the
-developer console, you can open it and type `tf_medigun_autoheal 1` to enable this, or
-`tf_medigun_autoheal 0` to disable it.
+developer console, you can open it with the backtick (`` ` ``) character (above the TAB key), and type
+`tf_medigun_autoheal 1` to enable this setting, or `tf_medigun_autoheal 0` to disable it.
 
 If you write a bunch of these commands into a single file, you can have TF2 open this file and apply
 all of the settings inside it. These script files always end in `.cfg`.
@@ -39,21 +39,26 @@ have a pleasant sound, and the high damage values have a very satisfying bass.
 
 This was added as part of the installer because a hitsound is a very reliable way of judging damage
 dealt, and can help with decision-making while playing. For example, hearing only high-pitch damage
-sounds during a fight would mean an opponent has taken very little damage, which would make
-retreating a wise choice.
+sounds during a fight would mean an opponent has taken very little damage, which could mean that
+retreating is a wise choice.
 
-The hitsound is installed under `tf/custom/` in the `neodefaults-quake-hitsound.vpk` file, but the
-pitch settings are configured in `neodefaults.cfg`.
+The audio for the hitsound is contained in `neodefaults-quake-hitsound.vpk`, and NeoDefaults
+installs this hitsound under the `tf/custom/` folder. The pitch settings are configured in
+`neodefaults.cfg`, and are identical to b4nny's settings.
 
 ### HUD
-While the default HUD is not really a good choice compared to all the other custom HUDs available
-(just ask [woolen](https://youtu.be/gW6YXCfGgdQ?t=228) 🙂), deciding on a custom HUD mostly revolves
-around personal preference. Instead of replacing the HUD entirely, some minor modifications are
-placed in the `neodefaults-hud-tweaks.vpk ` file, which is stored in the `tf/custom` directory.
+The HUD is responsible for loading game assets on the screen, such ast he health bar or a teammate's
+name. The default HUD is honestly not a good choice since there are many custom HUDs available that
+make the game easier to view. In spite of this, choosing a HUD mostly revolves around personal
+preference, so NeoDefaults will not install a custom HUD.
+
+Instead of replacing the HUD entirely, some minor modifications are contained in the
+`neodefaults-hud-tweaks.vpk ` file. NeoDefaults installs this file in the `tf/custom` directory.
 Currently, the only change made is to increase the size of damage numbers to make them more
 readable, as discussed in the [README](/README.md#what-gets-changed).
 
-This VPK file is only intended for use with the default HUD, and may not work if you are using a custom HUD.
+This VPK file is only intended for use with the default HUD, and may not work if you are using a
+custom HUD.
 
 ## Customizing NeoDefaults
 If NeoDefaults changes a game setting that you don't like, you can fix it by overriding that

@@ -1,13 +1,15 @@
 # The NeoDefaults Installer for Team Fortress 2
-NeoDefaults is a no-nonsense config installer geared towards new players of TF2. It is designed to be
-fast and seamless, and it will apply better game settings in under a minute. Better yet, it only needs
-to be run once.
+NeoDefaults is a no-nonsense config installer for
+[Team Fortress 2](https://store.steampowered.com/app/440/Team_Fortress_2/) that updates the game
+with the best default settings. It is fast, seamless, easy to use, and only needs to be run once to
+take advantage of settings that will instantly improve the game experience. All changes that
+NeoDefaults makes are fully supported by Valve and are not considered exploits.
 
 ## Download and Install
-The fastest way to install should take you about a minute to complete, download time included.
+The fastest way to improve your game settings with NeoDefaults will take less than a minute.
 1. Download the latest [release](https://github.com/kqarryzada/NeoDefaults/releases).
-1. Run the `.exe` file.
-1. Select "Basic Installation", install the files, and exit NeoDefaults.
+1. Unzip the folder and run the `.exe` file.
+1. Select "Basic Installation" and install the files.
 
 That's it. After this, you're ready to launch TF2 and take advantage of the new settings.
 
@@ -27,9 +29,8 @@ Some of the changes include:
 * Improving network settings to make the game more responsive
 * Updating the FOV settings so that the screen is less obscured
 
-The installer does the work for changing game settings and graphics for you. All changes that
-NeoDefaults makes are fully supported by Valve and are not considered exploits. For details on how
-the NeoDefaults Installer accomplishes this, see [How It Works](docs/More-Info.md#how-it-works).
+The installer does the work for changing game settings and graphics for you. For details on how the
+NeoDefaults Installer accomplishes this, see [How It Works](docs/More-Info.md#how-it-works).
 
 ## What Gets Changed
 The most noticeable differences are probably the settings related to the FOV and viewmodel:
@@ -52,7 +53,8 @@ The FAQ is available [here](docs/FAQ.md).
 ## More Information
 In the interest of keeping this page short, additional information is available on the
 [More Info](docs/More-Info.md) page, which discusses:
-* An explanation of what each component is and why it's added
+* How NeoDefaults works
+* An explanation of what NeoDefaults adds and why
 * How to customize what NeoDefaults changes
 * How to diagnose and report issues
 
